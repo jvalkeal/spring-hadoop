@@ -810,6 +810,14 @@ if (gradle.ext.mr2) {
 		}
 	}
 
+	project('spring-yarn:spring-yarn-thrift') {
+		description = 'Spring Yarn Thrift'
+		dependencies {
+			compile project(":spring-yarn:spring-yarn-core")
+			compile "org.apache.thrift:libthrift:$yarnThriftVersion"
+		}
+	}
+
 	project('spring-yarn:spring-yarn-test-core') {
 		description = 'Spring Yarn Test Core'
 		configurations {
