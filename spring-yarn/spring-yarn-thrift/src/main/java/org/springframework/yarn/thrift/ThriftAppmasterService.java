@@ -37,8 +37,8 @@ public abstract class ThriftAppmasterService<T> extends ThriftObjectSupport impl
 	@Override
 	protected void doStart() {
 		try {
-			createServerTransport();
-		} catch (IOException e) {
+			startThriftServer();
+		} catch (Exception e) {
 			log.error("Failed to create transport", e);
 		}
 	}

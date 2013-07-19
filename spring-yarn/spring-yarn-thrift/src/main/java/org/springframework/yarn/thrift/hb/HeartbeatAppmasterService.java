@@ -154,7 +154,7 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService<HeartbeatM
 		runningTask = getTaskScheduler().schedule(this.poller, this.trigger);
 	}
 
-	private boolean doStuff() {
+	private boolean handleTaskWork() {
 		long now = System.currentTimeMillis();
 		List<HeartbeatNode> nodesToDelete = new ArrayList<HeartbeatNode>();
 		List<HeartbeatNode> nodesToWarn = new ArrayList<HeartbeatNode>();
@@ -259,7 +259,7 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService<HeartbeatM
 	private Runnable createPoller() {
 		Callable<Boolean> pollingTask = new Callable<Boolean>() {
 			public Boolean call() throws Exception {
-				return doStuff();
+				return handleTaskWork();
 			}
 		};
 		return new Poller(pollingTask);

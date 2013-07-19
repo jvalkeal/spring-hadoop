@@ -20,14 +20,12 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.TProcessor;
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.server.THsHaServer;
-import org.apache.thrift.transport.TFramedTransport;
-import org.apache.thrift.transport.TNonblockingServerSocket;
-import org.apache.thrift.transport.TNonblockingServerTransport;
+import org.apache.thrift.server.TServer;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.Assert;
 import org.springframework.yarn.support.LifecycleObjectSupport;
+import org.springframework.yarn.thrift.ThriftServerFactoryBean;
+import org.springframework.yarn.thrift.ThriftServerFactoryBean.ServerType;
 
 /**
  * Base support class for service components
@@ -105,21 +103,27 @@ public abstract class ThriftObjectSupport extends LifecycleObjectSupport {
 	protected abstract TProcessor getProcessor();
 
 	/**
+	 * Gets the thrift server type. User can override
+	 * default {@link org.springframework.yarn.thrift.ThriftServerFactoryBean.ServerType.NONBLOCK_HSHA}
+	 * returned from this method.
+	 *
+	 * @return the server type
+	 */
+	protected ServerType getServerType() {
+		return ServerType.NONBLOCK_HSHA;
+	}
+
+	/**
 	 * Creates the server transport.
 	 *
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	protected void createServerTransport() throws IOException {
+	protected void startThriftServer() throws Exception {
 		TaskExecutor taskExecutor = getTaskExecutor();
 		Assert.notNull(taskExecutor, "Task Executor must be available");
 
-		TNonblockingServerTransport transport = getFreeTransport();
-		THsHaServer.Args args = new THsHaServer.Args(transport);
-		args.transportFactory(new TFramedTransport.Factory());
-		args.protocolFactory(new TBinaryProtocol.Factory());
-		args.processor(getProcessor());
-		args.workerThreads(1);
-		final THsHaServer server = new THsHaServer(args);
+		final TServer server = createThriftServer();
+		log.info("Created thirft server " + server);
 
 		// serve is blocking so pass it to executor
 		taskExecutor.execute(new Runnable() {
@@ -131,40 +135,22 @@ public abstract class ThriftObjectSupport extends LifecycleObjectSupport {
 	}
 
 	/**
-	 * Gets the free transport. This method either uses explicit port set
-	 * using {@link #setThriftServerPort(int)} or tries to find a free port
-	 * set using method {@link #setPortRange(int, int)}.
+	 * Creates the thrift server.
 	 *
-	 * @return the transport
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @return the thrift server
+	 * @throws Exception the exception
 	 */
-	private TNonblockingServerTransport getFreeTransport() throws IOException {
-		int minPort;
-		int maxPort;
-
-		if (thriftServerPort < 0) {
-			minPort = minFreeServerPort;
-			maxPort = maxFreeServerPort;
-		} else {
-			minPort = thriftServerPort;
-			maxPort = thriftServerPort;
-		}
-
-		for (int p = minPort; p <= maxPort; p++) {
-			try {
-				TNonblockingServerSocket t = new TNonblockingServerSocket(p);
-				log.info("Starting thrift server on port=" + p);
-				thriftServerStarted = true;
-				thriftServerPort = p;
-				return t;
-			} catch (Exception e) {
-				if (log.isDebugEnabled()) {
-					log.debug("Could not create server socket on port=" + p);
-				}
-				continue;
-			}
-		}
-		throw new IOException("No free ports available from [" + minPort + " to " + maxPort + "]");
+	protected TServer createThriftServer() throws Exception {
+		ThriftServerFactoryBean fb = new ThriftServerFactoryBean();
+		fb.setProcessor(getProcessor());
+		fb.setServerType(getServerType());
+		fb.setThriftServerPort(thriftServerPort);
+		fb.setMinFreeServerPort(minFreeServerPort);
+		fb.setMaxFreeServerPort(maxFreeServerPort);
+		fb.afterPropertiesSet();
+		thriftServerStarted = true;
+		thriftServerPort = fb.getThriftServerPort();
+		return fb.getObject();
 	}
 
 }

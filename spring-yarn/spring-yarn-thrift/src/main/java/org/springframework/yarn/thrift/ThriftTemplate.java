@@ -28,16 +28,14 @@ import org.springframework.dao.DataAccessException;
  *
  * @author Janne Valkealahti
  *
- * @param <P> the type of the api
+ * @param <C> the type of the thrift client
  */
-public class ThriftTemplate<P> implements InitializingBean {
+public class ThriftTemplate<C> implements InitializingBean {
 
 	private Class<?> apiClass;
-	//private Class<?> proxyProcessorClass;
-	private Class<?> proxyClientClass;
-	//private Class<?> proxyIfaceClass;
+	private Class<?> clientClass;
 	private TProtocol protocol;
-	private P proxy;
+	private C client;
 
 	/**
 	 * Instantiates a new thrift template.
@@ -52,27 +50,24 @@ public class ThriftTemplate<P> implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		//proxyProcessorClass = Class.forName(apiClass.getName() + "$Processor");
-		proxyClientClass = Class.forName(apiClass.getName() + "$Client");
-		//proxyIfaceClass = Class.forName(apiClass.getName() + "$Iface");
-		proxy = createProxy();
+		clientClass = Class.forName(apiClass.getName() + "$Client");
+		client = createClient();
 	}
 
 	/**
 	 * Execute client.
 	 *
 	 * @param <T> the callback return type
-	 * @param <P> the proxy type
+	 * @param <P> the client type
 	 * @param action the callback
-	 * @return the t
+	 * @return the result from a callback
 	 * @throws DataAccessException the data access exception
 	 */
-	@SuppressWarnings("hiding")
 	public <T, P> T executeClient(ThriftCallback<T, P> action) throws DataAccessException {
 		try {
 			@SuppressWarnings("unchecked")
-			P proxy = (P) getProxy();
-			T result = action.doInThrift(proxy);
+			P client = (P) getClient();
+			T result = action.doInThrift(client);
 			return result;
 		} catch (TException e) {
 			throw new ThriftSystemException(e);
@@ -82,28 +77,28 @@ public class ThriftTemplate<P> implements InitializingBean {
 	}
 
 	/**
-	 * Creates proxy for thrift generated client api.
+	 * Creates client for thrift generated api.
 	 *
-	 * @return the proxy for client api
+	 * @return the thrift client
 	 * @throws InstantiationException the instantiation exception
 	 * @throws IllegalAccessException the illegal access exception
 	 * @throws NoSuchMethodException the no such method exception
 	 * @throws SecurityException the security exception
 	 */
 	@SuppressWarnings("unchecked")
-	protected P createProxy() throws InstantiationException, IllegalAccessException, NoSuchMethodException,
+	protected C createClient() throws InstantiationException, IllegalAccessException, NoSuchMethodException,
 			SecurityException {
-		Constructor<?> constructor = proxyClientClass.getConstructor(TProtocol.class);
-		return (P) BeanUtils.instantiateClass(constructor, protocol);
+		Constructor<?> constructor = clientClass.getConstructor(TProtocol.class);
+		return (C) BeanUtils.instantiateClass(constructor, protocol);
 	}
 
 	/**
-	 * Gets the proxy.
+	 * Gets the client.
 	 *
-	 * @return the proxy
+	 * @return the client
 	 */
-	protected P getProxy() {
-		return proxy;
+	private C getClient() {
+		return client;
 	}
 
 }

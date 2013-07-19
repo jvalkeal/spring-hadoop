@@ -104,13 +104,13 @@ public abstract class ThriftAppmasterServiceClient extends ThriftObjectSupport
 	 * @return the client thrift template
 	 * @throws Exception the exception
 	 */
-	protected <T> ThriftTemplate<T> getClientThriftTemplate(Class<?> apiClass, Class<T> clientClass) throws Exception {
+	protected <C> ThriftTemplate<C> getClientThriftTemplate(Class<?> apiClass, Class<C> clientClass) throws Exception {
 		TTransport transport = new TFramedTransport(new TSocket(getServerHost(), getServerPort(), getTimeout()));
 		transport.open();
 		TBinaryProtocol protocol = new TBinaryProtocol(transport);
 
-		ThriftTemplate<T> template =
-				new ThriftTemplate<T>(apiClass, protocol);
+		ThriftTemplate<C> template =
+				new ThriftTemplate<C>(apiClass, protocol);
 		template.afterPropertiesSet();
 
 		return template;
