@@ -89,4 +89,7 @@ public class YarnSystemConstants {
 	/** Default env variable for resource manager scheduler address. */
 	public static final String SCHEDULER_ADDRESS = "syarn.hd.scheduler";
 
+	/** Default key for shared session id. */
+	public static final String SYARN_SEC_SESSIONID = "syarn.sec.sessionid";
+
 }

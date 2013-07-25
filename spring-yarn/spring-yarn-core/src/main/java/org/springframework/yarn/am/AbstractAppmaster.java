@@ -15,6 +15,8 @@
  */
 package org.springframework.yarn.am;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,8 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.Credentials;
+import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.api.protocolrecords.FinishApplicationMasterRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.FinishApplicationMasterResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterResponse;
@@ -92,6 +96,9 @@ public abstract class AbstractAppmaster extends LifecycleObjectSupport {
 
 	/** Holder for container assigned data */
 	private ContainerAssing<Object> containerAssing = new DefaultContainerAssing();
+
+	/** Hadoop credentials */
+	private Credentials credentials;
 
 	/**
 	 * Global application master instance specific {@link ApplicationAttemptId}
@@ -210,6 +217,26 @@ public abstract class AbstractAppmaster extends LifecycleObjectSupport {
 	 */
 	public void setCommands(String[] commands) {
 		this.commands = Arrays.asList(commands);
+	}
+
+	/**
+	 * Gets the credentials. Hadoop {@link Credentials} is
+	 * initialized from a localized token file during the call
+	 * of this method. This method may return null if there is
+	 * an error reading the token file.
+	 *
+	 * @return the credentials
+	 */
+	public Credentials getCredentials() {
+		if (credentials == null) {
+			File tokenFile = new File(environment.get(ApplicationConstants.APPLICATION_MASTER_TOKEN_ENV_NAME));
+			try {
+				credentials = Credentials.readTokenStorageFile(tokenFile, null);
+			} catch (Exception e) {
+				log.error("Unable to read token file " + tokenFile, e);
+			}
+		}
+		return credentials;
 	}
 
 	/**

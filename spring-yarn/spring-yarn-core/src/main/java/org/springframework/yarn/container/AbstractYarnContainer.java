@@ -15,9 +15,15 @@
  */
 package org.springframework.yarn.container;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.security.Credentials;
+import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.springframework.yarn.listener.CompositeContainerStateListener;
 import org.springframework.yarn.listener.ContainerStateListener;
 import org.springframework.yarn.listener.ContainerStateListener.ContainerState;
@@ -32,6 +38,8 @@ import org.springframework.yarn.listener.ContainerStateListener.ContainerState;
  */
 public abstract class AbstractYarnContainer implements LongRunningYarnContainer {
 
+	private final static Log log = LogFactory.getLog(AbstractYarnContainer.class);
+
 	/** Environment variables for the process. */
 	private Map<String, String> environment;
 
@@ -40,6 +48,9 @@ public abstract class AbstractYarnContainer implements LongRunningYarnContainer 
 
 	/** Listener handling state events */
 	private CompositeContainerStateListener stateListener = new CompositeContainerStateListener();
+
+	/** Hadoop credentials */
+	private Credentials credentials;
 
 	@Override
 	public final void run() {
@@ -54,6 +65,16 @@ public abstract class AbstractYarnContainer implements LongRunningYarnContainer 
 	@Override
 	public void setParameters(Properties parameters) {
 		this.parameters = parameters;
+	}
+
+	@Override
+	public void addContainerStateListener(ContainerStateListener listener) {
+		stateListener.register(listener);
+	}
+
+	@Override
+	public boolean isWaitCompleteState() {
+		return false;
 	}
 
 	/**
@@ -84,14 +105,24 @@ public abstract class AbstractYarnContainer implements LongRunningYarnContainer 
 		return parameters;
 	}
 
-	@Override
-	public void addContainerStateListener(ContainerStateListener listener) {
-		stateListener.register(listener);
-	}
-
-	@Override
-	public boolean isWaitCompleteState() {
-		return false;
+	/**
+	 * Gets the credentials. Hadoop {@link Credentials} is
+	 * initialized from a localized token file during the call
+	 * of this method. This method may return null if there is
+	 * an error reading the token file.
+	 *
+	 * @return the credentials
+	 */
+	public Credentials getCredentials() {
+		if (credentials == null) {
+			File tokenFile = new File(getEnvironment(ApplicationConstants.CONTAINER_TOKEN_FILE_ENV_NAME));
+			try {
+				credentials = Credentials.readTokenStorageFile(tokenFile, null);
+			} catch (Exception e) {
+				log.error("Unable to read token file " + tokenFile, e);
+			}
+		}
+		return credentials;
 	}
 
 	/**
