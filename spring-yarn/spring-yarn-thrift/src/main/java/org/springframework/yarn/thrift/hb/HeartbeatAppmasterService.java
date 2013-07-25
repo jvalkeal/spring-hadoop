@@ -26,15 +26,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
+import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.util.Assert;
 import org.springframework.yarn.YarnSystemException;
 import org.springframework.yarn.thrift.ThriftAppmasterService;
+import org.springframework.yarn.thrift.ThriftCallback;
+import org.springframework.yarn.thrift.ThriftTemplate;
 import org.springframework.yarn.thrift.hb.HeartbeatNode.NodeState;
-import org.springframework.yarn.thrift.hb.gen.HeartbeatMsg;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatCommandEndPoint;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatCommandMessage;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatEndPoint;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatMessage;
 import org.springframework.yarn.thrift.hb.gen.NodeType;
-import org.springframework.yarn.thrift.hb.gen.THeartbeatEndPoint;
 
 /**
  * General service providing heartbeat system for nodes.
@@ -43,7 +51,7 @@ import org.springframework.yarn.thrift.hb.gen.THeartbeatEndPoint;
  * @author Arun Suresh
  *
  */
-public class HeartbeatAppmasterService extends ThriftAppmasterService<HeartbeatMsg> implements THeartbeatEndPoint.Iface {
+public class HeartbeatAppmasterService extends ThriftAppmasterService implements HeartbeatEndPoint.Iface {
 
 	private final static Log log = LogFactory.getLog(HeartbeatAppmasterService.class);
 
@@ -51,7 +59,7 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService<HeartbeatM
 	private final static int DEFAULT_WARN_TIME = 30000;
 
 	/** Default node dead time */
-	private final static int DEFAULT_DEAD_TIME = 30000;
+	private final static int DEFAULT_DEAD_TIME = 60000;
 
 	/** Map of known nodes */
 	private final ConcurrentHashMap<NodeType, ConcurrentHashMap<HeartbeatNode, NodeState>> nodeRegistry =
@@ -74,6 +82,114 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService<HeartbeatM
 
 	/** Listener handling state events */
 	private CompositeHeartbeatMasterClientListener stateListener = new CompositeHeartbeatMasterClientListener();
+
+	/** Shared session id */
+	private String sessionId;
+
+	@Override
+	protected void onInit() throws Exception {
+		super.onInit();
+		Assert.notNull(trigger, "Trigger is required");
+		try {
+			this.poller = this.createPoller();
+		} catch (Exception e) {
+			throw new YarnSystemException("Failed to create Poller", e);
+		}
+	}
+
+	@Override
+	protected void doStart() {
+		super.doStart();
+		Assert.state(getTaskScheduler() != null, "unable to start heartbeat, no taskScheduler available");
+		runningTask = getTaskScheduler().schedule(this.poller, this.trigger);
+	}
+
+	@Override
+	protected void doStop() {
+		super.doStop();
+		if (this.runningTask != null) {
+			this.runningTask.cancel(true);
+		}
+		this.runningTask = null;
+	}
+
+	@Override
+	protected TProcessor getProcessor() {
+		return new HeartbeatEndPoint.Processor<HeartbeatAppmasterService>(this);
+	}
+
+	@Override
+	public boolean acceptHeartbeat(String sessionId, HeartbeatMessage heartbeatMessage) throws TException {
+		NodeType nodeType = heartbeatMessage.getNodeType();
+		String nodeId = heartbeatMessage.getNodeId();
+
+		if (this.sessionId != null && !this.sessionId.equals(sessionId)) {
+			log.warn("Not valid session id for node nodeId=" + nodeId + " sessionId=" + sessionId);
+			return false;
+		}
+
+		if (log.isDebugEnabled()) {
+			log.debug("Received Heartbeat from node nodeId=" + nodeId + " sessionId=" + sessionId);
+		}
+
+		ConcurrentHashMap<HeartbeatNode, NodeState> mTemp = new ConcurrentHashMap<HeartbeatNode, NodeState>();
+		ConcurrentHashMap<HeartbeatNode, NodeState> m = nodeRegistry.putIfAbsent(nodeType, mTemp);
+
+		if (m == null) {
+			m = mTemp;
+		}
+
+		long now = System.currentTimeMillis();
+		NodeState nsTemp = new NodeState();
+		HeartbeatNode hKey = new HeartbeatNode(nodeId, nodeType);
+		NodeState ns = m.putIfAbsent(hKey, nsTemp);
+
+		// check if this is a first heartbeat
+		boolean isFirst = false;
+		if (ns == null) {
+			ns = nsTemp;
+			isFirst = true;
+		}
+		ns.timeStamp.set(now);
+		ns.host = heartbeatMessage.getHost();
+		ns.port = heartbeatMessage.getCommandPort();
+		ns.nodeInfo = heartbeatMessage.getNodeInfo();
+
+		// notify node up
+		if (isFirst) {
+			stateListener.nodeUp(hKey, ns);
+		}
+		return true;
+	}
+
+	public void sendCommand(HeartbeatCommandMessage heartbeatCommandMessage) {
+		ConcurrentHashMap<HeartbeatNode, NodeState> containerMap = nodeRegistry.get(NodeType.CONTAINER);
+		for (Entry<HeartbeatNode, NodeState> entry : containerMap.entrySet()) {
+			try {
+				sendCommandViaThrift(entry.getValue().host, entry.getValue().port, heartbeatCommandMessage);
+			} catch (Exception e) {
+				log.error("Error sending command to client", e);
+			}
+		}
+	}
+
+	private void sendCommandViaThrift(String host, int port, final HeartbeatCommandMessage heartbeatCommandMessage) throws Exception {
+		TTransport transport = new TFramedTransport(new TSocket(host, port, 2000));
+		transport.open();
+		TBinaryProtocol protocol = new TBinaryProtocol(transport);
+		ThriftTemplate<HeartbeatCommandEndPoint.Client> template = new ThriftTemplate<HeartbeatCommandEndPoint.Client>(
+				HeartbeatCommandEndPoint.class, protocol);
+		template.afterPropertiesSet();
+
+		template.executeClient(new ThriftCallback<Boolean, HeartbeatCommandEndPoint.Client>() {
+			@Override
+			public Boolean doInThrift(HeartbeatCommandEndPoint.Client proxy)
+					throws TException {
+				return proxy.command(sessionId, heartbeatCommandMessage);
+			}
+		});
+
+	}
 
 	/**
 	 * Gets the warn time.
@@ -125,58 +241,57 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService<HeartbeatM
 	 * Gets the node state.
 	 *
 	 * @param nodeId the node id
-	 * @param nType the n type
+	 * @param nodeType the node type
 	 * @return the node state
 	 */
-	public NodeState getNodeState(String nodeId, NodeType nType) {
-		ConcurrentHashMap<HeartbeatNode, NodeState> m1 = nodeRegistry.get(nType);
-		if (m1 != null) {
-			return m1.get(new HeartbeatNode(nodeId, nType));
+	public NodeState getNodeState(String nodeId, NodeType nodeType) {
+		ConcurrentHashMap<HeartbeatNode, NodeState> map = nodeRegistry.get(nodeType);
+		if (map != null) {
+			return map.get(new HeartbeatNode(nodeId, nodeType));
 		}
 		return null;
 	}
 
-	@Override
-	protected void onInit() throws Exception {
-		super.onInit();
-		Assert.notNull(trigger, "Trigger is required");
-		try {
-			this.poller = this.createPoller();
-		} catch (Exception e) {
-			throw new YarnSystemException("Failed to create Poller", e);
-		}
+	/**
+	 * Sets the session id. Session id is a shared secret to
+	 * guard this service against thrift clients who are not
+	 * allowed to talk to the service.
+	 *
+	 * @param sessionId the new session id
+	 */
+	public void setSessionId(String sessionId) {
+		log.info("Setting sessionId=" + sessionId);
+		this.sessionId = sessionId;
 	}
 
-	@Override
-	protected void doStart() {
-		super.doStart();
-		Assert.state(getTaskScheduler() != null, "unable to start heartbeat, no taskScheduler available");
-		runningTask = getTaskScheduler().schedule(this.poller, this.trigger);
-	}
-
+	/**
+	 * Handle task work.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean handleTaskWork() {
 		long now = System.currentTimeMillis();
 		List<HeartbeatNode> nodesToDelete = new ArrayList<HeartbeatNode>();
 		List<HeartbeatNode> nodesToWarn = new ArrayList<HeartbeatNode>();
 
-		for (Entry<NodeType, ConcurrentHashMap<HeartbeatNode, NodeState>> e : nodeRegistry.entrySet()) {
-			NodeType nType = e.getKey();
-			ConcurrentHashMap<HeartbeatNode, NodeState> m = e.getValue();
+		for (Entry<NodeType, ConcurrentHashMap<HeartbeatNode, NodeState>> entry1 : nodeRegistry.entrySet()) {
+			NodeType nodeType = entry1.getKey();
+			ConcurrentHashMap<HeartbeatNode, NodeState> map = entry1.getValue();
 
-			for (Entry<HeartbeatNode, NodeState> e2 : m.entrySet()) {
-				HeartbeatNode node = e2.getKey();
-				long diff = now - e2.getValue().timeStamp.get();
+			for (Entry<HeartbeatNode, NodeState> entry2 : map.entrySet()) {
+				HeartbeatNode node = entry2.getKey();
+				long diff = now - entry2.getValue().timeStamp.get();
 				if (log.isDebugEnabled()) {
-					log.debug("Found Node [" + nType + ", "	+ node.getId() + "]");
+					log.debug("Found Node [" + nodeType + ", "	+ node.getId() + "]");
 				}
 				if (diff > warnTime) {
 					if (log.isDebugEnabled()) {
-						log.debug("Node hasnt sent Heartbeats for a while [" + nType + ", " + node.getId() + "]");
+						log.debug("Node hasnt sent Heartbeats for a while [" + nodeType + ", " + node.getId() + "]");
 					}
 					if (diff > deadTime) {
 						nodesToDelete.add(node);
 						if (log.isDebugEnabled()) {
-							log.debug("Node deemed dead [" + nType + ", " + node.getId() + "]");
+							log.debug("Node deemed dead [" + nodeType + ", " + node.getId() + "]");
 						}
 					} else {
 						nodesToWarn.add(node);
@@ -196,58 +311,6 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService<HeartbeatM
 			stateListener.nodeWarn(node, nodeState);
 		}
 
-		return true;
-	}
-
-	@Override
-	protected void doStop() {
-		super.doStop();
-		if (this.runningTask != null) {
-			this.runningTask.cancel(true);
-		}
-		this.runningTask = null;
-	}
-
-	@Override
-	protected TProcessor getProcessor() {
-		return new THeartbeatEndPoint.Processor<HeartbeatAppmasterService>(this);
-	}
-
-	@Override
-	public boolean acceptHeartbeat(HeartbeatMsg hbMsg) throws TException {
-		NodeType nodeType = hbMsg.getNodeType();
-		String nodeId = hbMsg.getNodeId();
-
-		if (log.isDebugEnabled()) {
-			log.debug("Received Heartbeat from node [" + nodeType + ", " + nodeId + "]");
-		}
-
-		ConcurrentHashMap<HeartbeatNode, NodeState> mTemp = new ConcurrentHashMap<HeartbeatNode, NodeState>();
-		ConcurrentHashMap<HeartbeatNode, NodeState> m = nodeRegistry.putIfAbsent(nodeType, mTemp);
-		if (m == null) {
-			m = mTemp;
-		}
-
-		long cTime = System.currentTimeMillis();
-		NodeState nsTemp = new NodeState();
-		HeartbeatNode hKey = new HeartbeatNode(nodeId, nodeType);
-		NodeState ns = m.putIfAbsent(hKey, nsTemp);
-
-		// check if this is a first heartbeat
-		boolean isFirst = false;
-		if (ns == null) {
-			ns = nsTemp;
-			isFirst = true;
-		}
-		ns.timeStamp.set(cTime);
-		ns.host = hbMsg.getHost();
-		ns.port = hbMsg.getCommandPort();
-		ns.nodeInfo = hbMsg.getNodeInfo();
-
-		// notify node up
-		if (isFirst) {
-			stateListener.nodeUp(hKey, ns);
-		}
 		return true;
 	}
 

@@ -30,12 +30,13 @@ import org.springframework.yarn.YarnSystemException;
 import org.springframework.yarn.thrift.ThriftAppmasterServiceClient;
 import org.springframework.yarn.thrift.ThriftCallback;
 import org.springframework.yarn.thrift.ThriftTemplate;
-import org.springframework.yarn.thrift.hb.gen.HeartbeatMsg;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatCommandMessage;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatMessage;
 import org.springframework.yarn.thrift.hb.gen.NodeInfo;
 import org.springframework.yarn.thrift.hb.gen.NodeType;
-import org.springframework.yarn.thrift.hb.gen.THeartbeatCommandEndPoint;
-import org.springframework.yarn.thrift.hb.gen.THeartbeatEndPoint;
-import org.springframework.yarn.thrift.hb.gen.THeartbeatEndPoint.Client;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatCommandEndPoint;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatEndPoint;
+import org.springframework.yarn.thrift.hb.gen.HeartbeatEndPoint.Client;
 
 /**
  * Client side heartbeat service accessor.
@@ -45,7 +46,7 @@ import org.springframework.yarn.thrift.hb.gen.THeartbeatEndPoint.Client;
  *
  */
 public class HeartbeatAppmasterServiceClient extends ThriftAppmasterServiceClient
-		implements THeartbeatCommandEndPoint.Iface {
+		implements HeartbeatCommandEndPoint.Iface {
 
 	private final static Log log = LogFactory.getLog(HeartbeatAppmasterServiceClient.class);
 
@@ -64,6 +65,9 @@ public class HeartbeatAppmasterServiceClient extends ThriftAppmasterServiceClien
 	/** Node id reported by this client */
 	private volatile String nodeId;
 
+	/** Shared session id */
+	private volatile String sessionId;
+
 	/**
 	 * Sets the new node info.
 	 *
@@ -80,6 +84,18 @@ public class HeartbeatAppmasterServiceClient extends ThriftAppmasterServiceClien
 	 */
 	public void setNodeId(String nodeId) {
 		this.nodeId = nodeId;
+	}
+
+	/**
+	 * Sets the session id. Session id is a shared secret to
+	 * guard service against thrift clients who are not
+	 * allowed to talk to the service.
+	 *
+	 * @param sessionId the new session id
+	 */
+	public void setSessionId(String sessionId) {
+		log.info("Setting sessionId=" + sessionId);
+		this.sessionId = sessionId;
 	}
 
 	/**
@@ -110,20 +126,20 @@ public class HeartbeatAppmasterServiceClient extends ThriftAppmasterServiceClien
 			log.debug("Executing heartbeat");
 		}
 
-		final HeartbeatMsg hMsg = new HeartbeatMsg();
+		final HeartbeatMessage hMsg = new HeartbeatMessage();
 		hMsg.setNodeId(nodeId);
 		hMsg.setNodeType(NodeType.CONTAINER);
 		hMsg.setNodeInfo(nodeInfo);
 		hMsg.setHost(InetAddress.getLocalHost().getHostName());
 		hMsg.setCommandPort(getThriftServerPort());
 
-		ThriftTemplate<THeartbeatEndPoint.Client> template =
-				getClientThriftTemplate(THeartbeatEndPoint.class, THeartbeatEndPoint.Client.class);
+		ThriftTemplate<HeartbeatEndPoint.Client> template =
+				getClientThriftTemplate(HeartbeatEndPoint.class, HeartbeatEndPoint.Client.class);
 
-		Boolean accepted = template.executeClient(new ThriftCallback<Boolean, THeartbeatEndPoint.Client>() {
+		Boolean accepted = template.executeClient(new ThriftCallback<Boolean, HeartbeatEndPoint.Client>() {
 			@Override
 			public Boolean doInThrift(Client proxy) throws TException{
-				return proxy.acceptHeartbeat(hMsg);
+				return proxy.acceptHeartbeat(sessionId, hMsg);
 			}
 		});
 
@@ -162,16 +178,19 @@ public class HeartbeatAppmasterServiceClient extends ThriftAppmasterServiceClien
 
 	@Override
 	protected TProcessor getProcessor() {
-		return new THeartbeatCommandEndPoint.Processor<HeartbeatAppmasterServiceClient>(this);
+		return new HeartbeatCommandEndPoint.Processor<HeartbeatAppmasterServiceClient>(this);
 	}
 
 	@Override
-	public boolean changeEndPoint(String host, int port) throws TException {
+	public boolean changeEndPoint(String sessionId, String host, int port) throws TException {
 		return false;
 	}
 
 	@Override
-	public boolean killSelf() throws TException {
+	public boolean command(String sessionId, HeartbeatCommandMessage heartbeatCommandMessage) throws TException {
+		if (log.isDebugEnabled()) {
+			log.debug("Received command sessionId=" + sessionId + " heartbeatCommandMessage=" + heartbeatCommandMessage);
+		}
 		return false;
 	}
 

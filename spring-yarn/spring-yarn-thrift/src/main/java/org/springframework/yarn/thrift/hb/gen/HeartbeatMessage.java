@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, HeartbeatMsg._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("HeartbeatMsg");
+public class HeartbeatMessage implements org.apache.thrift.TBase<HeartbeatMessage, HeartbeatMessage._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("HeartbeatMessage");
 
   private static final org.apache.thrift.protocol.TField NODE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("nodeId", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField HOST_FIELD_DESC = new org.apache.thrift.protocol.TField("host", org.apache.thrift.protocol.TType.STRING, (short)2);
@@ -41,8 +41,8 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new HeartbeatMsgStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new HeartbeatMsgTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new HeartbeatMessageStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new HeartbeatMessageTupleSchemeFactory());
   }
 
   /**
@@ -173,13 +173,13 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
     tmpMap.put(_Fields.COMMAND_PORT, new org.apache.thrift.meta_data.FieldMetaData("commandPort", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(HeartbeatMsg.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(HeartbeatMessage.class, metaDataMap);
   }
 
-  public HeartbeatMsg() {
+  public HeartbeatMessage() {
   }
 
-  public HeartbeatMsg(
+  public HeartbeatMessage(
     String nodeId,
     String host,
     NodeType nodeType,
@@ -195,7 +195,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public HeartbeatMsg(HeartbeatMsg other) {
+  public HeartbeatMessage(HeartbeatMessage other) {
     __isset_bitfield = other.__isset_bitfield;
     if (other.isSetNodeId()) {
       this.nodeId = other.nodeId;
@@ -212,8 +212,8 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
     this.commandPort = other.commandPort;
   }
 
-  public HeartbeatMsg deepCopy() {
-    return new HeartbeatMsg(this);
+  public HeartbeatMessage deepCopy() {
+    return new HeartbeatMessage(this);
   }
 
   @Override
@@ -236,7 +236,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
   /**
    * Slave Node id
    */
-  public HeartbeatMsg setNodeId(String nodeId) {
+  public HeartbeatMessage setNodeId(String nodeId) {
     this.nodeId = nodeId;
     return this;
   }
@@ -266,7 +266,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
   /**
    * Slave hostname
    */
-  public HeartbeatMsg setHost(String host) {
+  public HeartbeatMessage setHost(String host) {
     this.host = host;
     return this;
   }
@@ -300,7 +300,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
    * 
    * @see NodeType
    */
-  public HeartbeatMsg setNodeType(NodeType nodeType) {
+  public HeartbeatMessage setNodeType(NodeType nodeType) {
     this.nodeType = nodeType;
     return this;
   }
@@ -330,7 +330,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
   /**
    * Slave Node Info
    */
-  public HeartbeatMsg setNodeInfo(NodeInfo nodeInfo) {
+  public HeartbeatMessage setNodeInfo(NodeInfo nodeInfo) {
     this.nodeInfo = nodeInfo;
     return this;
   }
@@ -360,7 +360,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
   /**
    * Port on which Command EndPoint will listen on
    */
-  public HeartbeatMsg setCommandPort(int commandPort) {
+  public HeartbeatMessage setCommandPort(int commandPort) {
     this.commandPort = commandPort;
     setCommandPortIsSet(true);
     return this;
@@ -470,12 +470,12 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof HeartbeatMsg)
-      return this.equals((HeartbeatMsg)that);
+    if (that instanceof HeartbeatMessage)
+      return this.equals((HeartbeatMessage)that);
     return false;
   }
 
-  public boolean equals(HeartbeatMsg that) {
+  public boolean equals(HeartbeatMessage that) {
     if (that == null)
       return false;
 
@@ -532,13 +532,13 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
     return 0;
   }
 
-  public int compareTo(HeartbeatMsg other) {
+  public int compareTo(HeartbeatMessage other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    HeartbeatMsg typedOther = (HeartbeatMsg)other;
+    HeartbeatMessage typedOther = (HeartbeatMessage)other;
 
     lastComparison = Boolean.valueOf(isSetNodeId()).compareTo(typedOther.isSetNodeId());
     if (lastComparison != 0) {
@@ -607,7 +607,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("HeartbeatMsg(");
+    StringBuilder sb = new StringBuilder("HeartbeatMessage(");
     boolean first = true;
 
     sb.append("nodeId:");
@@ -689,15 +689,15 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
     }
   }
 
-  private static class HeartbeatMsgStandardSchemeFactory implements SchemeFactory {
-    public HeartbeatMsgStandardScheme getScheme() {
-      return new HeartbeatMsgStandardScheme();
+  private static class HeartbeatMessageStandardSchemeFactory implements SchemeFactory {
+    public HeartbeatMessageStandardScheme getScheme() {
+      return new HeartbeatMessageStandardScheme();
     }
   }
 
-  private static class HeartbeatMsgStandardScheme extends StandardScheme<HeartbeatMsg> {
+  private static class HeartbeatMessageStandardScheme extends StandardScheme<HeartbeatMessage> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, HeartbeatMsg struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, HeartbeatMessage struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -759,7 +759,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, HeartbeatMsg struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, HeartbeatMessage struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -794,16 +794,16 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
 
   }
 
-  private static class HeartbeatMsgTupleSchemeFactory implements SchemeFactory {
-    public HeartbeatMsgTupleScheme getScheme() {
-      return new HeartbeatMsgTupleScheme();
+  private static class HeartbeatMessageTupleSchemeFactory implements SchemeFactory {
+    public HeartbeatMessageTupleScheme getScheme() {
+      return new HeartbeatMessageTupleScheme();
     }
   }
 
-  private static class HeartbeatMsgTupleScheme extends TupleScheme<HeartbeatMsg> {
+  private static class HeartbeatMessageTupleScheme extends TupleScheme<HeartbeatMessage> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, HeartbeatMsg struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, HeartbeatMessage struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       oprot.writeString(struct.nodeId);
       oprot.writeString(struct.host);
@@ -820,7 +820,7 @@ public class HeartbeatMsg implements org.apache.thrift.TBase<HeartbeatMsg, Heart
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, HeartbeatMsg struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, HeartbeatMessage struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       struct.nodeId = iprot.readString();
       struct.setNodeIdIsSet(true);

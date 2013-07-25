@@ -30,30 +30,34 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class THeartbeatCommandEndPoint {
+public class HeartbeatCommandEndPoint {
 
   public interface Iface {
 
     /**
      * Notify Slave of change in Heartbeat End point
      * 
+     * @param sessionId
      * @param host
      * @param port
      */
-    public boolean changeEndPoint(String host, int port) throws org.apache.thrift.TException;
+    public boolean changeEndPoint(String sessionId, String host, int port) throws org.apache.thrift.TException;
 
     /**
-     * Kill self !!
+     * Command
+     * 
+     * @param sessionId
+     * @param heartbeatCommandMessage
      */
-    public boolean killSelf() throws org.apache.thrift.TException;
+    public boolean command(String sessionId, HeartbeatCommandMessage heartbeatCommandMessage) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void changeEndPoint(String host, int port, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.changeEndPoint_call> resultHandler) throws org.apache.thrift.TException;
+    public void changeEndPoint(String sessionId, String host, int port, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.changeEndPoint_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void killSelf(org.apache.thrift.async.AsyncMethodCallback<AsyncClient.killSelf_call> resultHandler) throws org.apache.thrift.TException;
+    public void command(String sessionId, HeartbeatCommandMessage heartbeatCommandMessage, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.command_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -77,15 +81,16 @@ public class THeartbeatCommandEndPoint {
       super(iprot, oprot);
     }
 
-    public boolean changeEndPoint(String host, int port) throws org.apache.thrift.TException
+    public boolean changeEndPoint(String sessionId, String host, int port) throws org.apache.thrift.TException
     {
-      send_changeEndPoint(host, port);
+      send_changeEndPoint(sessionId, host, port);
       return recv_changeEndPoint();
     }
 
-    public void send_changeEndPoint(String host, int port) throws org.apache.thrift.TException
+    public void send_changeEndPoint(String sessionId, String host, int port) throws org.apache.thrift.TException
     {
       changeEndPoint_args args = new changeEndPoint_args();
+      args.setSessionId(sessionId);
       args.setHost(host);
       args.setPort(port);
       sendBase("changeEndPoint", args);
@@ -101,26 +106,28 @@ public class THeartbeatCommandEndPoint {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "changeEndPoint failed: unknown result");
     }
 
-    public boolean killSelf() throws org.apache.thrift.TException
+    public boolean command(String sessionId, HeartbeatCommandMessage heartbeatCommandMessage) throws org.apache.thrift.TException
     {
-      send_killSelf();
-      return recv_killSelf();
+      send_command(sessionId, heartbeatCommandMessage);
+      return recv_command();
     }
 
-    public void send_killSelf() throws org.apache.thrift.TException
+    public void send_command(String sessionId, HeartbeatCommandMessage heartbeatCommandMessage) throws org.apache.thrift.TException
     {
-      killSelf_args args = new killSelf_args();
-      sendBase("killSelf", args);
+      command_args args = new command_args();
+      args.setSessionId(sessionId);
+      args.setHeartbeatCommandMessage(heartbeatCommandMessage);
+      sendBase("command", args);
     }
 
-    public boolean recv_killSelf() throws org.apache.thrift.TException
+    public boolean recv_command() throws org.apache.thrift.TException
     {
-      killSelf_result result = new killSelf_result();
-      receiveBase(result, "killSelf");
+      command_result result = new command_result();
+      receiveBase(result, "command");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "killSelf failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "command failed: unknown result");
     }
 
   }
@@ -141,18 +148,20 @@ public class THeartbeatCommandEndPoint {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void changeEndPoint(String host, int port, org.apache.thrift.async.AsyncMethodCallback<changeEndPoint_call> resultHandler) throws org.apache.thrift.TException {
+    public void changeEndPoint(String sessionId, String host, int port, org.apache.thrift.async.AsyncMethodCallback<changeEndPoint_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      changeEndPoint_call method_call = new changeEndPoint_call(host, port, resultHandler, this, ___protocolFactory, ___transport);
+      changeEndPoint_call method_call = new changeEndPoint_call(sessionId, host, port, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class changeEndPoint_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String sessionId;
       private String host;
       private int port;
-      public changeEndPoint_call(String host, int port, org.apache.thrift.async.AsyncMethodCallback<changeEndPoint_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public changeEndPoint_call(String sessionId, String host, int port, org.apache.thrift.async.AsyncMethodCallback<changeEndPoint_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.sessionId = sessionId;
         this.host = host;
         this.port = port;
       }
@@ -160,6 +169,7 @@ public class THeartbeatCommandEndPoint {
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("changeEndPoint", org.apache.thrift.protocol.TMessageType.CALL, 0));
         changeEndPoint_args args = new changeEndPoint_args();
+        args.setSessionId(sessionId);
         args.setHost(host);
         args.setPort(port);
         args.write(prot);
@@ -176,21 +186,27 @@ public class THeartbeatCommandEndPoint {
       }
     }
 
-    public void killSelf(org.apache.thrift.async.AsyncMethodCallback<killSelf_call> resultHandler) throws org.apache.thrift.TException {
+    public void command(String sessionId, HeartbeatCommandMessage heartbeatCommandMessage, org.apache.thrift.async.AsyncMethodCallback<command_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      killSelf_call method_call = new killSelf_call(resultHandler, this, ___protocolFactory, ___transport);
+      command_call method_call = new command_call(sessionId, heartbeatCommandMessage, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class killSelf_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public killSelf_call(org.apache.thrift.async.AsyncMethodCallback<killSelf_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class command_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String sessionId;
+      private HeartbeatCommandMessage heartbeatCommandMessage;
+      public command_call(String sessionId, HeartbeatCommandMessage heartbeatCommandMessage, org.apache.thrift.async.AsyncMethodCallback<command_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.sessionId = sessionId;
+        this.heartbeatCommandMessage = heartbeatCommandMessage;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("killSelf", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        killSelf_args args = new killSelf_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("command", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        command_args args = new command_args();
+        args.setSessionId(sessionId);
+        args.setHeartbeatCommandMessage(heartbeatCommandMessage);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -201,7 +217,7 @@ public class THeartbeatCommandEndPoint {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_killSelf();
+        return (new Client(prot)).recv_command();
       }
     }
 
@@ -219,7 +235,7 @@ public class THeartbeatCommandEndPoint {
 
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("changeEndPoint", new changeEndPoint());
-      processMap.put("killSelf", new killSelf());
+      processMap.put("command", new command());
       return processMap;
     }
 
@@ -238,28 +254,28 @@ public class THeartbeatCommandEndPoint {
 
       public changeEndPoint_result getResult(I iface, changeEndPoint_args args) throws org.apache.thrift.TException {
         changeEndPoint_result result = new changeEndPoint_result();
-        result.success = iface.changeEndPoint(args.host, args.port);
+        result.success = iface.changeEndPoint(args.sessionId, args.host, args.port);
         result.setSuccessIsSet(true);
         return result;
       }
     }
 
-    public static class killSelf<I extends Iface> extends org.apache.thrift.ProcessFunction<I, killSelf_args> {
-      public killSelf() {
-        super("killSelf");
+    public static class command<I extends Iface> extends org.apache.thrift.ProcessFunction<I, command_args> {
+      public command() {
+        super("command");
       }
 
-      public killSelf_args getEmptyArgsInstance() {
-        return new killSelf_args();
+      public command_args getEmptyArgsInstance() {
+        return new command_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public killSelf_result getResult(I iface, killSelf_args args) throws org.apache.thrift.TException {
-        killSelf_result result = new killSelf_result();
-        result.success = iface.killSelf();
+      public command_result getResult(I iface, command_args args) throws org.apache.thrift.TException {
+        command_result result = new command_result();
+        result.success = iface.command(args.sessionId, args.heartbeatCommandMessage);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -270,8 +286,9 @@ public class THeartbeatCommandEndPoint {
   public static class changeEndPoint_args implements org.apache.thrift.TBase<changeEndPoint_args, changeEndPoint_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("changeEndPoint_args");
 
-    private static final org.apache.thrift.protocol.TField HOST_FIELD_DESC = new org.apache.thrift.protocol.TField("host", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField PORT_FIELD_DESC = new org.apache.thrift.protocol.TField("port", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField SESSION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionId", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField HOST_FIELD_DESC = new org.apache.thrift.protocol.TField("host", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField PORT_FIELD_DESC = new org.apache.thrift.protocol.TField("port", org.apache.thrift.protocol.TType.I32, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -279,13 +296,15 @@ public class THeartbeatCommandEndPoint {
       schemes.put(TupleScheme.class, new changeEndPoint_argsTupleSchemeFactory());
     }
 
+    public String sessionId; // required
     public String host; // required
     public int port; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      HOST((short)1, "host"),
-      PORT((short)2, "port");
+      SESSION_ID((short)1, "sessionId"),
+      HOST((short)2, "host"),
+      PORT((short)3, "port");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -300,9 +319,11 @@ public class THeartbeatCommandEndPoint {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // HOST
+          case 1: // SESSION_ID
+            return SESSION_ID;
+          case 2: // HOST
             return HOST;
-          case 2: // PORT
+          case 3: // PORT
             return PORT;
           default:
             return null;
@@ -349,6 +370,8 @@ public class THeartbeatCommandEndPoint {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SESSION_ID, new org.apache.thrift.meta_data.FieldMetaData("sessionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.HOST, new org.apache.thrift.meta_data.FieldMetaData("host", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.PORT, new org.apache.thrift.meta_data.FieldMetaData("port", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -361,10 +384,12 @@ public class THeartbeatCommandEndPoint {
     }
 
     public changeEndPoint_args(
+      String sessionId,
       String host,
       int port)
     {
       this();
+      this.sessionId = sessionId;
       this.host = host;
       this.port = port;
       setPortIsSet(true);
@@ -375,6 +400,9 @@ public class THeartbeatCommandEndPoint {
      */
     public changeEndPoint_args(changeEndPoint_args other) {
       __isset_bitfield = other.__isset_bitfield;
+      if (other.isSetSessionId()) {
+        this.sessionId = other.sessionId;
+      }
       if (other.isSetHost()) {
         this.host = other.host;
       }
@@ -387,9 +415,34 @@ public class THeartbeatCommandEndPoint {
 
     @Override
     public void clear() {
+      this.sessionId = null;
       this.host = null;
       setPortIsSet(false);
       this.port = 0;
+    }
+
+    public String getSessionId() {
+      return this.sessionId;
+    }
+
+    public changeEndPoint_args setSessionId(String sessionId) {
+      this.sessionId = sessionId;
+      return this;
+    }
+
+    public void unsetSessionId() {
+      this.sessionId = null;
+    }
+
+    /** Returns true if field sessionId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSessionId() {
+      return this.sessionId != null;
+    }
+
+    public void setSessionIdIsSet(boolean value) {
+      if (!value) {
+        this.sessionId = null;
+      }
     }
 
     public String getHost() {
@@ -441,6 +494,14 @@ public class THeartbeatCommandEndPoint {
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case SESSION_ID:
+        if (value == null) {
+          unsetSessionId();
+        } else {
+          setSessionId((String)value);
+        }
+        break;
+
       case HOST:
         if (value == null) {
           unsetHost();
@@ -462,6 +523,9 @@ public class THeartbeatCommandEndPoint {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case SESSION_ID:
+        return getSessionId();
+
       case HOST:
         return getHost();
 
@@ -479,6 +543,8 @@ public class THeartbeatCommandEndPoint {
       }
 
       switch (field) {
+      case SESSION_ID:
+        return isSetSessionId();
       case HOST:
         return isSetHost();
       case PORT:
@@ -499,6 +565,15 @@ public class THeartbeatCommandEndPoint {
     public boolean equals(changeEndPoint_args that) {
       if (that == null)
         return false;
+
+      boolean this_present_sessionId = true && this.isSetSessionId();
+      boolean that_present_sessionId = true && that.isSetSessionId();
+      if (this_present_sessionId || that_present_sessionId) {
+        if (!(this_present_sessionId && that_present_sessionId))
+          return false;
+        if (!this.sessionId.equals(that.sessionId))
+          return false;
+      }
 
       boolean this_present_host = true && this.isSetHost();
       boolean that_present_host = true && that.isSetHost();
@@ -534,6 +609,16 @@ public class THeartbeatCommandEndPoint {
       int lastComparison = 0;
       changeEndPoint_args typedOther = (changeEndPoint_args)other;
 
+      lastComparison = Boolean.valueOf(isSetSessionId()).compareTo(typedOther.isSetSessionId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSessionId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sessionId, typedOther.sessionId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       lastComparison = Boolean.valueOf(isSetHost()).compareTo(typedOther.isSetHost());
       if (lastComparison != 0) {
         return lastComparison;
@@ -574,6 +659,14 @@ public class THeartbeatCommandEndPoint {
       StringBuilder sb = new StringBuilder("changeEndPoint_args(");
       boolean first = true;
 
+      sb.append("sessionId:");
+      if (this.sessionId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sessionId);
+      }
+      first = false;
+      if (!first) sb.append(", ");
       sb.append("host:");
       if (this.host == null) {
         sb.append("null");
@@ -630,7 +723,15 @@ public class THeartbeatCommandEndPoint {
             break;
           }
           switch (schemeField.id) {
-            case 1: // HOST
+            case 1: // SESSION_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sessionId = iprot.readString();
+                struct.setSessionIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // HOST
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.host = iprot.readString();
                 struct.setHostIsSet(true);
@@ -638,7 +739,7 @@ public class THeartbeatCommandEndPoint {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // PORT
+            case 3: // PORT
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.port = iprot.readI32();
                 struct.setPortIsSet(true);
@@ -661,6 +762,11 @@ public class THeartbeatCommandEndPoint {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.sessionId != null) {
+          oprot.writeFieldBegin(SESSION_ID_FIELD_DESC);
+          oprot.writeString(struct.sessionId);
+          oprot.writeFieldEnd();
+        }
         if (struct.host != null) {
           oprot.writeFieldBegin(HOST_FIELD_DESC);
           oprot.writeString(struct.host);
@@ -687,13 +793,19 @@ public class THeartbeatCommandEndPoint {
       public void write(org.apache.thrift.protocol.TProtocol prot, changeEndPoint_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetHost()) {
+        if (struct.isSetSessionId()) {
           optionals.set(0);
         }
-        if (struct.isSetPort()) {
+        if (struct.isSetHost()) {
           optionals.set(1);
         }
-        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetPort()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetSessionId()) {
+          oprot.writeString(struct.sessionId);
+        }
         if (struct.isSetHost()) {
           oprot.writeString(struct.host);
         }
@@ -705,12 +817,16 @@ public class THeartbeatCommandEndPoint {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, changeEndPoint_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(2);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
+          struct.sessionId = iprot.readString();
+          struct.setSessionIdIsSet(true);
+        }
+        if (incoming.get(1)) {
           struct.host = iprot.readString();
           struct.setHostIsSet(true);
         }
-        if (incoming.get(1)) {
+        if (incoming.get(2)) {
           struct.port = iprot.readI32();
           struct.setPortIsSet(true);
         }
@@ -1073,20 +1189,25 @@ public class THeartbeatCommandEndPoint {
 
   }
 
-  public static class killSelf_args implements org.apache.thrift.TBase<killSelf_args, killSelf_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("killSelf_args");
+  public static class command_args implements org.apache.thrift.TBase<command_args, command_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("command_args");
 
+    private static final org.apache.thrift.protocol.TField SESSION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionId", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField HEARTBEAT_COMMAND_MESSAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("heartbeatCommandMessage", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new killSelf_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new killSelf_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new command_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new command_argsTupleSchemeFactory());
     }
 
+    public String sessionId; // required
+    public HeartbeatCommandMessage heartbeatCommandMessage; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      SESSION_ID((short)1, "sessionId"),
+      HEARTBEAT_COMMAND_MESSAGE((short)2, "heartbeatCommandMessage");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1101,6 +1222,10 @@ public class THeartbeatCommandEndPoint {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // SESSION_ID
+            return SESSION_ID;
+          case 2: // HEARTBEAT_COMMAND_MESSAGE
+            return HEARTBEAT_COMMAND_MESSAGE;
           default:
             return null;
         }
@@ -1139,37 +1264,130 @@ public class THeartbeatCommandEndPoint {
         return _fieldName;
       }
     }
+
+    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SESSION_ID, new org.apache.thrift.meta_data.FieldMetaData("sessionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.HEARTBEAT_COMMAND_MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("heartbeatCommandMessage", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, HeartbeatCommandMessage.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(killSelf_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(command_args.class, metaDataMap);
     }
 
-    public killSelf_args() {
+    public command_args() {
+    }
+
+    public command_args(
+      String sessionId,
+      HeartbeatCommandMessage heartbeatCommandMessage)
+    {
+      this();
+      this.sessionId = sessionId;
+      this.heartbeatCommandMessage = heartbeatCommandMessage;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public killSelf_args(killSelf_args other) {
+    public command_args(command_args other) {
+      if (other.isSetSessionId()) {
+        this.sessionId = other.sessionId;
+      }
+      if (other.isSetHeartbeatCommandMessage()) {
+        this.heartbeatCommandMessage = new HeartbeatCommandMessage(other.heartbeatCommandMessage);
+      }
     }
 
-    public killSelf_args deepCopy() {
-      return new killSelf_args(this);
+    public command_args deepCopy() {
+      return new command_args(this);
     }
 
     @Override
     public void clear() {
+      this.sessionId = null;
+      this.heartbeatCommandMessage = null;
+    }
+
+    public String getSessionId() {
+      return this.sessionId;
+    }
+
+    public command_args setSessionId(String sessionId) {
+      this.sessionId = sessionId;
+      return this;
+    }
+
+    public void unsetSessionId() {
+      this.sessionId = null;
+    }
+
+    /** Returns true if field sessionId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSessionId() {
+      return this.sessionId != null;
+    }
+
+    public void setSessionIdIsSet(boolean value) {
+      if (!value) {
+        this.sessionId = null;
+      }
+    }
+
+    public HeartbeatCommandMessage getHeartbeatCommandMessage() {
+      return this.heartbeatCommandMessage;
+    }
+
+    public command_args setHeartbeatCommandMessage(HeartbeatCommandMessage heartbeatCommandMessage) {
+      this.heartbeatCommandMessage = heartbeatCommandMessage;
+      return this;
+    }
+
+    public void unsetHeartbeatCommandMessage() {
+      this.heartbeatCommandMessage = null;
+    }
+
+    /** Returns true if field heartbeatCommandMessage is set (has been assigned a value) and false otherwise */
+    public boolean isSetHeartbeatCommandMessage() {
+      return this.heartbeatCommandMessage != null;
+    }
+
+    public void setHeartbeatCommandMessageIsSet(boolean value) {
+      if (!value) {
+        this.heartbeatCommandMessage = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case SESSION_ID:
+        if (value == null) {
+          unsetSessionId();
+        } else {
+          setSessionId((String)value);
+        }
+        break;
+
+      case HEARTBEAT_COMMAND_MESSAGE:
+        if (value == null) {
+          unsetHeartbeatCommandMessage();
+        } else {
+          setHeartbeatCommandMessage((HeartbeatCommandMessage)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case SESSION_ID:
+        return getSessionId();
+
+      case HEARTBEAT_COMMAND_MESSAGE:
+        return getHeartbeatCommandMessage();
+
       }
       throw new IllegalStateException();
     }
@@ -1181,6 +1399,10 @@ public class THeartbeatCommandEndPoint {
       }
 
       switch (field) {
+      case SESSION_ID:
+        return isSetSessionId();
+      case HEARTBEAT_COMMAND_MESSAGE:
+        return isSetHeartbeatCommandMessage();
       }
       throw new IllegalStateException();
     }
@@ -1189,14 +1411,32 @@ public class THeartbeatCommandEndPoint {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof killSelf_args)
-        return this.equals((killSelf_args)that);
+      if (that instanceof command_args)
+        return this.equals((command_args)that);
       return false;
     }
 
-    public boolean equals(killSelf_args that) {
+    public boolean equals(command_args that) {
       if (that == null)
         return false;
+
+      boolean this_present_sessionId = true && this.isSetSessionId();
+      boolean that_present_sessionId = true && that.isSetSessionId();
+      if (this_present_sessionId || that_present_sessionId) {
+        if (!(this_present_sessionId && that_present_sessionId))
+          return false;
+        if (!this.sessionId.equals(that.sessionId))
+          return false;
+      }
+
+      boolean this_present_heartbeatCommandMessage = true && this.isSetHeartbeatCommandMessage();
+      boolean that_present_heartbeatCommandMessage = true && that.isSetHeartbeatCommandMessage();
+      if (this_present_heartbeatCommandMessage || that_present_heartbeatCommandMessage) {
+        if (!(this_present_heartbeatCommandMessage && that_present_heartbeatCommandMessage))
+          return false;
+        if (!this.heartbeatCommandMessage.equals(that.heartbeatCommandMessage))
+          return false;
+      }
 
       return true;
     }
@@ -1206,14 +1446,34 @@ public class THeartbeatCommandEndPoint {
       return 0;
     }
 
-    public int compareTo(killSelf_args other) {
+    public int compareTo(command_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      killSelf_args typedOther = (killSelf_args)other;
+      command_args typedOther = (command_args)other;
 
+      lastComparison = Boolean.valueOf(isSetSessionId()).compareTo(typedOther.isSetSessionId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSessionId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sessionId, typedOther.sessionId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetHeartbeatCommandMessage()).compareTo(typedOther.isSetHeartbeatCommandMessage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHeartbeatCommandMessage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.heartbeatCommandMessage, typedOther.heartbeatCommandMessage);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1231,9 +1491,24 @@ public class THeartbeatCommandEndPoint {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("killSelf_args(");
+      StringBuilder sb = new StringBuilder("command_args(");
       boolean first = true;
 
+      sb.append("sessionId:");
+      if (this.sessionId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sessionId);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("heartbeatCommandMessage:");
+      if (this.heartbeatCommandMessage == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.heartbeatCommandMessage);
+      }
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -1241,6 +1516,9 @@ public class THeartbeatCommandEndPoint {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
+      if (heartbeatCommandMessage != null) {
+        heartbeatCommandMessage.validate();
+      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -1259,15 +1537,15 @@ public class THeartbeatCommandEndPoint {
       }
     }
 
-    private static class killSelf_argsStandardSchemeFactory implements SchemeFactory {
-      public killSelf_argsStandardScheme getScheme() {
-        return new killSelf_argsStandardScheme();
+    private static class command_argsStandardSchemeFactory implements SchemeFactory {
+      public command_argsStandardScheme getScheme() {
+        return new command_argsStandardScheme();
       }
     }
 
-    private static class killSelf_argsStandardScheme extends StandardScheme<killSelf_args> {
+    private static class command_argsStandardScheme extends StandardScheme<command_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, killSelf_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, command_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1277,6 +1555,23 @@ public class THeartbeatCommandEndPoint {
             break;
           }
           switch (schemeField.id) {
+            case 1: // SESSION_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sessionId = iprot.readString();
+                struct.setSessionIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // HEARTBEAT_COMMAND_MESSAGE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.heartbeatCommandMessage = new HeartbeatCommandMessage();
+                struct.heartbeatCommandMessage.read(iprot);
+                struct.setHeartbeatCommandMessageIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -1288,46 +1583,80 @@ public class THeartbeatCommandEndPoint {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, killSelf_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, command_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.sessionId != null) {
+          oprot.writeFieldBegin(SESSION_ID_FIELD_DESC);
+          oprot.writeString(struct.sessionId);
+          oprot.writeFieldEnd();
+        }
+        if (struct.heartbeatCommandMessage != null) {
+          oprot.writeFieldBegin(HEARTBEAT_COMMAND_MESSAGE_FIELD_DESC);
+          struct.heartbeatCommandMessage.write(oprot);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
 
     }
 
-    private static class killSelf_argsTupleSchemeFactory implements SchemeFactory {
-      public killSelf_argsTupleScheme getScheme() {
-        return new killSelf_argsTupleScheme();
+    private static class command_argsTupleSchemeFactory implements SchemeFactory {
+      public command_argsTupleScheme getScheme() {
+        return new command_argsTupleScheme();
       }
     }
 
-    private static class killSelf_argsTupleScheme extends TupleScheme<killSelf_args> {
+    private static class command_argsTupleScheme extends TupleScheme<command_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, killSelf_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, command_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSessionId()) {
+          optionals.set(0);
+        }
+        if (struct.isSetHeartbeatCommandMessage()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSessionId()) {
+          oprot.writeString(struct.sessionId);
+        }
+        if (struct.isSetHeartbeatCommandMessage()) {
+          struct.heartbeatCommandMessage.write(oprot);
+        }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, killSelf_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, command_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.sessionId = iprot.readString();
+          struct.setSessionIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.heartbeatCommandMessage = new HeartbeatCommandMessage();
+          struct.heartbeatCommandMessage.read(iprot);
+          struct.setHeartbeatCommandMessageIsSet(true);
+        }
       }
     }
 
   }
 
-  public static class killSelf_result implements org.apache.thrift.TBase<killSelf_result, killSelf_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("killSelf_result");
+  public static class command_result implements org.apache.thrift.TBase<command_result, command_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("command_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new killSelf_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new killSelf_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new command_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new command_resultTupleSchemeFactory());
     }
 
     public boolean success; // required
@@ -1399,13 +1728,13 @@ public class THeartbeatCommandEndPoint {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(killSelf_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(command_result.class, metaDataMap);
     }
 
-    public killSelf_result() {
+    public command_result() {
     }
 
-    public killSelf_result(
+    public command_result(
       boolean success)
     {
       this();
@@ -1416,13 +1745,13 @@ public class THeartbeatCommandEndPoint {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public killSelf_result(killSelf_result other) {
+    public command_result(command_result other) {
       __isset_bitfield = other.__isset_bitfield;
       this.success = other.success;
     }
 
-    public killSelf_result deepCopy() {
-      return new killSelf_result(this);
+    public command_result deepCopy() {
+      return new command_result(this);
     }
 
     @Override
@@ -1435,7 +1764,7 @@ public class THeartbeatCommandEndPoint {
       return this.success;
     }
 
-    public killSelf_result setSuccess(boolean success) {
+    public command_result setSuccess(boolean success) {
       this.success = success;
       setSuccessIsSet(true);
       return this;
@@ -1493,12 +1822,12 @@ public class THeartbeatCommandEndPoint {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof killSelf_result)
-        return this.equals((killSelf_result)that);
+      if (that instanceof command_result)
+        return this.equals((command_result)that);
       return false;
     }
 
-    public boolean equals(killSelf_result that) {
+    public boolean equals(command_result that) {
       if (that == null)
         return false;
 
@@ -1519,13 +1848,13 @@ public class THeartbeatCommandEndPoint {
       return 0;
     }
 
-    public int compareTo(killSelf_result other) {
+    public int compareTo(command_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      killSelf_result typedOther = (killSelf_result)other;
+      command_result typedOther = (command_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -1554,7 +1883,7 @@ public class THeartbeatCommandEndPoint {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("killSelf_result(");
+      StringBuilder sb = new StringBuilder("command_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -1587,15 +1916,15 @@ public class THeartbeatCommandEndPoint {
       }
     }
 
-    private static class killSelf_resultStandardSchemeFactory implements SchemeFactory {
-      public killSelf_resultStandardScheme getScheme() {
-        return new killSelf_resultStandardScheme();
+    private static class command_resultStandardSchemeFactory implements SchemeFactory {
+      public command_resultStandardScheme getScheme() {
+        return new command_resultStandardScheme();
       }
     }
 
-    private static class killSelf_resultStandardScheme extends StandardScheme<killSelf_result> {
+    private static class command_resultStandardScheme extends StandardScheme<command_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, killSelf_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, command_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1624,7 +1953,7 @@ public class THeartbeatCommandEndPoint {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, killSelf_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, command_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1639,16 +1968,16 @@ public class THeartbeatCommandEndPoint {
 
     }
 
-    private static class killSelf_resultTupleSchemeFactory implements SchemeFactory {
-      public killSelf_resultTupleScheme getScheme() {
-        return new killSelf_resultTupleScheme();
+    private static class command_resultTupleSchemeFactory implements SchemeFactory {
+      public command_resultTupleScheme getScheme() {
+        return new command_resultTupleScheme();
       }
     }
 
-    private static class killSelf_resultTupleScheme extends TupleScheme<killSelf_result> {
+    private static class command_resultTupleScheme extends TupleScheme<command_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, killSelf_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, command_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -1661,7 +1990,7 @@ public class THeartbeatCommandEndPoint {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, killSelf_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, command_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

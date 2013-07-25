@@ -19,7 +19,7 @@ import org.springframework.yarn.thrift.hb.HeartbeatNode.NodeState;
 
 /**
  * Adapter implementation of {@link HeartbeatMasterClient} providing
- * stub methods for the interface. This is useful is one part of the
+ * stub methods for the interface. This is useful if one part of the
  * interface needs to be implemented or generally if it is not
  * appropriate to expose whole interface as public methods.
  *

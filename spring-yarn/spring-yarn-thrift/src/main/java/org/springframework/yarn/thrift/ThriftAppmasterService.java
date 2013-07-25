@@ -15,11 +15,8 @@
  */
 package org.springframework.yarn.thrift;
 
-import java.io.IOException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.yarn.am.AppmasterService;
+import org.springframework.yarn.support.NetworkUtils;
 import org.springframework.yarn.thrift.support.ThriftObjectSupport;
 
 /**
@@ -28,24 +25,8 @@ import org.springframework.yarn.thrift.support.ThriftObjectSupport;
  *
  * @author Janne Valkealahti
  *
- * @param <T>
  */
-public abstract class ThriftAppmasterService<T> extends ThriftObjectSupport implements AppmasterService {
-
-	private final static Log log = LogFactory.getLog(ThriftAppmasterService.class);
-
-	@Override
-	protected void doStart() {
-		try {
-			startThriftServer();
-		} catch (Exception e) {
-			log.error("Failed to create transport", e);
-		}
-	}
-
-	@Override
-	protected void doStop() {
-	}
+public abstract class ThriftAppmasterService extends ThriftObjectSupport implements AppmasterService {
 
 	@Override
 	public int getPort() {
@@ -59,8 +40,8 @@ public abstract class ThriftAppmasterService<T> extends ThriftObjectSupport impl
 
 	@Override
 	public String getHost() {
-		return "localhost";
+		// TODO: Not really optimal solution, get from factory/socket
+		return NetworkUtils.getDefaultAddress();
 	}
-
 
 }

@@ -56,6 +56,24 @@ public abstract class ThriftObjectSupport extends LifecycleObjectSupport {
 	/** Flag if thrift transport is started */
 	private volatile boolean thriftServerStarted;
 
+	/** Flag if thrift server is started automatically */
+	private volatile boolean thriftServerAutostart;
+
+	/** Lifecycle lock for thrift server */
+	private volatile Object lock = new Object();
+
+	@Override
+	protected void doStart() {
+		super.doStart();
+		if (thriftServerAutostart) {
+			try {
+				startThriftServer();
+			} catch (Exception e) {
+				log.error("Failed to start thrift server", e);
+			}
+		}
+	}
+
 	/**
 	 * Gets the thrift server port.
 	 *
@@ -96,6 +114,24 @@ public abstract class ThriftObjectSupport extends LifecycleObjectSupport {
 	}
 
 	/**
+	 * Checks if thrift server is started automatically.
+	 *
+	 * @return true, if is thrift server autostart is enabled
+	 */
+	public boolean isThriftServerAutostart() {
+		return thriftServerAutostart;
+	}
+
+	/**
+	 * Sets the thrift server autostart.
+	 *
+	 * @param thriftServerAutostart the new thrift server autostart
+	 */
+	public void setThriftServerAutostart(boolean thriftServerAutostart) {
+		this.thriftServerAutostart = thriftServerAutostart;
+	}
+
+	/**
 	 * Gets the processor.
 	 *
 	 * @return the processor
@@ -119,19 +155,24 @@ public abstract class ThriftObjectSupport extends LifecycleObjectSupport {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected void startThriftServer() throws Exception {
-		TaskExecutor taskExecutor = getTaskExecutor();
-		Assert.notNull(taskExecutor, "Task Executor must be available");
-
-		final TServer server = createThriftServer();
-		log.info("Created thirft server " + server);
-
-		// serve is blocking so pass it to executor
-		taskExecutor.execute(new Runnable() {
-			@Override
-			public void run() {
-				server.serve();
+		synchronized (lock) {
+			if (isThriftServerStarted()) {
+				log.info("Thrift server allready started, bailing out.");
+				return;
 			}
-		});
+			TaskExecutor taskExecutor = getTaskExecutor();
+			Assert.notNull(taskExecutor, "Task Executor must be available");
+
+			final TServer server = createThriftServer();
+
+			// serve is blocking so pass it to executor
+			taskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					server.serve();
+				}
+			});
+		}
 	}
 
 	/**

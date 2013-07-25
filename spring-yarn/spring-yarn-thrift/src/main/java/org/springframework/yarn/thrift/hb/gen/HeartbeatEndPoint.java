@@ -30,22 +30,23 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class THeartbeatEndPoint {
+public class HeartbeatEndPoint {
 
   public interface Iface {
 
     /**
      * Accept Heartbeat msg
      * 
-     * @param hbMsg
+     * @param sessionId
+     * @param heartbeatMessage
      */
-    public boolean acceptHeartbeat(HeartbeatMsg hbMsg) throws org.apache.thrift.TException;
+    public boolean acceptHeartbeat(String sessionId, HeartbeatMessage heartbeatMessage) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void acceptHeartbeat(HeartbeatMsg hbMsg, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.acceptHeartbeat_call> resultHandler) throws org.apache.thrift.TException;
+    public void acceptHeartbeat(String sessionId, HeartbeatMessage heartbeatMessage, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.acceptHeartbeat_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -69,16 +70,17 @@ public class THeartbeatEndPoint {
       super(iprot, oprot);
     }
 
-    public boolean acceptHeartbeat(HeartbeatMsg hbMsg) throws org.apache.thrift.TException
+    public boolean acceptHeartbeat(String sessionId, HeartbeatMessage heartbeatMessage) throws org.apache.thrift.TException
     {
-      send_acceptHeartbeat(hbMsg);
+      send_acceptHeartbeat(sessionId, heartbeatMessage);
       return recv_acceptHeartbeat();
     }
 
-    public void send_acceptHeartbeat(HeartbeatMsg hbMsg) throws org.apache.thrift.TException
+    public void send_acceptHeartbeat(String sessionId, HeartbeatMessage heartbeatMessage) throws org.apache.thrift.TException
     {
       acceptHeartbeat_args args = new acceptHeartbeat_args();
-      args.setHbMsg(hbMsg);
+      args.setSessionId(sessionId);
+      args.setHeartbeatMessage(heartbeatMessage);
       sendBase("acceptHeartbeat", args);
     }
 
@@ -110,24 +112,27 @@ public class THeartbeatEndPoint {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void acceptHeartbeat(HeartbeatMsg hbMsg, org.apache.thrift.async.AsyncMethodCallback<acceptHeartbeat_call> resultHandler) throws org.apache.thrift.TException {
+    public void acceptHeartbeat(String sessionId, HeartbeatMessage heartbeatMessage, org.apache.thrift.async.AsyncMethodCallback<acceptHeartbeat_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      acceptHeartbeat_call method_call = new acceptHeartbeat_call(hbMsg, resultHandler, this, ___protocolFactory, ___transport);
+      acceptHeartbeat_call method_call = new acceptHeartbeat_call(sessionId, heartbeatMessage, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class acceptHeartbeat_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private HeartbeatMsg hbMsg;
-      public acceptHeartbeat_call(HeartbeatMsg hbMsg, org.apache.thrift.async.AsyncMethodCallback<acceptHeartbeat_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String sessionId;
+      private HeartbeatMessage heartbeatMessage;
+      public acceptHeartbeat_call(String sessionId, HeartbeatMessage heartbeatMessage, org.apache.thrift.async.AsyncMethodCallback<acceptHeartbeat_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.hbMsg = hbMsg;
+        this.sessionId = sessionId;
+        this.heartbeatMessage = heartbeatMessage;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("acceptHeartbeat", org.apache.thrift.protocol.TMessageType.CALL, 0));
         acceptHeartbeat_args args = new acceptHeartbeat_args();
-        args.setHbMsg(hbMsg);
+        args.setSessionId(sessionId);
+        args.setHeartbeatMessage(heartbeatMessage);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -174,7 +179,7 @@ public class THeartbeatEndPoint {
 
       public acceptHeartbeat_result getResult(I iface, acceptHeartbeat_args args) throws org.apache.thrift.TException {
         acceptHeartbeat_result result = new acceptHeartbeat_result();
-        result.success = iface.acceptHeartbeat(args.hbMsg);
+        result.success = iface.acceptHeartbeat(args.sessionId, args.heartbeatMessage);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -185,7 +190,8 @@ public class THeartbeatEndPoint {
   public static class acceptHeartbeat_args implements org.apache.thrift.TBase<acceptHeartbeat_args, acceptHeartbeat_args._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("acceptHeartbeat_args");
 
-    private static final org.apache.thrift.protocol.TField HB_MSG_FIELD_DESC = new org.apache.thrift.protocol.TField("hbMsg", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField SESSION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionId", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField HEARTBEAT_MESSAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("heartbeatMessage", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -193,11 +199,13 @@ public class THeartbeatEndPoint {
       schemes.put(TupleScheme.class, new acceptHeartbeat_argsTupleSchemeFactory());
     }
 
-    public HeartbeatMsg hbMsg; // required
+    public String sessionId; // required
+    public HeartbeatMessage heartbeatMessage; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      HB_MSG((short)1, "hbMsg");
+      SESSION_ID((short)1, "sessionId"),
+      HEARTBEAT_MESSAGE((short)2, "heartbeatMessage");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -212,8 +220,10 @@ public class THeartbeatEndPoint {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // HB_MSG
-            return HB_MSG;
+          case 1: // SESSION_ID
+            return SESSION_ID;
+          case 2: // HEARTBEAT_MESSAGE
+            return HEARTBEAT_MESSAGE;
           default:
             return null;
         }
@@ -257,8 +267,10 @@ public class THeartbeatEndPoint {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HB_MSG, new org.apache.thrift.meta_data.FieldMetaData("hbMsg", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, HeartbeatMsg.class)));
+      tmpMap.put(_Fields.SESSION_ID, new org.apache.thrift.meta_data.FieldMetaData("sessionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.HEARTBEAT_MESSAGE, new org.apache.thrift.meta_data.FieldMetaData("heartbeatMessage", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, HeartbeatMessage.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(acceptHeartbeat_args.class, metaDataMap);
     }
@@ -267,18 +279,23 @@ public class THeartbeatEndPoint {
     }
 
     public acceptHeartbeat_args(
-      HeartbeatMsg hbMsg)
+      String sessionId,
+      HeartbeatMessage heartbeatMessage)
     {
       this();
-      this.hbMsg = hbMsg;
+      this.sessionId = sessionId;
+      this.heartbeatMessage = heartbeatMessage;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public acceptHeartbeat_args(acceptHeartbeat_args other) {
-      if (other.isSetHbMsg()) {
-        this.hbMsg = new HeartbeatMsg(other.hbMsg);
+      if (other.isSetSessionId()) {
+        this.sessionId = other.sessionId;
+      }
+      if (other.isSetHeartbeatMessage()) {
+        this.heartbeatMessage = new HeartbeatMessage(other.heartbeatMessage);
       }
     }
 
@@ -288,40 +305,73 @@ public class THeartbeatEndPoint {
 
     @Override
     public void clear() {
-      this.hbMsg = null;
+      this.sessionId = null;
+      this.heartbeatMessage = null;
     }
 
-    public HeartbeatMsg getHbMsg() {
-      return this.hbMsg;
+    public String getSessionId() {
+      return this.sessionId;
     }
 
-    public acceptHeartbeat_args setHbMsg(HeartbeatMsg hbMsg) {
-      this.hbMsg = hbMsg;
+    public acceptHeartbeat_args setSessionId(String sessionId) {
+      this.sessionId = sessionId;
       return this;
     }
 
-    public void unsetHbMsg() {
-      this.hbMsg = null;
+    public void unsetSessionId() {
+      this.sessionId = null;
     }
 
-    /** Returns true if field hbMsg is set (has been assigned a value) and false otherwise */
-    public boolean isSetHbMsg() {
-      return this.hbMsg != null;
+    /** Returns true if field sessionId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSessionId() {
+      return this.sessionId != null;
     }
 
-    public void setHbMsgIsSet(boolean value) {
+    public void setSessionIdIsSet(boolean value) {
       if (!value) {
-        this.hbMsg = null;
+        this.sessionId = null;
+      }
+    }
+
+    public HeartbeatMessage getHeartbeatMessage() {
+      return this.heartbeatMessage;
+    }
+
+    public acceptHeartbeat_args setHeartbeatMessage(HeartbeatMessage heartbeatMessage) {
+      this.heartbeatMessage = heartbeatMessage;
+      return this;
+    }
+
+    public void unsetHeartbeatMessage() {
+      this.heartbeatMessage = null;
+    }
+
+    /** Returns true if field heartbeatMessage is set (has been assigned a value) and false otherwise */
+    public boolean isSetHeartbeatMessage() {
+      return this.heartbeatMessage != null;
+    }
+
+    public void setHeartbeatMessageIsSet(boolean value) {
+      if (!value) {
+        this.heartbeatMessage = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case HB_MSG:
+      case SESSION_ID:
         if (value == null) {
-          unsetHbMsg();
+          unsetSessionId();
         } else {
-          setHbMsg((HeartbeatMsg)value);
+          setSessionId((String)value);
+        }
+        break;
+
+      case HEARTBEAT_MESSAGE:
+        if (value == null) {
+          unsetHeartbeatMessage();
+        } else {
+          setHeartbeatMessage((HeartbeatMessage)value);
         }
         break;
 
@@ -330,8 +380,11 @@ public class THeartbeatEndPoint {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case HB_MSG:
-        return getHbMsg();
+      case SESSION_ID:
+        return getSessionId();
+
+      case HEARTBEAT_MESSAGE:
+        return getHeartbeatMessage();
 
       }
       throw new IllegalStateException();
@@ -344,8 +397,10 @@ public class THeartbeatEndPoint {
       }
 
       switch (field) {
-      case HB_MSG:
-        return isSetHbMsg();
+      case SESSION_ID:
+        return isSetSessionId();
+      case HEARTBEAT_MESSAGE:
+        return isSetHeartbeatMessage();
       }
       throw new IllegalStateException();
     }
@@ -363,12 +418,21 @@ public class THeartbeatEndPoint {
       if (that == null)
         return false;
 
-      boolean this_present_hbMsg = true && this.isSetHbMsg();
-      boolean that_present_hbMsg = true && that.isSetHbMsg();
-      if (this_present_hbMsg || that_present_hbMsg) {
-        if (!(this_present_hbMsg && that_present_hbMsg))
+      boolean this_present_sessionId = true && this.isSetSessionId();
+      boolean that_present_sessionId = true && that.isSetSessionId();
+      if (this_present_sessionId || that_present_sessionId) {
+        if (!(this_present_sessionId && that_present_sessionId))
           return false;
-        if (!this.hbMsg.equals(that.hbMsg))
+        if (!this.sessionId.equals(that.sessionId))
+          return false;
+      }
+
+      boolean this_present_heartbeatMessage = true && this.isSetHeartbeatMessage();
+      boolean that_present_heartbeatMessage = true && that.isSetHeartbeatMessage();
+      if (this_present_heartbeatMessage || that_present_heartbeatMessage) {
+        if (!(this_present_heartbeatMessage && that_present_heartbeatMessage))
+          return false;
+        if (!this.heartbeatMessage.equals(that.heartbeatMessage))
           return false;
       }
 
@@ -388,12 +452,22 @@ public class THeartbeatEndPoint {
       int lastComparison = 0;
       acceptHeartbeat_args typedOther = (acceptHeartbeat_args)other;
 
-      lastComparison = Boolean.valueOf(isSetHbMsg()).compareTo(typedOther.isSetHbMsg());
+      lastComparison = Boolean.valueOf(isSetSessionId()).compareTo(typedOther.isSetSessionId());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetHbMsg()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hbMsg, typedOther.hbMsg);
+      if (isSetSessionId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sessionId, typedOther.sessionId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetHeartbeatMessage()).compareTo(typedOther.isSetHeartbeatMessage());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetHeartbeatMessage()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.heartbeatMessage, typedOther.heartbeatMessage);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -418,11 +492,19 @@ public class THeartbeatEndPoint {
       StringBuilder sb = new StringBuilder("acceptHeartbeat_args(");
       boolean first = true;
 
-      sb.append("hbMsg:");
-      if (this.hbMsg == null) {
+      sb.append("sessionId:");
+      if (this.sessionId == null) {
         sb.append("null");
       } else {
-        sb.append(this.hbMsg);
+        sb.append(this.sessionId);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("heartbeatMessage:");
+      if (this.heartbeatMessage == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.heartbeatMessage);
       }
       first = false;
       sb.append(")");
@@ -432,8 +514,8 @@ public class THeartbeatEndPoint {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
-      if (hbMsg != null) {
-        hbMsg.validate();
+      if (heartbeatMessage != null) {
+        heartbeatMessage.validate();
       }
     }
 
@@ -471,11 +553,19 @@ public class THeartbeatEndPoint {
             break;
           }
           switch (schemeField.id) {
-            case 1: // HB_MSG
+            case 1: // SESSION_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sessionId = iprot.readString();
+                struct.setSessionIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // HEARTBEAT_MESSAGE
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.hbMsg = new HeartbeatMsg();
-                struct.hbMsg.read(iprot);
-                struct.setHbMsgIsSet(true);
+                struct.heartbeatMessage = new HeartbeatMessage();
+                struct.heartbeatMessage.read(iprot);
+                struct.setHeartbeatMessageIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -495,9 +585,14 @@ public class THeartbeatEndPoint {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.hbMsg != null) {
-          oprot.writeFieldBegin(HB_MSG_FIELD_DESC);
-          struct.hbMsg.write(oprot);
+        if (struct.sessionId != null) {
+          oprot.writeFieldBegin(SESSION_ID_FIELD_DESC);
+          oprot.writeString(struct.sessionId);
+          oprot.writeFieldEnd();
+        }
+        if (struct.heartbeatMessage != null) {
+          oprot.writeFieldBegin(HEARTBEAT_MESSAGE_FIELD_DESC);
+          struct.heartbeatMessage.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -518,23 +613,33 @@ public class THeartbeatEndPoint {
       public void write(org.apache.thrift.protocol.TProtocol prot, acceptHeartbeat_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetHbMsg()) {
+        if (struct.isSetSessionId()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetHbMsg()) {
-          struct.hbMsg.write(oprot);
+        if (struct.isSetHeartbeatMessage()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSessionId()) {
+          oprot.writeString(struct.sessionId);
+        }
+        if (struct.isSetHeartbeatMessage()) {
+          struct.heartbeatMessage.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, acceptHeartbeat_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
-          struct.hbMsg = new HeartbeatMsg();
-          struct.hbMsg.read(iprot);
-          struct.setHbMsgIsSet(true);
+          struct.sessionId = iprot.readString();
+          struct.setSessionIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.heartbeatMessage = new HeartbeatMessage();
+          struct.heartbeatMessage.read(iprot);
+          struct.setHeartbeatMessageIsSet(true);
         }
       }
     }

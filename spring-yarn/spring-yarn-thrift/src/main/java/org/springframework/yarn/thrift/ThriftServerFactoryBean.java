@@ -287,13 +287,30 @@ public class ThriftServerFactoryBean implements InitializingBean, FactoryBean<TS
 	}
 
 	/**
-	 * The Enum ServerType.
+	 * Server types supported by {@link ThriftServerFactoryBean}.
 	 */
 	public enum ServerType {
+
+		/**
+		 * Server type of {@link TThreadPoolServer}.
+		 */
 		BLOCK_DEFAULT,
+
+		/**
+		 * Server type of {@link TNonblockingServer}.
+		 */
 		NONBLOCK_NB,
+
+		/**
+		 * Server type of {@link THsHaServer}.
+		 */
 		NONBLOCK_HSHA,
+
+		/**
+		 * Server type of {@link TThreadedSelectorServer}.
+		 */
 		NONBLOCK_TS
+
 	}
 
 }
