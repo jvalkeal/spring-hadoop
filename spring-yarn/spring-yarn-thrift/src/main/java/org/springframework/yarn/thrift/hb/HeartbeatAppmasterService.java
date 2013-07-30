@@ -134,17 +134,13 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService implements
 
 		ConcurrentHashMap<HeartbeatNode, NodeState> mTemp = new ConcurrentHashMap<HeartbeatNode, NodeState>();
 		ConcurrentHashMap<HeartbeatNode, NodeState> m = nodeRegistry.putIfAbsent(nodeType, mTemp);
-
 		if (m == null) {
 			m = mTemp;
 		}
-
 		long now = System.currentTimeMillis();
 		NodeState nsTemp = new NodeState();
 		HeartbeatNode hKey = new HeartbeatNode(nodeId, nodeType);
 		NodeState ns = m.putIfAbsent(hKey, nsTemp);
-
-		// check if this is a first heartbeat
 		boolean isFirst = false;
 		if (ns == null) {
 			ns = nsTemp;
@@ -154,11 +150,11 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService implements
 		ns.host = heartbeatMessage.getHost();
 		ns.port = heartbeatMessage.getCommandPort();
 		ns.nodeInfo = heartbeatMessage.getNodeInfo();
-
 		// notify node up
 		if (isFirst) {
 			stateListener.nodeUp(hKey, ns);
 		}
+
 		return true;
 	}
 
@@ -174,9 +170,11 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService implements
 	}
 
 	private void sendCommandViaThrift(String host, int port, final HeartbeatCommandMessage heartbeatCommandMessage) throws Exception {
+
 		TTransport transport = new TFramedTransport(new TSocket(host, port, 2000));
 		transport.open();
 		TBinaryProtocol protocol = new TBinaryProtocol(transport);
+
 		ThriftTemplate<HeartbeatCommandEndPoint.Client> template = new ThriftTemplate<HeartbeatCommandEndPoint.Client>(
 				HeartbeatCommandEndPoint.class, protocol);
 		template.afterPropertiesSet();
@@ -351,5 +349,22 @@ public class HeartbeatAppmasterService extends ThriftAppmasterService implements
 			});
 		}
 	}
+
+//	private static class NodeRegistry {
+//
+//		private final ConcurrentHashMap<NodeType, ConcurrentHashMap<HeartbeatNode, NodeState>> registry =
+//				new ConcurrentHashMap<NodeType, ConcurrentHashMap<HeartbeatNode, NodeState>>();
+//
+//		public NodeRegistry(NodeType... nodeTypes) {
+//			for (NodeType nodeType : nodeTypes) {
+//				registry.put(nodeType, new ConcurrentHashMap<HeartbeatNode, NodeState>());
+//			}
+//		}
+//
+//		public void put(NodeType nodeType) {
+////			ConcurrentHashMap<HeartbeatNode, NodeState> map = registry.get(nodeType);
+//		}
+//
+//	}
 
 }
