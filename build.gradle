@@ -786,6 +786,7 @@ if (gradle.ext.mr2) {
 			compile("org.apache.hadoop:hadoop-common:$hadoopVersion") { dep ->
 				exclude module: "junit"
 			}
+			testCompile project(":spring-yarn:spring-yarn-test-core")
 		}
 	}
 
