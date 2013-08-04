@@ -66,17 +66,20 @@ public class SpringYarnConfigurationTests {
 
 		@Override
 		protected void configure(YarnConfigBuilder config) throws Exception {
-			AnnotationBuilder<YarnConfiguration> and = config
+			config
 				.withResource("classpath:/test-site-1.xml")
-				.withResource("classpath:/test-site-2.xml")
-				.withProperties().add("foo", "jee").and();
+				.withProperties().add("foo", "jee").and()
+				.withResource("classpath:/test-site-2.xml");
 
+			int foo = 1;
+			foo = 2;
 				//.withProperties()
 				//	.key().value()
 		}
 
 		@Override
 		protected void configure(YarnResourceLocalizerBuilder localizer) {
+//			localizer.
 		}
 
 	}

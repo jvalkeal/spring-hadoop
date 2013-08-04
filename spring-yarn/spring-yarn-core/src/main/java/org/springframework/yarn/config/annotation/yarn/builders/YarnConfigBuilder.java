@@ -32,9 +32,10 @@ import org.springframework.yarn.configuration.ConfigurationFactoryBean;
  *
  * @author Janne Valkealahti
  *
+ * extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, AnnotationBuilder<YarnConfiguration>>
  */
 public final class YarnConfigBuilder
-		extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, AnnotationBuilder<YarnConfiguration>> {
+		extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, YarnConfigBuilder> {
 
 	private Set<Resource> resources = new HashSet<Resource>();
 	private Properties properties = new Properties();
@@ -64,11 +65,15 @@ public final class YarnConfigBuilder
 		return properties;
 	}
 
+	// Bound mismatch: The generic method apply(C) of type AbstractConfiguredAnnotationBuilder<O,B> is not
+	// applicable for the arguments (YarnConfigPropertiesConfigurer). The inferred type YarnConfigPropertiesConfigurer
+	// is not a valid substitute for the bounded parameter
+	// <C extends AnnotationConfigurerAdapter<YarnConfiguration,AnnotationBuilder<YarnConfiguration>>>
+
 	public YarnConfigPropertiesConfigurer withProperties() throws Exception {
 		YarnConfigPropertiesConfigurer configurer = new YarnConfigPropertiesConfigurer();
 		return apply(configurer);
 	}
-
 
 //    private <C extends AnnotationConfigurerAdapter<YarnConfiguration, AnnotationBuilder<YarnConfiguration>>> C getOrApply(C configurer)
 //            throws Exception {

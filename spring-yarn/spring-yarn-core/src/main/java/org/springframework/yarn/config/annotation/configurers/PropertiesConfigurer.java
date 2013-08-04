@@ -5,17 +5,27 @@ import java.util.Properties;
 import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.AnnotationConfigurerAdapter;
 
-public abstract class AbstractPropertiesConfigurer <T extends AnnotationBuilder<O>, O, B extends AnnotationBuilder<O>>
+/**
+ *
+ * @author Janne Valkealahti
+ *
+ * @param <T>
+ * @param <O>
+ * @param <B>
+ *
+ * abstract class PropertiesConfigurer <T extends AnnotationBuilder<O>, O, B extends AnnotationBuilder<O>>
+ */
+public abstract class PropertiesConfigurer <O, B extends AnnotationBuilder<O>>
 		extends AnnotationConfigurerAdapter<O,B> {
 
 	private Properties properties = new Properties();
 
-	public AbstractPropertiesConfigurer<T,O,B> add(Properties properties) {
+	public PropertiesConfigurer<O,B> add(Properties properties) {
 		properties.putAll(properties);
 		return this;
 	}
 
-	public AbstractPropertiesConfigurer<T,O,B> add(String key, String value) {
+	public PropertiesConfigurer<O,B> add(String key, String value) {
 		properties.put(key, value);
 		return this;
 	}
@@ -24,12 +34,11 @@ public abstract class AbstractPropertiesConfigurer <T extends AnnotationBuilder<
 		return properties;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void configure(B builder) throws Exception {
-		configureProperties((T)builder, properties);
+		configureProperties(builder, properties);
 	}
 
-	protected abstract void configureProperties(T builder, Properties properties);
+	protected abstract void configureProperties(B builder, Properties properties);
 
 }
