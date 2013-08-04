@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class SpringYarnConfigurationTests {
 
 		@Override
 		protected void configure(YarnConfigBuilder config) throws Exception {
-			config
+			AnnotationBuilder<YarnConfiguration> and = config
 				.withResource("classpath:/test-site-1.xml")
 				.withResource("classpath:/test-site-2.xml")
 				.withProperties().add("foo", "jee").and();

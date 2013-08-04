@@ -22,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Import;
+import org.springframework.yarn.config.annotation.EnableAnnotationConfiguration;
 
 /**
  * Add this annotation to an {@code @Configuration} class to have
@@ -32,9 +33,10 @@ import org.springframework.context.annotation.Import;
  * @author Janne Valkealahti
  *
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
+//@Retention(RetentionPolicy.RUNTIME)
+//@Target(ElementType.TYPE)
+//@Documented
+@EnableAnnotationConfiguration
 @Import({SpringYarnConfiguration.class})
 public @interface EnableYarn {
 

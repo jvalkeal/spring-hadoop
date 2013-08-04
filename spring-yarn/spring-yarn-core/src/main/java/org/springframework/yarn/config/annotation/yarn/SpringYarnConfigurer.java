@@ -18,7 +18,7 @@ package org.springframework.yarn.config.annotation.yarn;
 import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.AnnotationConfigurer;
 
-public interface SpringYarnConfigurer<T extends AnnotationBuilder<SpringYarnConfig>> extends
-		AnnotationConfigurer<SpringYarnConfig, T> {
+public interface SpringYarnConfigurer<B extends AnnotationBuilder<SpringYarnConfig>> extends
+		AnnotationConfigurer<SpringYarnConfig, B> {
 
 }

@@ -18,10 +18,11 @@ package org.springframework.yarn.config.annotation;
 import java.util.List;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.core.type.AnnotationMetadata;
 
-public abstract class AbstractAnnotationConfiguration<C extends AnnotationConfigurer<O,B>, B extends AnnotationBuilder<O>, O>
+public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilder<O>, O>
 		implements ImportAware, BeanClassLoaderAware {
 
 	private List<AnnotationConfigurer<O,B>> configurers;
@@ -37,8 +38,12 @@ public abstract class AbstractAnnotationConfiguration<C extends AnnotationConfig
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
 	}
 
-	public void setConfigurers(List<AnnotationConfigurer<O, B>> configurers) {
+	@Autowired(required=false)
+	public void setConfigurers(List<AnnotationConfigurer<O, B>> configurers) throws Exception {
 		this.configurers = configurers;
+		onConfigurers(configurers);
 	}
+
+	protected abstract void onConfigurers(List<AnnotationConfigurer<O, B>> configurers) throws Exception;
 
 }
