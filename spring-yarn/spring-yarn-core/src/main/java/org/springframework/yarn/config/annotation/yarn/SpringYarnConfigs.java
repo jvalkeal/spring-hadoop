@@ -19,7 +19,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
- *
+ * A holder object for all configured configs for Spring Yarn.
  *
  * @author Janne Valkealahti
  *

@@ -18,20 +18,20 @@ package org.springframework.yarn.config.annotation.yarn.configurers;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.springframework.yarn.config.annotation.AnnotationConfigurer;
 import org.springframework.yarn.config.annotation.AnnotationConfigurerAdapter;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
+ * {@link AnnotationConfigurer} which knows how to handle
+ * copy entries in {@link ResourceLocalizer}.
  *
  * @author Janne Valkealahti
  *
- * @param <O>
- * @param <B>
  */
-public class LocalResourcesCopyConfigurer
-		extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizer> {
+public class LocalResourcesCopyConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizer> {
 
 	private Collection<CopyEntry> copyEntries = new ArrayList<CopyEntry>();
 
@@ -43,6 +43,26 @@ public class LocalResourcesCopyConfigurer
 	public LocalResourcesCopyConfigurer copy(String src, String dest, boolean staging) {
 		copyEntries.add(new CopyEntry(src, dest, staging));
 		return this;
+	}
+
+	public ConfiguredCopyEntry source(String source) {
+		return new ConfiguredCopyEntry(source);
+	}
+
+	public final class ConfiguredCopyEntry {
+		private String source;
+		private String destination;
+		private ConfiguredCopyEntry(String source) {
+			this.source = source;
+		}
+		public ConfiguredCopyEntry destination(String destination) {
+			this.destination = destination;
+			return this;
+		}
+		public LocalResourcesCopyConfigurer staging(boolean staging) {
+			copyEntries.add(new CopyEntry(source, destination, staging));
+			return LocalResourcesCopyConfigurer.this;
+		}
 	}
 
 }

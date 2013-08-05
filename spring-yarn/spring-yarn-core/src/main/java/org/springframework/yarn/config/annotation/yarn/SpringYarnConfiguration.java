@@ -28,10 +28,17 @@ import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
- *
+ * Uses a {@link SpringYarnConfig} to create {@link SpringYarnConfigs}
+ * holding all relevant configuratins for Spring Yarn. It then exports the
+ * necessary beans. Customizations can be made to {@link SpringYarnConfig} by
+ * extending {@link SpringYarnConfigurerAdapter} and exposing it as a
+ * {@link Configuration} or implementing {@link SpringYarnConfigurer} and
+ * exposing it as a {@link Configuration}. This configuration is imported when
+ * using {@link EnableYarn}.
  *
  * @author Janne Valkealahti
- *
+ * @see EnableYarn
+ * @see SpringYarnConfig
  */
 @Configuration
 public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<SpringYarnConfig, SpringYarnConfigs> {

@@ -28,7 +28,7 @@ import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
- *
+ * {@link AnnotationBuilder} for {@link ResourceLocalizer}.
  *
  * @author Janne Valkealahti
  *
@@ -52,6 +52,8 @@ public final class YarnResourceLocalizer extends AbstractConfiguredAnnotationBui
 	@Override
 	protected ResourceLocalizer performBuild() throws Exception {
 		LocalResourcesFactoryBean fb = new LocalResourcesFactoryBean();
+		fb.setType(defaultType);
+		fb.setVisibility(defaultVisibility);
 		fb.setConfiguration(configuration);
 		fb.setCopyEntries(copyEntries);
 		fb.setHdfsEntries(new ArrayList<LocalResourcesFactoryBean.TransferEntry>());

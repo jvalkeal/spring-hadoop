@@ -21,8 +21,18 @@ import java.util.Set;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.yarn.config.annotation.AnnotationBuilder;
+import org.springframework.yarn.config.annotation.AnnotationConfigurer;
 import org.springframework.yarn.config.annotation.AnnotationConfigurerAdapter;
 
+/**
+ * {@link AnnotationConfigurer} which knows how to handle
+ * configuring a {@link Resource}s.
+ *
+ * @author Janne Valkealahti
+ *
+ * @param <O> The Object being built by B
+ * @param <B> The Builder that is building O and is configured by {@link AnnotationConfigurerAdapter}
+ */
 public class ResourceConfigurer <O, B extends AnnotationBuilder<O>> extends AnnotationConfigurerAdapter<O,B> {
 
 	private Set<Resource> resources = new HashSet<Resource>();
@@ -37,25 +47,56 @@ public class ResourceConfigurer <O, B extends AnnotationBuilder<O>> extends Anno
 		}
 	}
 
+	/**
+	 * Adds a {@link Set} of {@link Resource}s to this builder.
+	 *
+	 * @param resources the resources
+	 * @return the {@link ResourceConfigurer} for chaining
+	 */
 	public ResourceConfigurer<O,B> resource(Set<Resource> resources) {
 		this.resources.addAll(resources);
 		return this;
 	}
 
+	/**
+	 * Adds a {@link Resource} to this builder.
+	 *
+	 * @param resources the resources
+	 * @return the {@link ResourceConfigurer} for chaining
+	 */
 	public ResourceConfigurer<O,B> resource(Resource resource) {
 		resources.add(resource);
 		return this;
 	}
 
+	/**
+	 * Adds a {@link Resource} to this builder.
+	 *
+	 * @param resources the resources
+	 * @return the {@link ResourceConfigurer} for chaining
+	 */
 	public ResourceConfigurer<O,B> resource(String resource) {
 		resources.add(resourceLoader.getResource(resource));
 		return this;
 	}
 
+	/**
+	 * Gets the {@link Resource}s configured for this builder.
+	 *
+	 * @return the resources
+	 */
 	public Set<Resource> getResources() {
 		return resources;
 	}
 
+	/**
+	 * Configure resources. If this implementation is extended,
+	 * custom configure handling can be handled here.
+	 *
+	 * @param builder the builder
+	 * @param resources the resources
+	 * @return true, if resources configure is handled
+	 */
 	protected boolean configureResources(B builder, Set<Resource> resources){
 		return false;
 	};

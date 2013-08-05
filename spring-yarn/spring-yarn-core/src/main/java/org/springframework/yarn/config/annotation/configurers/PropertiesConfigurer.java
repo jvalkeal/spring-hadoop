@@ -21,30 +21,47 @@ import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.AnnotationConfigurerAdapter;
 
 /**
+ * {@link AnnotationConfigurer} which knows how to handle
+ * configuring a {@link Properties}.
  *
  * @author Janne Valkealahti
  *
- * @param <T>
- * @param <O>
- * @param <B>
- *
- * abstract class PropertiesConfigurer <T extends AnnotationBuilder<O>, O, B extends AnnotationBuilder<O>>
+ * @param <O> The Object being built by B
+ * @param <B> The Builder that is building O and is configured by {@link AnnotationConfigurerAdapter}
  */
 public class PropertiesConfigurer <O, B extends AnnotationBuilder<O>>
 		extends AnnotationConfigurerAdapter<O,B> {
 
 	private Properties properties = new Properties();
 
-	public PropertiesConfigurer<O,B> add(Properties properties) {
+	/**
+	 * Adds a {@link Properties} to this builder.
+	 *
+	 * @param properties the properties
+	 * @return the {@link PropertiesConfigurer} for chaining
+	 */
+	public PropertiesConfigurer<O,B> properties(Properties properties) {
 		properties.putAll(properties);
 		return this;
 	}
 
-	public PropertiesConfigurer<O,B> add(String key, String value) {
+	/**
+	 * Adds a property to this builder.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return the {@link PropertiesConfigurer} for chaining
+	 */
+	public PropertiesConfigurer<O,B> property(String key, String value) {
 		properties.put(key, value);
 		return this;
 	}
 
+	/**
+	 * Gets the {@link Properties} configured for this builder.
+	 *
+	 * @return the properties
+	 */
 	public Properties getProperties() {
 		return properties;
 	}
@@ -58,6 +75,14 @@ public class PropertiesConfigurer <O, B extends AnnotationBuilder<O>>
 		}
 	}
 
+	/**
+	 * Configure properties. If this implementation is extended,
+	 * custom configure handling can be handled here.
+	 *
+	 * @param builder the builder
+	 * @param properties the properties
+	 * @return true, if properties configure is handled
+	 */
 	protected boolean configureProperties(B builder, Properties properties){
 		return false;
 	};

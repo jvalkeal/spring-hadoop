@@ -18,6 +18,19 @@ package org.springframework.yarn.config.annotation.yarn;
 import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.AnnotationConfigurer;
 
+/**
+ * Allows for configuring a {@link AnnotationBuilder}. All
+ * {@link AnnotationConfigurer} first have their {@link #init(AnnotationBuilder)}
+ * method invoked. After all {@link #init(AnnotationBuilder)} methods have been
+ * invoked, each {@link #configure(AnnotationBuilder)} method is invoked.
+ *
+ * @author Janne Valkealahti
+ * @see AbstractConfiguredAnnotationBuilder
+ *
+ * @param <O> The object being built by the {@link AnnotationBuilder} B
+ * @param <B> The {@link AnnotationBuilder} that builds objects of type O. This is
+ *            also the {@link AnnotationBuilder} that is being configured.
+ */
 public interface SpringYarnConfigurer<B extends AnnotationBuilder<SpringYarnConfigs>> extends
 		AnnotationConfigurer<SpringYarnConfigs, B> {
 

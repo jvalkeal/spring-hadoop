@@ -21,6 +21,7 @@ import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigs;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
+ * {@link AnnotationBuilder} for {@link SpringYarnConfigs}.
  *
  * @author Janne Valkealahti
  *
