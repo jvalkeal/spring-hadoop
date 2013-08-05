@@ -13,12 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.yarn.config.annotation.yarn;
+package org.springframework.yarn.config.annotation.configurers;
 
+import java.util.Set;
+
+import org.springframework.core.io.Resource;
 import org.springframework.yarn.config.annotation.AnnotationBuilder;
-import org.springframework.yarn.config.annotation.AnnotationConfigurer;
 
-public interface SpringYarnConfigurer<B extends AnnotationBuilder<SpringYarnConfigs>> extends
-		AnnotationConfigurer<SpringYarnConfigs, B> {
+/**
+ * Interface for {@link AnnotationBuilder} which wants to be
+ * aware of {@link Resource}s configured by {@link ResourceConfigurer}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public interface ResourceConfigureAware {
+
+	/**
+	 * Configure resources.
+	 *
+	 * @param resources the resources
+	 */
+	void configureResources(Set<Resource> resources);
 
 }

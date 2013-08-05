@@ -57,6 +57,13 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		this.allowConfigurersOfSameType = allowConfigurersOfSameType;
 	}
 
+	/**
+	 * Similar to {@link #build()} and {@link #getObject()} but checks the state
+	 * to determine if {@link #build()} needs to be called first.
+	 *
+	 * @return the result of {@link #build()} or {@link #getObject()}. If an
+	 *         error occurs while building, returns null.
+	 */
 	public O getOrBuild() {
 		if (isUnbuilt()) {
 			try {
@@ -70,6 +77,15 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		}
 	}
 
+	/**
+	 * Applies a {@link AnnotationConfigurerAdapter} to this
+	 * {@link AnnotationBuilder} and invokes
+	 * {@link AnnotationConfigurerAdapter#setBuilder(AnnotationBuilder)}.
+	 *
+	 * @param configurer the configurer
+	 * @return Configurer passed as parameter
+	 * @throws Exception if error occurred
+	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurerAdapter<O, B>> C apply(C configurer) throws Exception {
 		add(configurer);
@@ -77,25 +93,59 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		return configurer;
 	}
 
+	/**
+	 * Applies a {@link AnnotationConfigurer} to this {@link AnnotationBuilder}
+	 * overriding any {@link AnnotationConfigurer} of the exact same class. Note
+	 * that object hierarchies are not considered.
+	 *
+	 * @param configurer the configurer
+	 * @return Configurer passed as parameter
+	 * @throws Exception if error occurred
+	 */
 	public <C extends AnnotationConfigurer<O, B>> C apply(C configurer) throws Exception {
 		add(configurer);
 		return configurer;
 	}
 
+	/**
+	 * Sets an object that is shared by multiple {@link AnnotationConfigurer}.
+	 *
+	 * @param sharedType the Class to key the shared object by.
+	 * @param object the Object to store
+	 */
 	@SuppressWarnings("unchecked")
 	public <C> void setSharedObject(Class<C> sharedType, C object) {
 		this.sharedObjects.put((Class<Object>) sharedType, object);
 	}
 
+	/**
+	 * Gets a shared Object. Note that object hierarchies are not considered.
+	 *
+	 * @param sharedType the type of the shared Object
+	 * @return the shared Object or null if it is not found
+	 */
 	@SuppressWarnings("unchecked")
 	public <C> C getSharedObject(Class<C> sharedType) {
 		return (C) this.sharedObjects.get(sharedType);
 	}
 
+	/**
+	 * Gets the shared objects.
+	 *
+	 * @return Shared objects
+	 */
 	public Map<Class<Object>, Object> getSharedObjects() {
 		return Collections.unmodifiableMap(this.sharedObjects);
 	}
 
+	/**
+	 * Adds {@link AnnotationConfigurer} ensuring that it is allowed and
+	 * invoking {@link AnnotationConfigurer#init(AnnotationBuilder)} immediately
+	 * if necessary.
+	 *
+	 * @param configurer the {@link AnnotationConfigurer} to add
+	 * @throws Exception if an error occurs
+	 */
 	@SuppressWarnings("unchecked")
 	private <C extends AnnotationConfigurer<O, B>> void add(C configurer) throws Exception {
 		Assert.notNull(configurer, "configurer cannot be null");
@@ -118,6 +168,13 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		}
 	}
 
+	/**
+	 * Gets all the {@link AnnotationConfigurer} instances by its class name or an
+	 * empty List if not found. Note that object hierarchies are not considered.
+	 *
+	 * @param clazz the {@link AnnotationConfigurer} class to look for
+	 * @return All configurers
+	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> List<C> getConfigurers(Class<C> clazz) {
 		List<C> configs = (List<C>) this.configurers.get(clazz);
@@ -127,6 +184,13 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		return new ArrayList<C>(configs);
 	}
 
+	/**
+	 * Removes all the {@link AnnotationConfigurer} instances by its class name or an
+	 * empty List if not found. Note that object hierarchies are not considered.
+	 *
+	 * @param clazz the {@link AnnotationConfigurer} class to look for
+	 * @return Empty list of configurers
+	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> List<C> removeConfigurers(Class<C> clazz) {
 		List<C> configs = (List<C>) this.configurers.remove(clazz);
@@ -136,6 +200,14 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		return new ArrayList<C>(configs);
 	}
 
+	/**
+	 * Gets the {@link AnnotationConfigurer} by its class name or
+	 * <code>null</code> if not found. Note that object hierarchies are not
+	 * considered.
+	 *
+	 * @param clazz the configurer class type
+	 * @return Matched configurers
+	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> C getConfigurer(Class<C> clazz) {
 		List<AnnotationConfigurer<O, B>> configs = this.configurers.get(clazz);
@@ -148,6 +220,14 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		return (C) configs.get(0);
 	}
 
+	/**
+	 * Removes and returns the {@link AnnotationConfigurer} by its class name or
+	 * <code>null</code> if not found. Note that object hierarchies are not
+	 * considered.
+	 *
+	 * @param clazz the configurer class type
+	 * @return Matched configurers
+	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> C removeConfigurer(Class<C> clazz) {
 		List<AnnotationConfigurer<O, B>> configs = this.configurers.remove(clazz);
@@ -164,31 +244,44 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	protected final O doBuild() throws Exception {
 		synchronized (configurers) {
 			buildState = BuildState.INITIALIZING;
-
 			beforeInit();
 			init();
 
 			buildState = BuildState.CONFIGURING;
-
 			beforeConfigure();
 			configure();
 
 			buildState = BuildState.BUILDING;
-
 			O result = performBuild();
 
 			buildState = BuildState.BUILT;
-
 			return result;
 		}
 	}
 
+	/**
+	 * Invoked prior to invoking each
+	 * {@link AnnotationConfigurer#init(AnnotationBuilder)} method. Subclasses may
+	 * override this method to hook into the lifecycle without using a
+	 * {@link AnnotationConfigurer}.
+	 */
 	protected void beforeInit() throws Exception {
 	}
 
+	/**
+	 * Invoked prior to invoking each
+	 * {@link AnnotationConfigurer#configure(AnnotationBuilder)} method.
+	 * Subclasses may override this method to hook into the lifecycle without
+	 * using a {@link AnnotationConfigurer}.
+	 */
 	protected void beforeConfigure() throws Exception {
 	}
 
+	/**
+	 * Subclasses must implement this method to build the object that is being returned.
+	 *
+	 * @return Object build by this builder
+	 */
 	protected abstract O performBuild() throws Exception;
 
 	@SuppressWarnings("unchecked")
@@ -217,6 +310,11 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		return result;
 	}
 
+	/**
+	 * Determines if the object is unbuilt.
+	 *
+	 * @return true, if unbuilt else false
+	 */
 	private boolean isUnbuilt() {
 		synchronized (configurers) {
 			return buildState == BuildState.UNBUILT;
@@ -228,30 +326,30 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 */
 	private static enum BuildState {
 		/**
-		 * This is the state before the {@link Builder#build()} is invoked
+		 * This is the state before the {@link AnnotationBuilder#build()} is invoked
 		 */
 		UNBUILT(0),
 
 		/**
-		 * The state from when {@link Builder#build()} is first invoked until
-		 * all the {@link SecurityConfigurer#init(SecurityBuilder)} methods have
+		 * The state from when {@link AnnotationBuilder#build()} is first invoked until
+		 * all the {@link AnnotationConfigurer#init(AnnotationBuilder)} methods have
 		 * been invoked.
 		 */
 		INITIALIZING(1),
 		/**
 		 * The state from after all
-		 * {@link SecurityConfigurer#init(SecurityBuilder)} have been invoked
+		 * {@link AnnotationConfigurer#init(AnnotationBuilder)} have been invoked
 		 * until after all the
-		 * {@link SecurityConfigurer#configure(SecurityBuilder)} methods have
+		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)} methods have
 		 * been invoked.
 		 */
 		CONFIGURING(2),
 
 		/**
 		 * From the point after all the
-		 * {@link SecurityConfigurer#configure(SecurityBuilder)} have completed
+		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)} have completed
 		 * to just after
-		 * {@link AbstractConfiguredSecurityBuilder#performBuild()}.
+		 * {@link AbstractConfiguredAnnotationBuilder#performBuild()}.
 		 */
 		BUILDING(3),
 

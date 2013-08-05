@@ -16,18 +16,32 @@
 package org.springframework.yarn.config.annotation;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ImportAware;
+import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.util.ClassUtils;
 
+/**
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ * @param <B>
+ * @param <O>
+ */
 public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilder<O>, O>
 		implements ImportAware, BeanClassLoaderAware {
 
 	private List<AnnotationConfigurer<O,B>> configurers;
 
 	private ClassLoader beanClassLoader;
+
+	private AnnotationAttributes annotationAttributes;
 
 	@Override
 	public void setBeanClassLoader(ClassLoader classLoader) {
@@ -36,12 +50,38 @@ public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilde
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
+		Map<String, Object> enableConfigurationAttrMap =
+				importMetadata.getAnnotationAttributes(EnableAnnotationConfiguration.class.getName());
+		AnnotationAttributes enableConfigurationAttrs = AnnotationAttributes.fromMap(enableConfigurationAttrMap);
+		if(enableConfigurationAttrs == null) {
+			// search parent classes
+			Class<?> currentClass = ClassUtils.resolveClassName(importMetadata.getClassName(), beanClassLoader);
+			for(Class<?> classToInspect = currentClass ;classToInspect != null; classToInspect = classToInspect.getSuperclass()) {
+				EnableAnnotationConfiguration enableConfigurationAnnotation =
+						AnnotationUtils.findAnnotation(classToInspect, EnableAnnotationConfiguration.class);
+				if(enableConfigurationAnnotation == null) {
+					continue;
+				}
+				enableConfigurationAttrMap = AnnotationUtils
+						.getAnnotationAttributes(enableConfigurationAnnotation);
+				enableConfigurationAttrs = AnnotationAttributes.fromMap(enableConfigurationAttrMap);
+			}
+		}
+		annotationAttributes = enableConfigurationAttrs;
 	}
 
 	@Autowired(required=false)
 	public void setConfigurers(List<AnnotationConfigurer<O, B>> configurers) throws Exception {
 		this.configurers = configurers;
 		onConfigurers(configurers);
+	}
+
+	public AnnotationAttributes getAnnotationAttributes() {
+		return annotationAttributes;
+	}
+
+	public List<AnnotationConfigurer<O, B>> getConfigurers() {
+		return configurers;
 	}
 
 	protected abstract void onConfigurers(List<AnnotationConfigurer<O, B>> configurers) throws Exception;

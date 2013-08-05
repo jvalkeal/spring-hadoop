@@ -18,16 +18,21 @@ package org.springframework.yarn.config.annotation.yarn;
 import org.apache.hadoop.conf.Configuration;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
-public class SpringYarnConfig {
+/**
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class SpringYarnConfigs {
 
 	private Configuration configuration;
 
 	private ResourceLocalizer localizer;
 
-	public SpringYarnConfig() {
-	}
+	public SpringYarnConfigs() {}
 
-	public SpringYarnConfig(Configuration configuration, ResourceLocalizer localizer) {
+	public SpringYarnConfigs(Configuration configuration, ResourceLocalizer localizer) {
 		super();
 		this.configuration = configuration;
 		this.localizer = localizer;

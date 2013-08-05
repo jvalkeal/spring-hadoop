@@ -23,16 +23,16 @@ import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
-public final class YarnResourceLocalizerBuilder
+public final class YarnResourceLocalizer
 		extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, AnnotationBuilder<ResourceLocalizer>> {
 
 	private YarnConfiguration configuration;
 
-	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType) {
+	public YarnResourceLocalizer(boolean allowConfigurersOfSameType) {
 		super(allowConfigurersOfSameType);
 	}
 
-	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType, YarnConfiguration configuration) {
+	public YarnResourceLocalizer(boolean allowConfigurersOfSameType, YarnConfiguration configuration) {
 		super(allowConfigurersOfSameType);
 		this.configuration = configuration;
 	}

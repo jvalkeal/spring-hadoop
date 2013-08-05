@@ -33,9 +33,9 @@ import org.springframework.yarn.config.annotation.EnableAnnotationConfiguration;
  * @author Janne Valkealahti
  *
  */
-//@Retention(RetentionPolicy.RUNTIME)
-//@Target(ElementType.TYPE)
-//@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
 @EnableAnnotationConfiguration
 @Import({SpringYarnConfiguration.class})
 public @interface EnableYarn {

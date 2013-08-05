@@ -13,12 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.yarn.config.annotation.yarn;
+package org.springframework.yarn.config.annotation.configurers;
 
-import org.springframework.yarn.config.annotation.AnnotationBuilder;
-import org.springframework.yarn.config.annotation.AnnotationConfigurer;
+import java.util.Properties;
 
-public interface SpringYarnConfigurer<B extends AnnotationBuilder<SpringYarnConfigs>> extends
-		AnnotationConfigurer<SpringYarnConfigs, B> {
+/**
+ * Interface for {@link AnnotationBuilder} which wants to be
+ * aware of {@link Properties} configured by {@link PropertiesConfigurer}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public interface PropertiesConfigureAware {
+
+	/**
+	 * Configure properties.
+	 *
+	 * @param properties the properties
+	 */
+	void configureProperties(Properties properties);
 
 }

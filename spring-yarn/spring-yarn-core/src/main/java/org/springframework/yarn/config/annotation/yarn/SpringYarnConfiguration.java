@@ -18,48 +18,43 @@ package org.springframework.yarn.config.annotation.yarn;
 import java.util.List;
 
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.ImportAware;
-import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.config.annotation.AbstractAnnotationConfiguration;
-import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.AnnotationConfigurer;
-import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
-//Bound mismatch: The type SpringYarnConfigurer is not a valid substitute for the bounded
-//parameter <C extends AnnotationConfigurer<O,B>> of the type AbstractAnnotationConfiguration<C,B,O>
-
+/**
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Configuration
-public class SpringYarnConfiguration
-		extends AbstractAnnotationConfiguration<SpringYarnConfigBuilder, SpringYarnConfig> {
+public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<SpringYarnConfig, SpringYarnConfigs> {
 
-	private SpringYarnConfigBuilder builder = new SpringYarnConfigBuilder(true);
-	private List<SpringYarnConfigurer<SpringYarnConfigBuilder>> configurers;
+	private SpringYarnConfig builder = new SpringYarnConfig(true);
 
+	private List<SpringYarnConfigurer<SpringYarnConfig>> configurers;
 
 	@Bean(name=YarnSystemConstants.DEFAULT_ID_CONFIGURATION)
 	public YarnConfiguration yarnConfiguration() throws Exception {
-		SpringYarnConfig config = builder.build();
+		SpringYarnConfigs config = builder.build();
 		return (YarnConfiguration) config.getConfiguration();
 	}
 
 	@Bean(name=YarnSystemConstants.DEFAULT_ID_LOCAL_RESOURCES)
 	@DependsOn(YarnSystemConstants.DEFAULT_ID_CONFIGURATION)
 	public ResourceLocalizer yarnLocalresources() throws Exception {
-//		return yarnResourceLocalizerBuilder.build();
-		ResourceLocalizer localizer = builder.getOrBuild().getLocalizer();
-		return localizer;
+		return builder.getOrBuild().getLocalizer();
 	}
 
 	@Override
-	protected void onConfigurers(List<AnnotationConfigurer<SpringYarnConfig, SpringYarnConfigBuilder>> configurers) throws Exception {
-		for (AnnotationConfigurer<SpringYarnConfig, SpringYarnConfigBuilder> configurer : configurers) {
+	protected void onConfigurers(List<AnnotationConfigurer<SpringYarnConfigs, SpringYarnConfig>> configurers) throws Exception {
+		for (AnnotationConfigurer<SpringYarnConfigs, SpringYarnConfig> configurer : configurers) {
 			builder.apply(configurer);
 		}
 	}

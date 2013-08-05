@@ -20,28 +20,33 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
-import org.springframework.yarn.config.annotation.AnnotationBuilder;
-import org.springframework.yarn.config.annotation.yarn.configurers.YarnConfigPropertiesConfigurer;
+import org.springframework.yarn.config.annotation.configurers.PropertiesConfigureAware;
+import org.springframework.yarn.config.annotation.configurers.PropertiesConfigurer;
+import org.springframework.yarn.config.annotation.configurers.ResourceConfigureAware;
+import org.springframework.yarn.config.annotation.configurers.ResourceConfigurer;
 import org.springframework.yarn.configuration.ConfigurationFactoryBean;
 
 /**
- *
+ * {@link AnnotationBuilder} for {@link YarnConfiguration}.
  *
  * @author Janne Valkealahti
  *
- * extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, AnnotationBuilder<YarnConfiguration>>
  */
-public final class YarnConfigBuilder
-		extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, YarnConfigBuilder> {
+public final class YarnConfig extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, YarnConfig>
+		implements PropertiesConfigureAware, ResourceConfigureAware {
 
-	private Set<Resource> resources = new HashSet<Resource>();
-	private Properties properties = new Properties();
-	private final DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+	private final Set<Resource> resources = new HashSet<Resource>();
+	private final Properties properties = new Properties();
 
-	public YarnConfigBuilder(boolean allowConfigurersOfSameType) {
+	private String fileSystemUri;
+
+	public YarnConfig() {
+		this(true);
+	}
+
+	public YarnConfig(boolean allowConfigurersOfSameType) {
 		super(allowConfigurersOfSameType);
 	}
 
@@ -51,29 +56,44 @@ public final class YarnConfigBuilder
 
 		fb.setResources(resources);
 		fb.setProperties(properties);
+		fb.setFileSystemUri(fileSystemUri);
 
 		fb.afterPropertiesSet();
 		return fb.getObject();
 	}
 
-	public YarnConfigBuilder withResource(String resource) {
-		resources.add(resourceLoader.getResource(resource));
-		return this;
+	@Override
+	public void configureProperties(Properties properties) {
+		getProperties().putAll(properties);
+	}
+
+	@Override
+	public void configureResources(Set<Resource> resources) {
+		getResources().addAll(resources);
+	}
+
+	public ResourceConfigurer<YarnConfiguration, YarnConfig> withResources() throws Exception {
+		return apply(new ResourceConfigurer<YarnConfiguration, YarnConfig>());
 	}
 
 	public Properties getProperties() {
 		return properties;
 	}
 
-	// Bound mismatch: The generic method apply(C) of type AbstractConfiguredAnnotationBuilder<O,B> is not
-	// applicable for the arguments (YarnConfigPropertiesConfigurer). The inferred type YarnConfigPropertiesConfigurer
-	// is not a valid substitute for the bounded parameter
-	// <C extends AnnotationConfigurerAdapter<YarnConfiguration,AnnotationBuilder<YarnConfiguration>>>
-
-	public YarnConfigPropertiesConfigurer withProperties() throws Exception {
-		YarnConfigPropertiesConfigurer configurer = new YarnConfigPropertiesConfigurer();
-		return apply(configurer);
+	public Set<Resource> getResources() {
+		return resources;
 	}
+
+	public PropertiesConfigurer<YarnConfiguration, YarnConfig> withProperties() throws Exception {
+		return apply(new PropertiesConfigurer<YarnConfiguration, YarnConfig>());
+	}
+
+	public YarnConfig fileSystemUri(String uri) {
+		fileSystemUri = uri;
+		return this;
+	}
+
+
 
 //    private <C extends AnnotationConfigurerAdapter<YarnConfiguration, AnnotationBuilder<YarnConfiguration>>> C getOrApply(C configurer)
 //            throws Exception {

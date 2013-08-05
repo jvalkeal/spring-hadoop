@@ -15,9 +15,9 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
-import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
 
 /**
  *
@@ -25,46 +25,46 @@ import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLoca
  * @author Janne Valkealahti
  *
  */
-public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringYarnConfigBuilder> {
+public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringYarnConfig> {
 
-	private YarnConfigBuilder configBuilder;
-	private YarnResourceLocalizerBuilder resourceLocalizerBuilder;
+	private YarnConfig configBuilder;
+	private YarnResourceLocalizer resourceLocalizerBuilder;
 
 	@Override
-	public void init(SpringYarnConfigBuilder builder) throws Exception {
-		final YarnConfigBuilder configBuilder = getConfigBuilder();
+	public void init(SpringYarnConfig builder) throws Exception {
+		final YarnConfig configBuilder = getConfigBuilder();
 		builder.setYarnConfigBuilder(configBuilder);
 
-		final YarnResourceLocalizerBuilder resourceLocalizerBuilder = getLocalizerBuilder();
+		final YarnResourceLocalizer resourceLocalizerBuilder = getLocalizerBuilder();
 		builder.setYarnLocalizerBuilder(resourceLocalizerBuilder);
 	}
 
 	@Override
-	public void configure(SpringYarnConfigBuilder builder) throws Exception {
+	public void configure(SpringYarnConfig builder) throws Exception {
 	}
 
-	protected void configure(YarnConfigBuilder config) throws Exception {
+	protected void configure(YarnConfig config) throws Exception {
 	}
 
-	protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+	protected void configure(YarnResourceLocalizer localizer) throws Exception {
 	}
 
-	protected final YarnConfigBuilder getConfigBuilder() throws Exception {
+	protected final YarnConfig getConfigBuilder() throws Exception {
 		if (configBuilder != null) {
 			return configBuilder;
 		}
 
-		configBuilder = new YarnConfigBuilder(true);
+		configBuilder = new YarnConfig(true);
 		configure(configBuilder);
 		return configBuilder;
 	}
 
-	protected final YarnResourceLocalizerBuilder getLocalizerBuilder() throws Exception {
+	protected final YarnResourceLocalizer getLocalizerBuilder() throws Exception {
 		if (resourceLocalizerBuilder != null) {
 			return resourceLocalizerBuilder;
 		}
 
-		resourceLocalizerBuilder = new YarnResourceLocalizerBuilder(true);
+		resourceLocalizerBuilder = new YarnResourceLocalizer(true);
 		configure(resourceLocalizerBuilder);
 		return resourceLocalizerBuilder;
 	}

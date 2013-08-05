@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.yarn.config.annotation;
+package org.springframework.yarn.config.annotation.yarn;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
@@ -30,9 +30,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.yarn.config.annotation.yarn.EnableYarn;
 import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigurerAdapter;
-import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
 import org.springframework.yarn.fs.ResourceLocalizer;
 //import org.springframework.yarn.config.annotation.yarn.EnableYarn;
 //import org.springframework.yarn.config.annotation.yarn.YarnConfigConfigurerAdapter;
@@ -58,6 +58,7 @@ public class SpringYarnConfigurationTests {
 		assertThat(config.get("resource.property"), is("test-site-1.xml"));
 		assertThat(config.get("resource.property.2"), is("test-site-2.xml"));
 		assertThat(config.get("foo"), is("jee"));
+		assertThat(config.get("fs.default.name"), is("hdfs://foo.uri"));
 	}
 
 	@org.springframework.context.annotation.Configuration
@@ -65,20 +66,19 @@ public class SpringYarnConfigurationTests {
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		protected void configure(YarnConfigBuilder config) throws Exception {
+		protected void configure(YarnConfig config) throws Exception {
 			config
-				.withResource("classpath:/test-site-1.xml")
-				.withProperties().add("foo", "jee").and()
-				.withResource("classpath:/test-site-2.xml");
+				.fileSystemUri("hdfs://foo.uri")
+				.withResources()
+					.add("classpath:/test-site-1.xml")
+					.add("classpath:/test-site-2.xml")
+					.and()
+				.withProperties().add("foo", "jee");
 
-			int foo = 1;
-			foo = 2;
-				//.withProperties()
-				//	.key().value()
 		}
 
 		@Override
-		protected void configure(YarnResourceLocalizerBuilder localizer) {
+		protected void configure(YarnResourceLocalizer localizer) {
 //			localizer.
 		}
 

@@ -17,37 +17,47 @@ package org.springframework.yarn.config.annotation.yarn.builders;
 
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
-import org.springframework.yarn.config.annotation.yarn.SpringYarnConfig;
+import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigs;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
-public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<SpringYarnConfig, SpringYarnConfigBuilder> {
+/**
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public class SpringYarnConfig extends AbstractConfiguredAnnotationBuilder<SpringYarnConfigs, SpringYarnConfig> {
 
-	private YarnConfigBuilder yarnConfigBuilder;
-	private YarnResourceLocalizerBuilder resourceLocalizerBuilder;
+	private YarnConfig yarnConfig;
 
-	public SpringYarnConfigBuilder(boolean allowConfigurersOfSameType) {
+	private YarnResourceLocalizer resourceLocalizer;
+
+	public SpringYarnConfig() {
+		this(true);
+	}
+
+	public SpringYarnConfig(boolean allowConfigurersOfSameType) {
 		super(allowConfigurersOfSameType);
 	}
 
 	@Override
-	protected SpringYarnConfig performBuild() throws Exception {
-		SpringYarnConfig config = new SpringYarnConfig();
-		YarnConfiguration configuration = (YarnConfiguration) yarnConfigBuilder.build();
+	protected SpringYarnConfigs performBuild() throws Exception {
+		SpringYarnConfigs config = new SpringYarnConfigs();
+		YarnConfiguration configuration = (YarnConfiguration) yarnConfig.build();
 		config.setConfiguration(configuration);
 
-		resourceLocalizerBuilder.configuration(configuration);
-		ResourceLocalizer localizer = resourceLocalizerBuilder.build();
+		resourceLocalizer.configuration(configuration);
+		ResourceLocalizer localizer = resourceLocalizer.build();
 		config.setLocalizer(localizer);
 
 		return config;
 	}
 
-	public void setYarnConfigBuilder(YarnConfigBuilder yarnConfigBuilder) {
-		this.yarnConfigBuilder = yarnConfigBuilder;
+	public void setYarnConfigBuilder(YarnConfig yarnConfigBuilder) {
+		this.yarnConfig = yarnConfigBuilder;
 	}
 
-	public void setYarnLocalizerBuilder(YarnResourceLocalizerBuilder resourceLocalizerBuilder) {
-		this.resourceLocalizerBuilder = resourceLocalizerBuilder;
+	public void setYarnLocalizerBuilder(YarnResourceLocalizer resourceLocalizerBuilder) {
+		this.resourceLocalizer = resourceLocalizerBuilder;
 	}
 
 }
