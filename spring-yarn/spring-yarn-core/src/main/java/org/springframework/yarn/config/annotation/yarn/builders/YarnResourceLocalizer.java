@@ -16,17 +16,29 @@
 package org.springframework.yarn.config.annotation.yarn.builders;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
+import org.apache.hadoop.yarn.api.records.LocalResourceType;
+import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
-import org.springframework.yarn.config.annotation.AnnotationBuilder;
+import org.springframework.yarn.config.annotation.yarn.configurers.LocalResourcesCopyConfigurer;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean;
+import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
-public final class YarnResourceLocalizer
-		extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, AnnotationBuilder<ResourceLocalizer>> {
+/**
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public final class YarnResourceLocalizer extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, YarnResourceLocalizer> {
 
 	private YarnConfiguration configuration;
+	private LocalResourceType defaultType = LocalResourceType.FILE;
+	private LocalResourceVisibility defaultVisibility = LocalResourceVisibility.APPLICATION;
+	private Collection<CopyEntry> copyEntries;
 
 	public YarnResourceLocalizer(boolean allowConfigurersOfSameType) {
 		super(allowConfigurersOfSameType);
@@ -41,6 +53,7 @@ public final class YarnResourceLocalizer
 	protected ResourceLocalizer performBuild() throws Exception {
 		LocalResourcesFactoryBean fb = new LocalResourcesFactoryBean();
 		fb.setConfiguration(configuration);
+		fb.setCopyEntries(copyEntries);
 		fb.setHdfsEntries(new ArrayList<LocalResourcesFactoryBean.TransferEntry>());
 		fb.afterPropertiesSet();
 		return fb.getObject();
@@ -50,5 +63,22 @@ public final class YarnResourceLocalizer
 		this.configuration = configuration;
 	}
 
+	public YarnResourceLocalizer defaultLocalResourceType(LocalResourceType type) {
+		defaultType = type;
+		return this;
+	}
+
+	public YarnResourceLocalizer defaultLocalResourceVisibility(LocalResourceVisibility visibility) {
+		defaultVisibility = visibility;
+		return this;
+	}
+
+	public void setCopyEntries(Collection<CopyEntry> copyEntries) {
+		this.copyEntries = copyEntries;
+	}
+
+	public LocalResourcesCopyConfigurer withCopy() throws Exception {
+		return apply(new LocalResourcesCopyConfigurer());
+	}
 
 }

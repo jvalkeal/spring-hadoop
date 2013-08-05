@@ -37,17 +37,17 @@ public class ResourceConfigurer <O, B extends AnnotationBuilder<O>> extends Anno
 		}
 	}
 
-	public ResourceConfigurer<O,B> add(Set<Resource> resources) {
+	public ResourceConfigurer<O,B> resource(Set<Resource> resources) {
 		this.resources.addAll(resources);
 		return this;
 	}
 
-	public ResourceConfigurer<O,B> add(Resource resource) {
+	public ResourceConfigurer<O,B> resource(Resource resource) {
 		resources.add(resource);
 		return this;
 	}
 
-	public ResourceConfigurer<O,B> add(String resource) {
+	public ResourceConfigurer<O,B> resource(String resource) {
 		resources.add(resourceLoader.getResource(resource));
 		return this;
 	}

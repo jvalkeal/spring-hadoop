@@ -20,6 +20,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.junit.Test;
@@ -28,12 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.yarn.TestUtils;
 import org.springframework.yarn.config.annotation.yarn.EnableYarn;
 import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigurerAdapter;
 import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
+import org.springframework.yarn.fs.DefaultResourceLocalizer;
 import org.springframework.yarn.fs.ResourceLocalizer;
+import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 //import org.springframework.yarn.config.annotation.yarn.EnableYarn;
 //import org.springframework.yarn.config.annotation.yarn.YarnConfigConfigurerAdapter;
 import org.springframework.yarn.test.context.YarnDelegatingSmartContextLoader;
@@ -46,11 +51,12 @@ public class SpringYarnConfigurationTests {
 	private ApplicationContext ctx;
 
 	@Test
-	public void testSimpleConfig() {
+	public void testSimpleConfig() throws Exception {
 		assertNotNull(ctx);
 		assertTrue(ctx.containsBean("yarnConfiguration"));
 		Configuration config = (Configuration) ctx.getBean("yarnConfiguration");
 		assertNotNull(config);
+
 		assertTrue(ctx.containsBean("yarnLocalresources"));
 		ResourceLocalizer localizer = (ResourceLocalizer) ctx.getBean("yarnLocalresources");
 		assertNotNull(localizer);
@@ -59,6 +65,19 @@ public class SpringYarnConfigurationTests {
 		assertThat(config.get("resource.property.2"), is("test-site-2.xml"));
 		assertThat(config.get("foo"), is("jee"));
 		assertThat(config.get("fs.default.name"), is("hdfs://foo.uri"));
+
+		Collection<CopyEntry> copyEntries = TestUtils.readField("copyEntries", localizer);
+		assertNotNull(copyEntries);
+		assertThat(copyEntries.size(), is(1));
+
+		CopyEntry copyEntry = copyEntries.iterator().next();
+		String copyEntrySrc = TestUtils.readField("src", copyEntry);
+		String copyEntryDest = TestUtils.readField("dest", copyEntry);
+		boolean copyEntryStaging = TestUtils.readField("staging", copyEntry);
+		assertThat(copyEntrySrc, is("foo.jar"));
+		assertThat(copyEntryDest, is("/tmp"));
+		assertThat(copyEntryStaging, is(true));
+
 	}
 
 	@org.springframework.context.annotation.Configuration
@@ -70,16 +89,18 @@ public class SpringYarnConfigurationTests {
 			config
 				.fileSystemUri("hdfs://foo.uri")
 				.withResources()
-					.add("classpath:/test-site-1.xml")
-					.add("classpath:/test-site-2.xml")
+					.resource("classpath:/test-site-1.xml")
+					.resource("classpath:/test-site-2.xml")
 					.and()
 				.withProperties().add("foo", "jee");
 
 		}
 
 		@Override
-		protected void configure(YarnResourceLocalizer localizer) {
-//			localizer.
+		protected void configure(YarnResourceLocalizer localizer) throws Exception {
+			localizer
+				.withCopy()
+					.copy("foo.jar", "/tmp", true);
 		}
 
 	}
