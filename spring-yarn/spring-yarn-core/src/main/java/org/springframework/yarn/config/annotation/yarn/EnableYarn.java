@@ -37,7 +37,7 @@ import org.springframework.yarn.config.annotation.EnableAnnotationConfiguration;
 @Target(ElementType.TYPE)
 @Documented
 @EnableAnnotationConfiguration
-@Import({SpringYarnConfiguration.class})
+@Import({SpringYarnConfiguration.class, ConfiguringBeanFactoryPostProcessorConfiguration.class})
 public @interface EnableYarn {
 
 }

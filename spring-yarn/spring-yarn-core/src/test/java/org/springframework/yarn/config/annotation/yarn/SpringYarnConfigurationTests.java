@@ -37,6 +37,7 @@ import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
+import org.springframework.yarn.support.YarnContextUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
@@ -55,6 +56,9 @@ public class SpringYarnConfigurationTests {
 		assertTrue(ctx.containsBean("yarnLocalresources"));
 		ResourceLocalizer localizer = (ResourceLocalizer) ctx.getBean("yarnLocalresources");
 		assertNotNull(localizer);
+
+		assertTrue(ctx.containsBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
+		assertNotNull(ctx.getBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 
 		assertThat(config.get("resource.property"), is("test-site-1.xml"));
 		assertThat(config.get("resource.property.2"), is("test-site-2.xml"));
