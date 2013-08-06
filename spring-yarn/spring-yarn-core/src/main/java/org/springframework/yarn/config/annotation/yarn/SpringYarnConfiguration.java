@@ -16,6 +16,7 @@
 package org.springframework.yarn.config.annotation.yarn;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +58,12 @@ public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<Spr
 	@DependsOn(YarnSystemConstants.DEFAULT_ID_CONFIGURATION)
 	public ResourceLocalizer yarnLocalresources() throws Exception {
 		return builder.getOrBuild().getLocalizer();
+	}
+
+	@Bean(name=YarnSystemConstants.DEFAULT_ID_ENVIRONMENT)
+	@DependsOn(YarnSystemConstants.DEFAULT_ID_CONFIGURATION)
+	public Map<String, String> yarnEnvironment() throws Exception {
+		return builder.getOrBuild().getEnvironment();
 	}
 
 	@Override

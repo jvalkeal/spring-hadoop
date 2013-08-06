@@ -15,6 +15,7 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
+import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironment;
 import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
@@ -30,6 +31,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 
 	private YarnConfig configBuilder;
 	private YarnResourceLocalizer resourceLocalizerBuilder;
+	private YarnEnvironment environmentBuilder;
 
 	@Override
 	public void init(SpringYarnConfig builder) throws Exception {
@@ -38,6 +40,9 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 
 		final YarnResourceLocalizer resourceLocalizerBuilder = getLocalizerBuilder();
 		builder.setYarnLocalizerBuilder(resourceLocalizerBuilder);
+
+		final YarnEnvironment environmentBuilder = getEnvironmentBuilder();
+		builder.setEnvironmentBuilder(environmentBuilder);
 	}
 
 	@Override
@@ -62,6 +67,15 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 	protected void configure(YarnResourceLocalizer localizer) throws Exception {
 	}
 
+	/**
+	 * Configure {@link Map} of environment via {@link YarnEnvironment} builder.
+	 *
+	 * @param environment the {@link YarnEnvironment} builder
+	 * @throws Exception if error occurred
+	 */
+	protected void configure(YarnEnvironment environment) throws Exception {
+	}
+
 	protected final YarnConfig getConfigBuilder() throws Exception {
 		if (configBuilder != null) {
 			return configBuilder;
@@ -78,6 +92,15 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		resourceLocalizerBuilder = new YarnResourceLocalizer(true);
 		configure(resourceLocalizerBuilder);
 		return resourceLocalizerBuilder;
+	}
+
+	protected final YarnEnvironment getEnvironmentBuilder() throws Exception {
+		if (environmentBuilder != null) {
+			return environmentBuilder;
+		}
+		environmentBuilder = new YarnEnvironment(true);
+		configure(environmentBuilder);
+		return environmentBuilder;
 	}
 
 }

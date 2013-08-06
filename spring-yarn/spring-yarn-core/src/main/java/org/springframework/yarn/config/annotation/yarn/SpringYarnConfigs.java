@@ -15,6 +15,8 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
+import java.util.Map;
+
 import org.apache.hadoop.conf.Configuration;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
@@ -30,12 +32,15 @@ public class SpringYarnConfigs {
 
 	private ResourceLocalizer localizer;
 
+	private Map<String, String> environment;
+
 	public SpringYarnConfigs() {}
 
-	public SpringYarnConfigs(Configuration configuration, ResourceLocalizer localizer) {
+	public SpringYarnConfigs(Configuration configuration, ResourceLocalizer localizer, Map<String, String> environment) {
 		super();
 		this.configuration = configuration;
 		this.localizer = localizer;
+		this.environment = environment;
 	}
 
 	public Configuration getConfiguration() {
@@ -52,6 +57,14 @@ public class SpringYarnConfigs {
 
 	public void setLocalizer(ResourceLocalizer localizer) {
 		this.localizer = localizer;
+	}
+
+	public Map<String, String> getEnvironment() {
+		return environment;
+	}
+
+	public void setEnvironment(Map<String, String> environment) {
+		this.environment = environment;
 	}
 
 }

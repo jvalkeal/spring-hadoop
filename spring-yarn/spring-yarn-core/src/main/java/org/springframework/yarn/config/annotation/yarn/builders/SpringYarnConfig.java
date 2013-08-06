@@ -15,6 +15,8 @@
  */
 package org.springframework.yarn.config.annotation.yarn.builders;
 
+import java.util.Map;
+
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
 import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigs;
@@ -32,6 +34,8 @@ public class SpringYarnConfig extends AbstractConfiguredAnnotationBuilder<Spring
 
 	private YarnResourceLocalizer resourceLocalizer;
 
+	private YarnEnvironment environment;
+
 	public SpringYarnConfig() {
 		this(true);
 	}
@@ -43,12 +47,16 @@ public class SpringYarnConfig extends AbstractConfiguredAnnotationBuilder<Spring
 	@Override
 	protected SpringYarnConfigs performBuild() throws Exception {
 		SpringYarnConfigs config = new SpringYarnConfigs();
+
 		YarnConfiguration configuration = (YarnConfiguration) yarnConfig.build();
 		config.setConfiguration(configuration);
 
 		resourceLocalizer.configuration(configuration);
 		ResourceLocalizer localizer = resourceLocalizer.build();
 		config.setLocalizer(localizer);
+
+		Map<String, String> env = environment.build();
+		config.setEnvironment(env);
 
 		return config;
 	}
@@ -59,6 +67,10 @@ public class SpringYarnConfig extends AbstractConfiguredAnnotationBuilder<Spring
 
 	public void setYarnLocalizerBuilder(YarnResourceLocalizer resourceLocalizerBuilder) {
 		this.resourceLocalizer = resourceLocalizerBuilder;
+	}
+
+	public void setEnvironmentBuilder(YarnEnvironment environmentBuilder) {
+		this.environment = environmentBuilder;
 	}
 
 }

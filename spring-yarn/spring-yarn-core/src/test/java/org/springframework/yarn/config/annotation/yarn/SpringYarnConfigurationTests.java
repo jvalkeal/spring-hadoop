@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.junit.Test;
@@ -33,6 +34,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.TestUtils;
+import org.springframework.yarn.YarnSystemConstants;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironment;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
@@ -56,6 +59,11 @@ public class SpringYarnConfigurationTests {
 		assertTrue(ctx.containsBean("yarnLocalresources"));
 		ResourceLocalizer localizer = (ResourceLocalizer) ctx.getBean("yarnLocalresources");
 		assertNotNull(localizer);
+
+		assertTrue(ctx.containsBean(YarnSystemConstants.DEFAULT_ID_ENVIRONMENT));
+		@SuppressWarnings("unchecked")
+		Map<String, String> environment = (Map<String, String>) ctx.getBean(YarnSystemConstants.DEFAULT_ID_ENVIRONMENT);
+		assertNotNull(environment);
 
 		assertTrue(ctx.containsBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 		assertNotNull(ctx.getBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
@@ -111,6 +119,10 @@ public class SpringYarnConfigurationTests {
 				.withCopy()
 					.copy("foo.jar", "/tmp", true)
 					.source("foo2.jar").destination("/tmp").staging(false);
+		}
+
+		@Override
+		protected void configure(YarnEnvironment environment) throws Exception {
 		}
 
 	}
