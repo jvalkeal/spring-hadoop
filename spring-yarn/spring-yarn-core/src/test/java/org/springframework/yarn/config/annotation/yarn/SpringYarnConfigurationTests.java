@@ -23,29 +23,23 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.TestUtils;
-import org.springframework.yarn.config.annotation.yarn.EnableYarn;
-import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigurerAdapter;
-import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
-import org.springframework.yarn.fs.DefaultResourceLocalizer;
-import org.springframework.yarn.fs.ResourceLocalizer;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
-//import org.springframework.yarn.config.annotation.yarn.EnableYarn;
-//import org.springframework.yarn.config.annotation.yarn.YarnConfigConfigurerAdapter;
-import org.springframework.yarn.test.context.YarnDelegatingSmartContextLoader;
+import org.springframework.yarn.fs.ResourceLocalizer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader=YarnDelegatingSmartContextLoader.class)
+@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 public class SpringYarnConfigurationTests {
 
 	@Autowired
@@ -55,7 +49,7 @@ public class SpringYarnConfigurationTests {
 	public void testSimpleConfig() throws Exception {
 		assertNotNull(ctx);
 		assertTrue(ctx.containsBean("yarnConfiguration"));
-		Configuration config = (Configuration) ctx.getBean("yarnConfiguration");
+		YarnConfiguration config = (YarnConfiguration) ctx.getBean("yarnConfiguration");
 		assertNotNull(config);
 
 		assertTrue(ctx.containsBean("yarnLocalresources"));
@@ -91,7 +85,7 @@ public class SpringYarnConfigurationTests {
 
 	}
 
-	@org.springframework.context.annotation.Configuration
+	@Configuration
 	@EnableYarn
 	static class Config extends SpringYarnConfigurerAdapter {
 
