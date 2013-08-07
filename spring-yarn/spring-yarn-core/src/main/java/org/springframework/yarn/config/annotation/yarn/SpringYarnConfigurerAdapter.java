@@ -15,10 +15,13 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
-import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironment;
-import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnAppmasterBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnContainerBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
 
 /**
  * Provides a convenient base class for creating a {@link SpringYarnConfigurer}
@@ -27,80 +30,121 @@ import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLoca
  * @author Janne Valkealahti
  * @see EnableYarn
  */
-public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringYarnConfig> {
+public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringYarnConfigBuilder> {
 
-	private YarnConfig configBuilder;
-	private YarnResourceLocalizer resourceLocalizerBuilder;
-	private YarnEnvironment environmentBuilder;
+	private YarnConfigBuilder yarnConfigBuilder;
+	private YarnResourceLocalizerBuilder yarnResourceLocalizerBuilder;
+	private YarnEnvironmentBuilder yarnEnvironmentBuilder;
+	private YarnClientBuilder yarnClientBuilder;
+	private YarnAppmasterBuilder yarnAppmasterBuilder;
+	private YarnContainerBuilder yarnContainerBuilder;
 
 	@Override
-	public void init(SpringYarnConfig builder) throws Exception {
-		final YarnConfig configBuilder = getConfigBuilder();
-		builder.setYarnConfigBuilder(configBuilder);
-
-		final YarnResourceLocalizer resourceLocalizerBuilder = getLocalizerBuilder();
-		builder.setYarnLocalizerBuilder(resourceLocalizerBuilder);
-
-		final YarnEnvironment environmentBuilder = getEnvironmentBuilder();
-		builder.setEnvironmentBuilder(environmentBuilder);
+	public void init(SpringYarnConfigBuilder builder) throws Exception {
+		builder.setYarnConfigBuilder(getConfigBuilder());
+		builder.setYarnLocalizerBuilder(getLocalizerBuilder());
+		builder.setEnvironmentBuilder(getEnvironmentBuilder());
+		builder.setYarnClientBuilder(getClientBuilder());
 	}
 
 	@Override
-	public void configure(SpringYarnConfig builder) throws Exception {
+	public void configure(SpringYarnConfigBuilder builder) throws Exception {
 	}
 
 	/**
-	 * Configure {@link YarnConfiguration} via {@link YarnConfig} builder.
+	 * Configure {@link YarnConfiguration} via {@link YarnConfigBuilder} builder.
 	 *
 	 * @param config the {@link YarnConfiguration} builder
 	 * @throws Exception if error occurred
 	 */
-	protected void configure(YarnConfig config) throws Exception {
+	protected void configure(YarnConfigBuilder config) throws Exception {
 	}
 
 	/**
-	 * Configure {@link ResourceLocalizer} via {@link YarnResourceLocalizer} builder.
+	 * Configure {@link ResourceLocalizer} via {@link YarnResourceLocalizerBuilder} builder.
 	 *
 	 * @param config the {@link ResourceLocalizer} builder
 	 * @throws Exception if error occurred
 	 */
-	protected void configure(YarnResourceLocalizer localizer) throws Exception {
+	protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
 	}
 
 	/**
-	 * Configure {@link Map} of environment via {@link YarnEnvironment} builder.
+	 * Configure {@link Map} of environment via {@link YarnEnvironmentBuilder} builder.
 	 *
-	 * @param environment the {@link YarnEnvironment} builder
+	 * @param environment the {@link YarnEnvironmentBuilder} builder
 	 * @throws Exception if error occurred
 	 */
-	protected void configure(YarnEnvironment environment) throws Exception {
+	protected void configure(YarnEnvironmentBuilder environment) throws Exception {
 	}
 
-	protected final YarnConfig getConfigBuilder() throws Exception {
-		if (configBuilder != null) {
-			return configBuilder;
-		}
-		configBuilder = new YarnConfig(true);
-		configure(configBuilder);
-		return configBuilder;
+	/**
+	 * Configure {@link YarnClient} of environment via {@link YarnClientBuilder} builder.
+	 *
+	 * @param client the {@link YarnClientBuilder} builder
+	 * @throws Exception if error occurred
+	 */
+	protected void configure(YarnClientBuilder client) throws Exception {
 	}
 
-	protected final YarnResourceLocalizer getLocalizerBuilder() throws Exception {
-		if (resourceLocalizerBuilder != null) {
-			return resourceLocalizerBuilder;
-		}
-		resourceLocalizerBuilder = new YarnResourceLocalizer(true);
-		configure(resourceLocalizerBuilder);
-		return resourceLocalizerBuilder;
+	protected void configure(YarnAppmasterBuilder master) throws Exception {
 	}
 
-	protected final YarnEnvironment getEnvironmentBuilder() throws Exception {
-		if (environmentBuilder != null) {
-			return environmentBuilder;
+	protected void configure(YarnContainerBuilder container) throws Exception {
+	}
+
+	protected final YarnConfigBuilder getConfigBuilder() throws Exception {
+		if (yarnConfigBuilder != null) {
+			return yarnConfigBuilder;
 		}
-		environmentBuilder = new YarnEnvironment(true);
-		configure(environmentBuilder);
-		return environmentBuilder;
+		yarnConfigBuilder = new YarnConfigBuilder(true);
+		configure(yarnConfigBuilder);
+		return yarnConfigBuilder;
+	}
+
+	protected final YarnResourceLocalizerBuilder getLocalizerBuilder() throws Exception {
+		if (yarnResourceLocalizerBuilder != null) {
+			return yarnResourceLocalizerBuilder;
+		}
+		yarnResourceLocalizerBuilder = new YarnResourceLocalizerBuilder(true);
+		configure(yarnResourceLocalizerBuilder);
+		return yarnResourceLocalizerBuilder;
+	}
+
+	protected final YarnEnvironmentBuilder getEnvironmentBuilder() throws Exception {
+		if (yarnEnvironmentBuilder != null) {
+			return yarnEnvironmentBuilder;
+		}
+		yarnEnvironmentBuilder = new YarnEnvironmentBuilder(true);
+		configure(yarnEnvironmentBuilder);
+		return yarnEnvironmentBuilder;
+	}
+
+	protected final YarnClientBuilder getClientBuilder() throws Exception {
+		if (yarnClientBuilder != null) {
+			return yarnClientBuilder;
+		}
+		yarnClientBuilder = new YarnClientBuilder(true);
+		configure(yarnClientBuilder);
+		return yarnClientBuilder;
+	}
+
+	protected final YarnAppmasterBuilder getAppmasterBuilder() throws Exception {
+		if (yarnAppmasterBuilder != null) {
+			return yarnAppmasterBuilder;
+		}
+		yarnAppmasterBuilder = new YarnAppmasterBuilder(true);
+		configure(yarnAppmasterBuilder);
+		return yarnAppmasterBuilder;
+	}
+
+	protected final YarnContainerBuilder getContainerBuilder() throws Exception {
+		if (yarnContainerBuilder != null) {
+			return yarnContainerBuilder;
+		}
+		yarnContainerBuilder = new YarnContainerBuilder(true);
+		configure(yarnContainerBuilder);
+		return yarnContainerBuilder;
 	}
 
 }

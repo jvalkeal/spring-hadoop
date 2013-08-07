@@ -34,19 +34,20 @@ import org.springframework.yarn.configuration.ConfigurationFactoryBean;
  * @author Janne Valkealahti
  *
  */
-public final class YarnConfig extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, YarnConfig>
+public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, YarnConfigBuilder>
 		implements PropertiesConfigureAware, ResourceConfigureAware {
 
 	private final Set<Resource> resources = new HashSet<Resource>();
 	private final Properties properties = new Properties();
 
 	private String fileSystemUri;
+	private String rmAddress;
 
-	public YarnConfig() {
+	public YarnConfigBuilder() {
 		this(true);
 	}
 
-	public YarnConfig(boolean allowConfigurersOfSameType) {
+	public YarnConfigBuilder(boolean allowConfigurersOfSameType) {
 		super(allowConfigurersOfSameType);
 	}
 
@@ -57,6 +58,7 @@ public final class YarnConfig extends AbstractConfiguredAnnotationBuilder<YarnCo
 		fb.setResources(resources);
 		fb.setProperties(properties);
 		fb.setFileSystemUri(fileSystemUri);
+		fb.setResourceManagerAddress(rmAddress);
 
 		fb.afterPropertiesSet();
 		return fb.getObject();
@@ -72,8 +74,8 @@ public final class YarnConfig extends AbstractConfiguredAnnotationBuilder<YarnCo
 		getResources().addAll(resources);
 	}
 
-	public ResourceConfigurer<YarnConfiguration, YarnConfig> withResources() throws Exception {
-		return apply(new ResourceConfigurer<YarnConfiguration, YarnConfig>());
+	public ResourceConfigurer<YarnConfiguration, YarnConfigBuilder> withResources() throws Exception {
+		return apply(new ResourceConfigurer<YarnConfiguration, YarnConfigBuilder>());
 	}
 
 	public Properties getProperties() {
@@ -84,15 +86,19 @@ public final class YarnConfig extends AbstractConfiguredAnnotationBuilder<YarnCo
 		return resources;
 	}
 
-	public PropertiesConfigurer<YarnConfiguration, YarnConfig> withProperties() throws Exception {
-		return apply(new PropertiesConfigurer<YarnConfiguration, YarnConfig>());
+	public PropertiesConfigurer<YarnConfiguration, YarnConfigBuilder> withProperties() throws Exception {
+		return apply(new PropertiesConfigurer<YarnConfiguration, YarnConfigBuilder>());
 	}
 
-	public YarnConfig fileSystemUri(String uri) {
+	public YarnConfigBuilder fileSystemUri(String uri) {
 		fileSystemUri = uri;
 		return this;
 	}
 
+	public YarnConfigBuilder resourceManagerAddress(String address) {
+		rmAddress = address;
+		return this;
+	}
 
 
 //    private <C extends AnnotationConfigurerAdapter<YarnConfiguration, AnnotationBuilder<YarnConfiguration>>> C getOrApply(C configurer)

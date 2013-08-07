@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.springframework.yarn.config.annotation.AnnotationConfigurer;
 import org.springframework.yarn.config.annotation.AnnotationConfigurerAdapter;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
@@ -31,12 +31,12 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public class LocalResourcesCopyConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizer> {
+public class LocalResourcesCopyConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizerBuilder> {
 
 	private Collection<CopyEntry> copyEntries = new ArrayList<CopyEntry>();
 
 	@Override
-	public void configure(YarnResourceLocalizer builder) throws Exception {
+	public void configure(YarnResourceLocalizerBuilder builder) throws Exception {
 		builder.setCopyEntries(copyEntries);
 	}
 

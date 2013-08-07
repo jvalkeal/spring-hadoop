@@ -23,15 +23,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.yarn.YarnSystemConstants;
+import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.AbstractAnnotationConfiguration;
 import org.springframework.yarn.config.annotation.AnnotationConfigurer;
-import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfig;
+import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
- * Uses a {@link SpringYarnConfig} to create {@link SpringYarnConfigs}
+ * Uses a {@link SpringYarnConfigBuilder} to create {@link SpringYarnConfigs}
  * holding all relevant configuratins for Spring Yarn. It then exports the
- * necessary beans. Customizations can be made to {@link SpringYarnConfig} by
+ * necessary beans. Customizations can be made to {@link SpringYarnConfigBuilder} by
  * extending {@link SpringYarnConfigurerAdapter} and exposing it as a
  * {@link Configuration} or implementing {@link SpringYarnConfigurer} and
  * exposing it as a {@link Configuration}. This configuration is imported when
@@ -39,14 +40,14 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  *
  * @author Janne Valkealahti
  * @see EnableYarn
- * @see SpringYarnConfig
+ * @see SpringYarnConfigBuilder
  */
 @Configuration
-public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<SpringYarnConfig, SpringYarnConfigs> {
+public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<SpringYarnConfigBuilder, SpringYarnConfigs> {
 
-	private SpringYarnConfig builder = new SpringYarnConfig(true);
+	protected SpringYarnConfigBuilder builder = new SpringYarnConfigBuilder(true);
 
-	private List<SpringYarnConfigurer<SpringYarnConfig>> configurers;
+	private List<SpringYarnConfigurer<SpringYarnConfigBuilder>> configurers;
 
 	@Bean(name=YarnSystemConstants.DEFAULT_ID_CONFIGURATION)
 	public YarnConfiguration yarnConfiguration() throws Exception {
@@ -67,8 +68,8 @@ public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<Spr
 	}
 
 	@Override
-	protected void onConfigurers(List<AnnotationConfigurer<SpringYarnConfigs, SpringYarnConfig>> configurers) throws Exception {
-		for (AnnotationConfigurer<SpringYarnConfigs, SpringYarnConfig> configurer : configurers) {
+	protected void onConfigurers(List<AnnotationConfigurer<SpringYarnConfigs, SpringYarnConfigBuilder>> configurers) throws Exception {
+		for (AnnotationConfigurer<SpringYarnConfigs, SpringYarnConfigBuilder> configurer : configurers) {
 			builder.apply(configurer);
 		}
 	}

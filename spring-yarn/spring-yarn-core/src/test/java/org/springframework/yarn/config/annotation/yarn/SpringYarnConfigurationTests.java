@@ -35,9 +35,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.TestUtils;
 import org.springframework.yarn.YarnSystemConstants;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironment;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnConfig;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizer;
+import org.springframework.yarn.client.YarnClient;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 import org.springframework.yarn.support.YarnContextUtils;
@@ -65,6 +67,10 @@ public class SpringYarnConfigurationTests {
 		Map<String, String> environment = (Map<String, String>) ctx.getBean(YarnSystemConstants.DEFAULT_ID_ENVIRONMENT);
 		assertNotNull(environment);
 
+		assertTrue(ctx.containsBean(YarnSystemConstants.DEFAULT_ID_CLIENT));
+		YarnClient client = (YarnClient) ctx.getBean(YarnSystemConstants.DEFAULT_ID_CLIENT);
+		assertNotNull(client);
+
 		assertTrue(ctx.containsBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 		assertNotNull(ctx.getBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 
@@ -82,7 +88,7 @@ public class SpringYarnConfigurationTests {
 		CopyEntry copyEntry1 = iterator.next();
 		String copyEntrySrc1 = TestUtils.readField("src", copyEntry1);
 		String copyEntryDest1 = TestUtils.readField("dest", copyEntry1);
-		boolean copyEntryStaging1 = TestUtils.readField("staging", copyEntry1);
+		Boolean copyEntryStaging1 = TestUtils.readField("staging", copyEntry1);
 		assertThat(copyEntrySrc1, is("foo.jar"));
 		assertThat(copyEntryDest1, is("/tmp"));
 		assertThat(copyEntryStaging1, is(true));
@@ -90,7 +96,7 @@ public class SpringYarnConfigurationTests {
 		CopyEntry copyEntry2 = iterator.next();
 		String copyEntrySrc2 = TestUtils.readField("src", copyEntry2);
 		String copyEntryDest2 = TestUtils.readField("dest", copyEntry2);
-		boolean copyEntryStaging2 = TestUtils.readField("staging", copyEntry2);
+		Boolean copyEntryStaging2 = TestUtils.readField("staging", copyEntry2);
 		assertThat(copyEntrySrc2, is("foo2.jar"));
 		assertThat(copyEntryDest2, is("/tmp"));
 		assertThat(copyEntryStaging2, is(false));
@@ -98,11 +104,11 @@ public class SpringYarnConfigurationTests {
 	}
 
 	@Configuration
-	@EnableYarn
+	@EnableYarnClient
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		protected void configure(YarnConfig config) throws Exception {
+		protected void configure(YarnConfigBuilder config) throws Exception {
 			config
 				.fileSystemUri("hdfs://foo.uri")
 				.withResources()
@@ -114,7 +120,7 @@ public class SpringYarnConfigurationTests {
 		}
 
 		@Override
-		protected void configure(YarnResourceLocalizer localizer) throws Exception {
+		protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
 			localizer
 				.withCopy()
 					.copy("foo.jar", "/tmp", true)
@@ -122,7 +128,11 @@ public class SpringYarnConfigurationTests {
 		}
 
 		@Override
-		protected void configure(YarnEnvironment environment) throws Exception {
+		protected void configure(YarnEnvironmentBuilder environment) throws Exception {
+		}
+
+		@Override
+		protected void configure(YarnClientBuilder client) throws Exception {
 		}
 
 	}

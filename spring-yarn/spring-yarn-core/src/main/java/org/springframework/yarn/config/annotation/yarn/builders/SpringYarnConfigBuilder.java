@@ -28,19 +28,20 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public class SpringYarnConfig extends AbstractConfiguredAnnotationBuilder<SpringYarnConfigs, SpringYarnConfig> {
+public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<SpringYarnConfigs, SpringYarnConfigBuilder> {
 
-	private YarnConfig yarnConfig;
+	private YarnConfigBuilder yarnConfig;
+	private YarnResourceLocalizerBuilder resourceLocalizer;
+	private YarnEnvironmentBuilder environment;
+	private YarnClientBuilder yarnClientBuilder;
+	private YarnAppmasterBuilder yarnAppmasterBuilder;
+	private YarnContainerBuilder yarnContainerBuilder;
 
-	private YarnResourceLocalizer resourceLocalizer;
-
-	private YarnEnvironment environment;
-
-	public SpringYarnConfig() {
+	public SpringYarnConfigBuilder() {
 		this(true);
 	}
 
-	public SpringYarnConfig(boolean allowConfigurersOfSameType) {
+	public SpringYarnConfigBuilder(boolean allowConfigurersOfSameType) {
 		super(allowConfigurersOfSameType);
 	}
 
@@ -58,19 +59,36 @@ public class SpringYarnConfig extends AbstractConfiguredAnnotationBuilder<Spring
 		Map<String, String> env = environment.build();
 		config.setEnvironment(env);
 
+		if (yarnClientBuilder != null) {
+			yarnClientBuilder.configuration(configuration);
+			config.setYarnClient(yarnClientBuilder.build());
+		}
+
 		return config;
 	}
 
-	public void setYarnConfigBuilder(YarnConfig yarnConfigBuilder) {
+	public void setYarnConfigBuilder(YarnConfigBuilder yarnConfigBuilder) {
 		this.yarnConfig = yarnConfigBuilder;
 	}
 
-	public void setYarnLocalizerBuilder(YarnResourceLocalizer resourceLocalizerBuilder) {
+	public void setYarnLocalizerBuilder(YarnResourceLocalizerBuilder resourceLocalizerBuilder) {
 		this.resourceLocalizer = resourceLocalizerBuilder;
 	}
 
-	public void setEnvironmentBuilder(YarnEnvironment environmentBuilder) {
+	public void setEnvironmentBuilder(YarnEnvironmentBuilder environmentBuilder) {
 		this.environment = environmentBuilder;
+	}
+
+	public void setYarnClientBuilder(YarnClientBuilder yarnClientBuilder) {
+		this.yarnClientBuilder = yarnClientBuilder;
+	}
+
+	public void setYarnAppmasterBuilder(YarnAppmasterBuilder yarnAppmasterBuilder) {
+		this.yarnAppmasterBuilder = yarnAppmasterBuilder;
+	}
+
+	public void setYarnContainerBuilder(YarnContainerBuilder yarnContainerBuilder) {
+		this.yarnContainerBuilder = yarnContainerBuilder;
 	}
 
 }

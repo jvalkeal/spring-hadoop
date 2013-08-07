@@ -23,8 +23,10 @@ import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
 import org.springframework.yarn.config.annotation.yarn.configurers.LocalResourcesCopyConfigurer;
+import org.springframework.yarn.config.annotation.yarn.configurers.LocalResourcesHdfsConfigurer;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
+import org.springframework.yarn.fs.LocalResourcesFactoryBean.TransferEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
@@ -33,18 +35,19 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public final class YarnResourceLocalizer extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, YarnResourceLocalizer> {
+public final class YarnResourceLocalizerBuilder extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, YarnResourceLocalizerBuilder> {
 
 	private YarnConfiguration configuration;
 	private LocalResourceType defaultType = LocalResourceType.FILE;
 	private LocalResourceVisibility defaultVisibility = LocalResourceVisibility.APPLICATION;
 	private Collection<CopyEntry> copyEntries;
+	private Collection<TransferEntry> transferEntries;
 
-	public YarnResourceLocalizer(boolean allowConfigurersOfSameType) {
+	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType) {
 		super(allowConfigurersOfSameType);
 	}
 
-	public YarnResourceLocalizer(boolean allowConfigurersOfSameType, YarnConfiguration configuration) {
+	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType, YarnConfiguration configuration) {
 		super(allowConfigurersOfSameType);
 		this.configuration = configuration;
 	}
@@ -56,6 +59,7 @@ public final class YarnResourceLocalizer extends AbstractConfiguredAnnotationBui
 		fb.setVisibility(defaultVisibility);
 		fb.setConfiguration(configuration);
 		fb.setCopyEntries(copyEntries);
+		fb.setHdfsEntries(transferEntries);
 		fb.setHdfsEntries(new ArrayList<LocalResourcesFactoryBean.TransferEntry>());
 		fb.afterPropertiesSet();
 		return fb.getObject();
@@ -65,12 +69,12 @@ public final class YarnResourceLocalizer extends AbstractConfiguredAnnotationBui
 		this.configuration = configuration;
 	}
 
-	public YarnResourceLocalizer defaultLocalResourceType(LocalResourceType type) {
+	public YarnResourceLocalizerBuilder defaultLocalResourceType(LocalResourceType type) {
 		defaultType = type;
 		return this;
 	}
 
-	public YarnResourceLocalizer defaultLocalResourceVisibility(LocalResourceVisibility visibility) {
+	public YarnResourceLocalizerBuilder defaultLocalResourceVisibility(LocalResourceVisibility visibility) {
 		defaultVisibility = visibility;
 		return this;
 	}
@@ -79,8 +83,16 @@ public final class YarnResourceLocalizer extends AbstractConfiguredAnnotationBui
 		this.copyEntries = copyEntries;
 	}
 
+	public void setHdfsEntries(Collection<TransferEntry> transferEntries) {
+		this.transferEntries = transferEntries;
+	}
+
 	public LocalResourcesCopyConfigurer withCopy() throws Exception {
 		return apply(new LocalResourcesCopyConfigurer());
+	}
+
+	public LocalResourcesHdfsConfigurer withHdfs() throws Exception {
+		return apply(new LocalResourcesHdfsConfigurer());
 	}
 
 }

@@ -18,6 +18,9 @@ package org.springframework.yarn.config.annotation.yarn;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+import org.springframework.yarn.am.YarnAppmaster;
+import org.springframework.yarn.client.YarnClient;
+import org.springframework.yarn.container.YarnContainer;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
@@ -29,10 +32,11 @@ import org.springframework.yarn.fs.ResourceLocalizer;
 public class SpringYarnConfigs {
 
 	private Configuration configuration;
-
 	private ResourceLocalizer localizer;
-
 	private Map<String, String> environment;
+	private YarnClient yarnClient;
+	private YarnAppmaster yarnAppmaster;
+	private YarnContainer yarnContainer;
 
 	public SpringYarnConfigs() {}
 
@@ -65,6 +69,30 @@ public class SpringYarnConfigs {
 
 	public void setEnvironment(Map<String, String> environment) {
 		this.environment = environment;
+	}
+
+	public YarnClient getYarnClient() {
+		return yarnClient;
+	}
+
+	public void setYarnClient(YarnClient yarnClient) {
+		this.yarnClient = yarnClient;
+	}
+
+	public YarnAppmaster getYarnAppmaster() {
+		return yarnAppmaster;
+	}
+
+	public void setYarnAppmaster(YarnAppmaster yarnAppmaster) {
+		this.yarnAppmaster = yarnAppmaster;
+	}
+
+	public YarnContainer getYarnContainer() {
+		return yarnContainer;
+	}
+
+	public void setYarnContainer(YarnContainer yarnContainer) {
+		this.yarnContainer = yarnContainer;
 	}
 
 }
