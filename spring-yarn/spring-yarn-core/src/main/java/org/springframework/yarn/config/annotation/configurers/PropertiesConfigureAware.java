@@ -18,8 +18,8 @@ package org.springframework.yarn.config.annotation.configurers;
 import java.util.Properties;
 
 /**
- * Interface for {@link AnnotationBuilder} which wants to be
- * aware of {@link Properties} configured by {@link PropertiesConfigurer}.
+ * Interface for {@link org.springframework.yarn.config.annotation.AnnotationBuilder AnnotationBuilder}
+ * which wants to be aware of {@link Properties} configured by {@link PropertiesConfigurer}.
  *
  * @author Janne Valkealahti
  *

@@ -23,6 +23,7 @@ import org.apache.hadoop.yarn.api.records.LocalResourceType;
 import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.yarn.configurers.LocalResourcesCopyConfigurer;
 import org.springframework.yarn.config.annotation.yarn.configurers.LocalResourcesHdfsConfigurer;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean;
@@ -60,8 +61,7 @@ public final class YarnResourceLocalizerBuilder extends AbstractConfiguredAnnota
 		fb.setVisibility(defaultVisibility);
 		fb.setConfiguration(configuration);
 		fb.setCopyEntries(copyEntries);
-		fb.setHdfsEntries(transferEntries);
-		fb.setHdfsEntries(new ArrayList<LocalResourcesFactoryBean.TransferEntry>());
+		fb.setHdfsEntries(transferEntries != null ? transferEntries : new ArrayList<LocalResourcesFactoryBean.TransferEntry>());
 		fb.afterPropertiesSet();
 		return fb.getObject();
 	}

@@ -24,7 +24,8 @@ import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigs;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
- * {@link AnnotationBuilder} for {@link SpringYarnConfigs}.
+ * {@link org.springframework.yarn.config.annotation.AnnotationBuilder AnnotationBuilder}
+ * for {@link SpringYarnConfigs}.
  *
  * @author Janne Valkealahti
  *
@@ -69,6 +70,13 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 			yarnClientBuilder.setResourceLocalizer(localizer);
 			yarnClientBuilder.setEnvironment(env);
 			config.setYarnClient(yarnClientBuilder.build());
+		}
+
+		if (yarnAppmasterBuilder != null) {
+			yarnAppmasterBuilder.configuration(configuration);
+			yarnAppmasterBuilder.setResourceLocalizer(localizer);
+			yarnAppmasterBuilder.setEnvironment(env);
+			config.setYarnAppmaster(yarnAppmasterBuilder.build());
 		}
 
 		return config;

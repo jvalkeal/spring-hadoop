@@ -15,17 +15,26 @@
  */
 package org.springframework.yarn.config.annotation.yarn.builders;
 
+import java.util.Map;
+
+import org.apache.hadoop.conf.Configuration;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.am.CommandLineAppmasterRunner;
 import org.springframework.yarn.am.StaticAppmaster;
 import org.springframework.yarn.am.YarnAppmaster;
+import org.springframework.yarn.am.allocate.DefaultContainerAllocator;
 import org.springframework.yarn.am.container.DefaultContainerLauncher;
+import org.springframework.yarn.am.monitor.DefaultContainerMonitor;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.yarn.fs.ResourceLocalizer;
 import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
 
 public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuilder<YarnAppmaster, YarnAppmasterBuilder> {
 
 	private Class<?> clazz;
+	private Configuration configuration;
+	private ResourceLocalizer resourceLocalizer;
+	private Map<String, String> environment;
 
 	public YarnAppmasterBuilder() {
 		this(true);
@@ -48,15 +57,37 @@ public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuil
 		fb.afterPropertiesSet();
 		am.setCommands(fb.getObject());
 
+		am.setConfiguration(configuration);
+		am.setEnvironment(environment);
+		am.setResourceLocalizer(resourceLocalizer);
+
 		am.setLauncher(new DefaultContainerLauncher());
+		DefaultContainerAllocator allocator = new DefaultContainerAllocator();
+		allocator.setConfiguration(configuration);
+		allocator.setEnvironment(environment);
+		am.setAllocator(allocator);
+
+		am.setMonitor(new DefaultContainerMonitor());
 
 		return am;
 	}
 
+	public void configuration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	public void setResourceLocalizer(ResourceLocalizer resourceLocalizer) {
+		this.resourceLocalizer = resourceLocalizer;
+	}
+
+	public void setEnvironment(Map<String, String> environment) {
+		this.environment = environment;
+	}
 
 	public YarnAppmasterBuilder clazz(Class<?> clazz) {
 		this.clazz = clazz;
 		return this;
 	}
+
 
 }

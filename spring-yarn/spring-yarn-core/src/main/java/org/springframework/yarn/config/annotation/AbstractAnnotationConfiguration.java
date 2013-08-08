@@ -18,19 +18,16 @@ package org.springframework.yarn.config.annotation;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.BeansException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ImportAware;
-import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
-import org.springframework.yarn.config.annotation.yarn.ConfiguringBeanFactoryPostProcessorConfiguration;
-import org.springframework.yarn.config.annotation.yarn.configuration.SpringYarnClientConfiguration;
 
 /**
  *
@@ -41,7 +38,9 @@ import org.springframework.yarn.config.annotation.yarn.configuration.SpringYarnC
  * @param <O>
  */
 public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilder<O>, O>
-		implements ImportAware, BeanClassLoaderAware, ApplicationContextAware {
+		implements ImportAware, BeanClassLoaderAware, InitializingBean {
+
+	private final static Log log = LogFactory.getLog(AbstractAnnotationConfiguration.class);
 
 	private List<AnnotationConfigurer<O,B>> configurers;
 
@@ -49,16 +48,9 @@ public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilde
 
 	private AnnotationAttributes annotationAttributes;
 
-	protected ApplicationContext applicationContext;
-
 	@Override
 	public void setBeanClassLoader(ClassLoader classLoader) {
 		beanClassLoader = classLoader;
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
 	}
 
 	@Override
@@ -95,6 +87,11 @@ public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilde
 
 	public List<AnnotationConfigurer<O, B>> getConfigurers() {
 		return configurers;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		log.info("XXX afterPropertiesSet");
 	}
 
 	protected abstract void onConfigurers(List<AnnotationConfigurer<O, B>> configurers) throws Exception;

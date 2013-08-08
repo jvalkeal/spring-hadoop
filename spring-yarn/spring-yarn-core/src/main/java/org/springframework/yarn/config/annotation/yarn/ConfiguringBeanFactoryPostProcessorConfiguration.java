@@ -33,7 +33,7 @@ import org.springframework.yarn.config.ConfiguringBeanFactoryPostProcessor;
 public class ConfiguringBeanFactoryPostProcessorConfiguration {
 
 	@Bean(name="org.springframework.yarn.config.internal.ConfiguringBeanFactoryPostProcessor")
-	public BeanFactoryPostProcessor getBeanFactoryPostProcessor() {
+	public static BeanFactoryPostProcessor getBeanFactoryPostProcessor() {
 		// TODO: change org.springframework.yarn.config.AbstractYarnNamespaceHandler
 		//       .CONFIGURING_POSTPROCESSOR_BEAN_NAME public
 		//       and replace this bean name with it

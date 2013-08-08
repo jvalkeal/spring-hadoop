@@ -41,6 +41,8 @@ public final class YarnEnvironmentBuilder
 	protected Map<String, String> performBuild() throws Exception {
 		EnvironmentFactoryBean fb = new EnvironmentFactoryBean();
 		fb.setClasspath(classpath);
+		fb.setDelimiter(":");
+		fb.setDefaultYarnAppClasspath(true);
 		fb.afterPropertiesSet();
 		return fb.getObject();
 	}

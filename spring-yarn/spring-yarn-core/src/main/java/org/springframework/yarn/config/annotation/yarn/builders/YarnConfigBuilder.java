@@ -29,7 +29,7 @@ import org.springframework.yarn.config.annotation.configurers.ResourceConfigurer
 import org.springframework.yarn.configuration.ConfigurationFactoryBean;
 
 /**
- * {@link AnnotationBuilder} for {@link YarnConfiguration}.
+ * {@link org.springframework.yarn.config.annotation.AnnotationBuilder AnnotationBuilder} for {@link YarnConfiguration}.
  *
  * @author Janne Valkealahti
  *

@@ -21,8 +21,8 @@ import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.AnnotationConfigurerAdapter;
 
 /**
- * {@link AnnotationConfigurer} which knows how to handle
- * configuring a {@link Properties}.
+ * {@link org.springframework.yarn.config.annotation.AnnotationConfigurer AnnotationConfigurer}
+ * which knows how to handle configuring a {@link Properties}.
  *
  * @author Janne Valkealahti
  *

@@ -15,13 +15,22 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.yarn.client.YarnClient;
+import org.springframework.yarn.config.annotation.yarn.EnableYarn.Enable;
+import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnAppmasterBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnContainerBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironmentBuilder;
-import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
  * Provides a convenient base class for creating a {@link SpringYarnConfigurer}
@@ -31,6 +40,8 @@ import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLoca
  * @see EnableYarn
  */
 public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringYarnConfigBuilder> {
+
+	private final static Log log = LogFactory.getLog(SpringYarnConfigurerAdapter.class);
 
 	private YarnConfigBuilder yarnConfigBuilder;
 	private YarnResourceLocalizerBuilder yarnResourceLocalizerBuilder;
@@ -44,7 +55,21 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		builder.setYarnConfigBuilder(getConfigBuilder());
 		builder.setYarnLocalizerBuilder(getLocalizerBuilder());
 		builder.setEnvironmentBuilder(getEnvironmentBuilder());
-		builder.setYarnClientBuilder(getClientBuilder());
+
+		EnableYarn annotation = AnnotationUtils.findAnnotation(getClass(), EnableYarn.class);
+		Enable enable = annotation.enable();
+
+		if (log.isDebugEnabled()) {
+			log.debug("Enabling " + enable);
+		}
+
+		if (enable == Enable.CLIENT) {
+			builder.setYarnClientBuilder(getClientBuilder());
+		} else if (enable == Enable.APPMASTER) {
+			builder.setYarnAppmasterBuilder(getAppmasterBuilder());
+		} else if (enable == Enable.CONTAINER) {
+			builder.setYarnContainerBuilder(getContainerBuilder());
+		}
 	}
 
 	@Override

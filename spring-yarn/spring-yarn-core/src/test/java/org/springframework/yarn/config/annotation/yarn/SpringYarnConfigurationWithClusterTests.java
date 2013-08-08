@@ -33,14 +33,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.TestUtils;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.yarn.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnClientBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironmentBuilder;
-import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
@@ -49,7 +47,6 @@ import org.springframework.yarn.test.context.MiniYarnCluster;
 import org.springframework.yarn.test.context.YarnDelegatingSmartContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 @ContextConfiguration(loader=YarnDelegatingSmartContextLoader.class)
 @MiniYarnCluster
 public class SpringYarnConfigurationWithClusterTests {
@@ -87,13 +84,6 @@ public class SpringYarnConfigurationWithClusterTests {
 		assertThat(rmAdd2, notNullValue());
 		assertThat(rmAdd1, is(rmAdd2));
 
-
-
-//		assertThat(config.get("resource.property"), is("test-site-1.xml"));
-//		assertThat(config.get("resource.property.2"), is("test-site-2.xml"));
-//		assertThat(config.get("foo"), is("jee"));
-//		assertThat(config.get("fs.default.name"), is("hdfs://foo.uri"));
-
 		Collection<CopyEntry> copyEntries = TestUtils.readField("copyEntries", localizer);
 		assertNotNull(copyEntries);
 		assertThat(copyEntries.size(), is(2));
@@ -122,18 +112,6 @@ public class SpringYarnConfigurationWithClusterTests {
 	@EnableYarn(enable=Enable.CLIENT)
 	static class Config extends SpringYarnConfigurerAdapter {
 
-//		@Override
-//		protected void configure(YarnConfigBuilder config) throws Exception {
-//			config
-//				.fileSystemUri("hdfs://foo.uri")
-//				.withResources()
-//					.resource("classpath:/test-site-1.xml")
-//					.resource("classpath:/test-site-2.xml")
-//					.and()
-//				.withProperties()
-//					.property("foo", "jee");
-//		}
-
 		@Override
 		protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
 			localizer
@@ -144,6 +122,9 @@ public class SpringYarnConfigurationWithClusterTests {
 
 		@Override
 		protected void configure(YarnEnvironmentBuilder environment) throws Exception {
+			environment
+			.withClasspath()
+				.entry("./*");
 		}
 
 		@Override

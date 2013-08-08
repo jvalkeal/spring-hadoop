@@ -181,6 +181,11 @@ public abstract class AbstractCommandLineRunner<T> {
 
 			@SuppressWarnings("unchecked")
 			T bean = (T) context.getBean(masterIdentifier);
+
+			if (log.isDebugEnabled()) {
+				log.debug("Passing bean=" + bean + " from context=" + context + " for beanId=" + masterIdentifier);
+			}
+
 			exitStatus = handleBeanRun(bean, parameters, opts);
 
 		} catch (Throwable e) {
