@@ -28,7 +28,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -202,8 +204,15 @@ public abstract class AbstractCommandLineRunner<T> {
 	 * @return the configured context
 	 */
 	protected ConfigurableApplicationContext getApplicationContext(String configLocation) {
-		ConfigurableApplicationContext context =
-				new ClassPathXmlApplicationContext(configLocation);
+
+		ConfigurableApplicationContext context;
+		if (ClassUtils.isPresent(configLocation, getClass().getClassLoader())) {
+			Class<?> clazz = ClassUtils.resolveClassName(configLocation, getClass().getClassLoader());
+			context = new AnnotationConfigApplicationContext(clazz);
+		} else {
+			context = new ClassPathXmlApplicationContext(configLocation);
+		}
+
 		context.getAutowireCapableBeanFactory().autowireBeanProperties(this,
 				AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, false);
 		return context;

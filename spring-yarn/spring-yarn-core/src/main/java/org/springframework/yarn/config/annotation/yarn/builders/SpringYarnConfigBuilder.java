@@ -17,6 +17,7 @@ package org.springframework.yarn.config.annotation.yarn.builders;
 
 import java.util.Map;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
 import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigs;
@@ -30,12 +31,14 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  */
 public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<SpringYarnConfigs, SpringYarnConfigBuilder> {
 
-	private YarnConfigBuilder yarnConfig;
-	private YarnResourceLocalizerBuilder resourceLocalizer;
-	private YarnEnvironmentBuilder environment;
+	private YarnConfigBuilder yarnConfigBuilder;
+	private YarnResourceLocalizerBuilder yarnResourceLocalizerBuilder;
+	private YarnEnvironmentBuilder yarnEnvironmentBuilder;
 	private YarnClientBuilder yarnClientBuilder;
 	private YarnAppmasterBuilder yarnAppmasterBuilder;
 	private YarnContainerBuilder yarnContainerBuilder;
+
+	private Configuration yarnConfiguration;
 
 	public SpringYarnConfigBuilder() {
 		this(true);
@@ -49,34 +52,42 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 	protected SpringYarnConfigs performBuild() throws Exception {
 		SpringYarnConfigs config = new SpringYarnConfigs();
 
-		YarnConfiguration configuration = (YarnConfiguration) yarnConfig.build();
+		Configuration configuration = (yarnConfiguration == null)
+				? (YarnConfiguration) yarnConfigBuilder.build()
+				: yarnConfiguration;
 		config.setConfiguration(configuration);
 
-		resourceLocalizer.configuration(configuration);
-		ResourceLocalizer localizer = resourceLocalizer.build();
+		yarnResourceLocalizerBuilder.configuration(configuration);
+		ResourceLocalizer localizer = yarnResourceLocalizerBuilder.build();
 		config.setLocalizer(localizer);
 
-		Map<String, String> env = environment.build();
+		Map<String, String> env = yarnEnvironmentBuilder.build();
 		config.setEnvironment(env);
 
 		if (yarnClientBuilder != null) {
 			yarnClientBuilder.configuration(configuration);
+			yarnClientBuilder.setResourceLocalizer(localizer);
+			yarnClientBuilder.setEnvironment(env);
 			config.setYarnClient(yarnClientBuilder.build());
 		}
 
 		return config;
 	}
 
+	public void setYarnConfiguration(Configuration yarnConfiguration) {
+		this.yarnConfiguration = yarnConfiguration;
+	}
+
 	public void setYarnConfigBuilder(YarnConfigBuilder yarnConfigBuilder) {
-		this.yarnConfig = yarnConfigBuilder;
+		this.yarnConfigBuilder = yarnConfigBuilder;
 	}
 
-	public void setYarnLocalizerBuilder(YarnResourceLocalizerBuilder resourceLocalizerBuilder) {
-		this.resourceLocalizer = resourceLocalizerBuilder;
+	public void setYarnLocalizerBuilder(YarnResourceLocalizerBuilder yarnResourceLocalizerBuilder) {
+		this.yarnResourceLocalizerBuilder = yarnResourceLocalizerBuilder;
 	}
 
-	public void setEnvironmentBuilder(YarnEnvironmentBuilder environmentBuilder) {
-		this.environment = environmentBuilder;
+	public void setEnvironmentBuilder(YarnEnvironmentBuilder yarnEnvironmentBuilder) {
+		this.yarnEnvironmentBuilder = yarnEnvironmentBuilder;
 	}
 
 	public void setYarnClientBuilder(YarnClientBuilder yarnClientBuilder) {

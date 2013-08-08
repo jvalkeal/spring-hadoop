@@ -15,6 +15,7 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -44,10 +45,14 @@ import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLoca
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 import org.springframework.yarn.support.YarnContextUtils;
+import org.springframework.yarn.test.context.MiniYarnCluster;
+import org.springframework.yarn.test.context.YarnDelegatingSmartContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
-public class SpringYarnConfigurationTests {
+//@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(loader=YarnDelegatingSmartContextLoader.class)
+@MiniYarnCluster
+public class SpringYarnConfigurationWithClusterTests {
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -75,10 +80,19 @@ public class SpringYarnConfigurationTests {
 		assertTrue(ctx.containsBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 		assertNotNull(ctx.getBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 
-		assertThat(config.get("resource.property"), is("test-site-1.xml"));
-		assertThat(config.get("resource.property.2"), is("test-site-2.xml"));
-		assertThat(config.get("foo"), is("jee"));
-		assertThat(config.get("fs.default.name"), is("hdfs://foo.uri"));
+		org.apache.hadoop.conf.Configuration configFromClient = TestUtils.readField("configuration", client);
+		String rmAdd1 =	config.get("yarn.resourcemanager.address");
+		String rmAdd2 =	configFromClient.get("yarn.resourcemanager.address");
+		assertThat(rmAdd1, notNullValue());
+		assertThat(rmAdd2, notNullValue());
+		assertThat(rmAdd1, is(rmAdd2));
+
+
+
+//		assertThat(config.get("resource.property"), is("test-site-1.xml"));
+//		assertThat(config.get("resource.property.2"), is("test-site-2.xml"));
+//		assertThat(config.get("foo"), is("jee"));
+//		assertThat(config.get("fs.default.name"), is("hdfs://foo.uri"));
 
 		Collection<CopyEntry> copyEntries = TestUtils.readField("copyEntries", localizer);
 		assertNotNull(copyEntries);
@@ -108,17 +122,17 @@ public class SpringYarnConfigurationTests {
 	@EnableYarn(enable=Enable.CLIENT)
 	static class Config extends SpringYarnConfigurerAdapter {
 
-		@Override
-		protected void configure(YarnConfigBuilder config) throws Exception {
-			config
-				.fileSystemUri("hdfs://foo.uri")
-				.withResources()
-					.resource("classpath:/test-site-1.xml")
-					.resource("classpath:/test-site-2.xml")
-					.and()
-				.withProperties()
-					.property("foo", "jee");
-		}
+//		@Override
+//		protected void configure(YarnConfigBuilder config) throws Exception {
+//			config
+//				.fileSystemUri("hdfs://foo.uri")
+//				.withResources()
+//					.resource("classpath:/test-site-1.xml")
+//					.resource("classpath:/test-site-2.xml")
+//					.and()
+//				.withProperties()
+//					.property("foo", "jee");
+//		}
 
 		@Override
 		protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {

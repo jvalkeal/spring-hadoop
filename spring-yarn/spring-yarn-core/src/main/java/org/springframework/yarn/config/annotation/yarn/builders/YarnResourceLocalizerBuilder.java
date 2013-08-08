@@ -18,6 +18,7 @@ package org.springframework.yarn.config.annotation.yarn.builders;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.LocalResourceType;
 import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
@@ -37,7 +38,7 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  */
 public final class YarnResourceLocalizerBuilder extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, YarnResourceLocalizerBuilder> {
 
-	private YarnConfiguration configuration;
+	private Configuration configuration;
 	private LocalResourceType defaultType = LocalResourceType.FILE;
 	private LocalResourceVisibility defaultVisibility = LocalResourceVisibility.APPLICATION;
 	private Collection<CopyEntry> copyEntries;
@@ -65,7 +66,7 @@ public final class YarnResourceLocalizerBuilder extends AbstractConfiguredAnnota
 		return fb.getObject();
 	}
 
-	public void configuration(YarnConfiguration configuration) {
+	public void configuration(Configuration configuration) {
 		this.configuration = configuration;
 	}
 

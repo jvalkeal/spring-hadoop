@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.yarn.config.annotation.yarn;
+package org.springframework.yarn.config.annotation.yarn.configuration;
 
 import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -26,6 +27,10 @@ import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.AbstractAnnotationConfiguration;
 import org.springframework.yarn.config.annotation.AnnotationConfigurer;
+import org.springframework.yarn.config.annotation.yarn.EnableYarn;
+import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigs;
+import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigurer;
+import org.springframework.yarn.config.annotation.yarn.SpringYarnConfigurerAdapter;
 import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
@@ -53,6 +58,11 @@ public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<Spr
 	public YarnConfiguration yarnConfiguration() throws Exception {
 		SpringYarnConfigs config = builder.build();
 		return (YarnConfiguration) config.getConfiguration();
+	}
+
+	@Autowired(required=false)
+	public void setYarnConfiguration(org.apache.hadoop.conf.Configuration yarnConfiguration) {
+		builder.setYarnConfiguration(yarnConfiguration);
 	}
 
 	@Bean(name=YarnSystemConstants.DEFAULT_ID_LOCAL_RESOURCES)

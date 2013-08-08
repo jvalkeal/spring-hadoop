@@ -13,48 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.yarn.config.annotation.yarn.builders;
+package org.springframework.yarn.config.annotation.yarn.configurers;
 
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.am.CommandLineAppmasterRunner;
-import org.springframework.yarn.am.StaticAppmaster;
-import org.springframework.yarn.am.YarnAppmaster;
-import org.springframework.yarn.am.container.DefaultContainerLauncher;
-import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.yarn.client.YarnClient;
+import org.springframework.yarn.config.annotation.AnnotationConfigurerAdapter;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnClientBuilder;
 import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
 
-public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuilder<YarnAppmaster, YarnAppmasterBuilder> {
+public class ClientMasterRunnerConfigurer extends AnnotationConfigurerAdapter<YarnClient, YarnClientBuilder> {
 
 	private Class<?> clazz;
 
-	public YarnAppmasterBuilder() {
-		this(true);
-	}
-
-	public YarnAppmasterBuilder(boolean allowConfigurersOfSameType) {
-		super(allowConfigurersOfSameType);
-	}
-
 	@Override
-	protected YarnAppmaster performBuild() throws Exception {
-		StaticAppmaster am = new StaticAppmaster();
-
+	public void configure(YarnClientBuilder builder) throws Exception {
 		LaunchCommandsFactoryBean fb = new LaunchCommandsFactoryBean();
 		fb.setRunner(CommandLineAppmasterRunner.class);
 		fb.setContextFile(clazz.getCanonicalName());
-		fb.setBeanName(YarnSystemConstants.DEFAULT_ID_CONTAINER);
-		fb.setStdout("<LOG_DIR>/Container.stdout");
-		fb.setStderr("<LOG_DIR>/Container.stderr");
+		fb.setBeanName(YarnSystemConstants.DEFAULT_ID_APPMASTER);
+		fb.setStdout("<LOG_DIR>/Appmaster.stdout");
+		fb.setStderr("<LOG_DIR>/Appmaster.stderr");
 		fb.afterPropertiesSet();
-		am.setCommands(fb.getObject());
-
-		am.setLauncher(new DefaultContainerLauncher());
-
-		return am;
+		builder.setCommands(fb.getObject());
 	}
 
-
-	public YarnAppmasterBuilder clazz(Class<?> clazz) {
+	public ClientMasterRunnerConfigurer clazz(Class<?> clazz) {
 		this.clazz = clazz;
 		return this;
 	}
