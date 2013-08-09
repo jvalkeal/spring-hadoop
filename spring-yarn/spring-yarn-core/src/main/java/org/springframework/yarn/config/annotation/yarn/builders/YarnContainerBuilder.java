@@ -17,20 +17,26 @@ package org.springframework.yarn.config.annotation.yarn.builders;
 
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
 import org.springframework.yarn.container.YarnContainer;
+import org.springframework.yarn.container.YarnContainerFactoryBean;
 
 public final class YarnContainerBuilder extends AbstractConfiguredAnnotationBuilder<YarnContainer, YarnContainerBuilder> {
 
-	public YarnContainerBuilder() {
-		this(true);
-	}
+	private Class<? extends YarnContainer> clazz;
 
-	public YarnContainerBuilder(boolean allowConfigurersOfSameType) {
-		super(allowConfigurersOfSameType);
+	public YarnContainerBuilder() {
 	}
 
 	@Override
 	protected YarnContainer performBuild() throws Exception {
-		return null;
+		YarnContainerFactoryBean fb = new YarnContainerFactoryBean();
+		fb.setContainerClass(clazz);
+		fb.afterPropertiesSet();
+		return fb.getObject();
+	}
+
+	public YarnContainerBuilder clazz(Class<? extends YarnContainer> clazz) {
+		this.clazz = clazz;
+		return this;
 	}
 
 }

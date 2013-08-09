@@ -53,7 +53,19 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 
 	private BuildState buildState = BuildState.UNBUILT;
 
-	protected AbstractConfiguredAnnotationBuilder(boolean allowConfigurersOfSameType) {
+	private ObjectPostProcessor<Object> objectPostProcessor;
+
+	protected AbstractConfiguredAnnotationBuilder() {
+		this(ObjectPostProcessor.QUIESCENT_POSTPROCESSOR);
+	}
+
+	protected AbstractConfiguredAnnotationBuilder(ObjectPostProcessor<Object> objectPostProcessor) {
+		this(objectPostProcessor,false);
+	}
+
+	protected AbstractConfiguredAnnotationBuilder(ObjectPostProcessor<Object> objectPostProcessor, boolean allowConfigurersOfSameType) {
+		Assert.notNull(objectPostProcessor, "objectPostProcessor cannot be null");
+		this.objectPostProcessor = objectPostProcessor;
 		this.allowConfigurersOfSameType = allowConfigurersOfSameType;
 	}
 
@@ -89,6 +101,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurerAdapter<O, B>> C apply(C configurer) throws Exception {
 		add(configurer);
+		configurer.addObjectPostProcessor(objectPostProcessor);
 		configurer.setBuilder((B) this);
 		return configurer;
 	}
@@ -239,6 +252,30 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		}
 		return (C) configs.get(0);
 	}
+
+    /**
+     * Specifies the {@link ObjectPostProcessor} to use.
+     * @param objectPostProcessor the {@link ObjectPostProcessor} to use. Cannot be null
+     * @return the {@link AnnotationBuilder} for further customizations
+     */
+    @SuppressWarnings("unchecked")
+    public O objectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
+        Assert.notNull(objectPostProcessor,"objectPostProcessor cannot be null");
+        this.objectPostProcessor = objectPostProcessor;
+        return (O) this;
+    }
+
+    /**
+     * Performs post processing of an object. The default is to delegate to the
+     * {@link ObjectPostProcessor}.
+     *
+     * @param object the Object to post process
+     * @return the possibly modified Object to use
+     */
+    protected <P> P postProcess(P object) {
+        return (P) this.objectPostProcessor.postProcess(object);
+    }
+
 
 	@Override
 	protected final O doBuild() throws Exception {

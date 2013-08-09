@@ -15,6 +15,11 @@
  */
 package org.springframework.yarn.config.annotation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.core.GenericTypeResolver;
+
 /**
  * A base class for {@link AnnotationConfigurer} that allows subclasses to only
  * implement the methods they are interested in. It also provides a mechanism
@@ -30,6 +35,8 @@ package org.springframework.yarn.config.annotation;
 public abstract class AnnotationConfigurerAdapter<O, B extends AnnotationBuilder<O>> implements AnnotationConfigurer<O,B> {
 
 	private B builder;
+
+	private CompositeObjectPostProcessor objectPostProcessor = new CompositeObjectPostProcessor();
 
 	@Override
 	public void init(B builder) throws Exception {}
@@ -61,6 +68,17 @@ public abstract class AnnotationConfigurerAdapter<O, B extends AnnotationBuilder
 	}
 
 	/**
+	 * Adds an {@link ObjectPostProcessor} to be used for this
+	 * {@link SecurityConfigurerAdapter}. The default implementation does
+	 * nothing to the object.
+	 *
+	 * @param objectPostProcessor the {@link ObjectPostProcessor} to use
+	 */
+	public void addObjectPostProcessor(ObjectPostProcessor<?> objectPostProcessor) {
+		this.objectPostProcessor.addObjectPostProcessor(objectPostProcessor);
+	}
+
+	/**
 	 * Sets the {@link AnnotationBuilder} to be used. This is automatically set
 	 * when using
 	 * {@link AbstractConfiguredAnnotationBuilder#apply(AnnotationConfigurerAdapter)}
@@ -69,6 +87,39 @@ public abstract class AnnotationConfigurerAdapter<O, B extends AnnotationBuilder
 	 */
 	public void setBuilder(B builder) {
 		this.builder = builder;
+	}
+
+	/**
+	 * An {@link ObjectPostProcessor} that delegates work to numerous
+	 * {@link ObjectPostProcessor} implementations.
+	 *
+	 * @author Rob Winch
+	 */
+	private static final class CompositeObjectPostProcessor implements ObjectPostProcessor<Object> {
+
+		private List<ObjectPostProcessor<? extends Object>> postProcessors = new ArrayList<ObjectPostProcessor<?>>();
+
+		@Override
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		public Object postProcess(Object object) {
+			for(ObjectPostProcessor opp : postProcessors) {
+				Class<?> oppClass = opp.getClass();
+				Class<?> oppType = GenericTypeResolver.resolveTypeArgument(oppClass,ObjectPostProcessor.class);
+				if(oppType == null || oppType.isAssignableFrom(object.getClass())) {
+					object = opp.postProcess(object);
+				}
+			}
+			return object;
+		}
+
+		/**
+		 * Adds an {@link ObjectPostProcessor} to use
+		 * @param objectPostProcessor the {@link ObjectPostProcessor} to add
+		 * @return true if the {@link ObjectPostProcessor} was added, else false
+		 */
+		private boolean addObjectPostProcessor(ObjectPostProcessor<?extends Object> objectPostProcessor) {
+			return this.postProcessors.add(objectPostProcessor);
+		}
 	}
 
 }

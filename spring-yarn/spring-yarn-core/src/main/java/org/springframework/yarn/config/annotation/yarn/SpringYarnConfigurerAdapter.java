@@ -20,8 +20,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.yarn.client.YarnClient;
+import org.springframework.yarn.config.annotation.ObjectPostProcessor;
 import org.springframework.yarn.config.annotation.yarn.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnAppmasterBuilder;
@@ -50,6 +52,14 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 	private YarnAppmasterBuilder yarnAppmasterBuilder;
 	private YarnContainerBuilder yarnContainerBuilder;
 
+    private ObjectPostProcessor<Object> objectPostProcessor = new ObjectPostProcessor<Object>() {
+        @Override
+        public <T> T postProcess(T object) {
+            throw new IllegalStateException(ObjectPostProcessor.class.getName()+ " is a required bean. Ensure you have used @EnableWebSecurity and @Configuration");
+        }
+    };
+
+
 	@Override
 	public void init(SpringYarnConfigBuilder builder) throws Exception {
 		builder.setYarnConfigBuilder(getConfigBuilder());
@@ -75,6 +85,11 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 	@Override
 	public void configure(SpringYarnConfigBuilder builder) throws Exception {
 	}
+
+    @Autowired(required=false)
+    public void setObjectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
+        this.objectPostProcessor = objectPostProcessor;
+    }
 
 	/**
 	 * Configure {@link YarnConfiguration} via {@link YarnConfigBuilder} builder.
@@ -122,7 +137,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		if (yarnConfigBuilder != null) {
 			return yarnConfigBuilder;
 		}
-		yarnConfigBuilder = new YarnConfigBuilder(true);
+		yarnConfigBuilder = new YarnConfigBuilder(objectPostProcessor);
 		configure(yarnConfigBuilder);
 		return yarnConfigBuilder;
 	}
@@ -131,7 +146,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		if (yarnResourceLocalizerBuilder != null) {
 			return yarnResourceLocalizerBuilder;
 		}
-		yarnResourceLocalizerBuilder = new YarnResourceLocalizerBuilder(true);
+		yarnResourceLocalizerBuilder = new YarnResourceLocalizerBuilder();
 		configure(yarnResourceLocalizerBuilder);
 		return yarnResourceLocalizerBuilder;
 	}
@@ -140,7 +155,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		if (yarnEnvironmentBuilder != null) {
 			return yarnEnvironmentBuilder;
 		}
-		yarnEnvironmentBuilder = new YarnEnvironmentBuilder(true);
+		yarnEnvironmentBuilder = new YarnEnvironmentBuilder();
 		configure(yarnEnvironmentBuilder);
 		return yarnEnvironmentBuilder;
 	}
@@ -149,7 +164,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		if (yarnClientBuilder != null) {
 			return yarnClientBuilder;
 		}
-		yarnClientBuilder = new YarnClientBuilder(true);
+		yarnClientBuilder = new YarnClientBuilder();
 		configure(yarnClientBuilder);
 		return yarnClientBuilder;
 	}
@@ -158,7 +173,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		if (yarnAppmasterBuilder != null) {
 			return yarnAppmasterBuilder;
 		}
-		yarnAppmasterBuilder = new YarnAppmasterBuilder(true);
+		yarnAppmasterBuilder = new YarnAppmasterBuilder(objectPostProcessor);
 		configure(yarnAppmasterBuilder);
 		return yarnAppmasterBuilder;
 	}
@@ -167,7 +182,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		if (yarnContainerBuilder != null) {
 			return yarnContainerBuilder;
 		}
-		yarnContainerBuilder = new YarnContainerBuilder(true);
+		yarnContainerBuilder = new YarnContainerBuilder();
 		configure(yarnContainerBuilder);
 		return yarnContainerBuilder;
 	}

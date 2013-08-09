@@ -34,12 +34,12 @@ public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnC
 	private String[] commands;
 
 	public YarnClientBuilder() {
-		this(true);
+//		this(true);
 	}
 
-	public YarnClientBuilder(boolean allowConfigurersOfSameType) {
-		super(allowConfigurersOfSameType);
-	}
+//	public YarnClientBuilder(boolean allowConfigurersOfSameType) {
+//		super(allowConfigurersOfSameType);
+//	}
 
 	@Override
 	protected YarnClient performBuild() throws Exception {

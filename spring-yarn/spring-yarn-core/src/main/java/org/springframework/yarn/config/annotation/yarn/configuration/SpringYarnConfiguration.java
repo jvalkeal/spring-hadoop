@@ -58,7 +58,7 @@ public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<Spr
 
 	private final static Log log = LogFactory.getLog(SpringYarnConfiguration.class);
 
-	protected SpringYarnConfigBuilder builder = new SpringYarnConfigBuilder(true);
+	protected SpringYarnConfigBuilder builder = new SpringYarnConfigBuilder();
 
 	private List<SpringYarnConfigurer<SpringYarnConfigBuilder>> configurers;
 

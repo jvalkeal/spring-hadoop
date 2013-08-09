@@ -23,7 +23,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportAware;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.AnnotationMetadata;
@@ -38,7 +40,7 @@ import org.springframework.util.ClassUtils;
  * @param <O>
  */
 public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilder<O>, O>
-		implements ImportAware, BeanClassLoaderAware, InitializingBean {
+		implements ImportAware, /*ImportBeanDefinitionRegistrar,*/ BeanClassLoaderAware {
 
 	private final static Log log = LogFactory.getLog(AbstractAnnotationConfiguration.class);
 
@@ -52,6 +54,10 @@ public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilde
 	public void setBeanClassLoader(ClassLoader classLoader) {
 		beanClassLoader = classLoader;
 	}
+
+//	@Override
+//	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+//	}
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
@@ -87,11 +93,6 @@ public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilde
 
 	public List<AnnotationConfigurer<O, B>> getConfigurers() {
 		return configurers;
-	}
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		log.info("XXX afterPropertiesSet");
 	}
 
 	protected abstract void onConfigurers(List<AnnotationConfigurer<O, B>> configurers) throws Exception;

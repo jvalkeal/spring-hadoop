@@ -22,6 +22,7 @@ import java.util.Set;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.core.io.Resource;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.yarn.config.annotation.ObjectPostProcessor;
 import org.springframework.yarn.config.annotation.configurers.PropertiesConfigureAware;
 import org.springframework.yarn.config.annotation.configurers.PropertiesConfigurer;
 import org.springframework.yarn.config.annotation.configurers.ResourceConfigureAware;
@@ -44,11 +45,15 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 	private String rmAddress;
 
 	public YarnConfigBuilder() {
-		this(true);
+//		this(true);
 	}
 
-	public YarnConfigBuilder(boolean allowConfigurersOfSameType) {
-		super(allowConfigurersOfSameType);
+//	public YarnConfigBuilder(boolean allowConfigurersOfSameType) {
+//		super(allowConfigurersOfSameType);
+//	}
+
+	public YarnConfigBuilder(ObjectPostProcessor<Object> objectPostProcessor) {
+		super(objectPostProcessor);
 	}
 
 	@Override
@@ -61,7 +66,12 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		fb.setResourceManagerAddress(rmAddress);
 
 		fb.afterPropertiesSet();
-		return fb.getObject();
+
+
+		YarnConfiguration c = fb.getObject();
+		c = postProcess(c);
+		return c;
+//		return fb.getObject();
 	}
 
 	@Override

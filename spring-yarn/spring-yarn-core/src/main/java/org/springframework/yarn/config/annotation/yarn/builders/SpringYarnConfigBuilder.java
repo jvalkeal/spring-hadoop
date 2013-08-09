@@ -42,12 +42,12 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 	private Configuration yarnConfiguration;
 
 	public SpringYarnConfigBuilder() {
-		this(true);
+//		this(true);
 	}
 
-	public SpringYarnConfigBuilder(boolean allowConfigurersOfSameType) {
-		super(allowConfigurersOfSameType);
-	}
+//	public SpringYarnConfigBuilder(boolean allowConfigurersOfSameType) {
+//		super(allowConfigurersOfSameType);
+//	}
 
 	@Override
 	protected SpringYarnConfigs performBuild() throws Exception {
@@ -77,6 +77,13 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 			yarnAppmasterBuilder.setResourceLocalizer(localizer);
 			yarnAppmasterBuilder.setEnvironment(env);
 			config.setYarnAppmaster(yarnAppmasterBuilder.build());
+		}
+
+		if (yarnContainerBuilder != null) {
+//			yarnContainerBuilder.configuration(configuration);
+//			yarnContainerBuilder.setResourceLocalizer(localizer);
+//			yarnContainerBuilder.setEnvironment(env);
+			config.setYarnContainer(yarnContainerBuilder.build());
 		}
 
 		return config;

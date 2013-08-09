@@ -45,14 +45,17 @@ public final class YarnResourceLocalizerBuilder extends AbstractConfiguredAnnota
 	private Collection<CopyEntry> copyEntries;
 	private Collection<TransferEntry> transferEntries;
 
-	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType) {
-		super(allowConfigurersOfSameType);
-	}
+	public YarnResourceLocalizerBuilder() {
 
-	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType, YarnConfiguration configuration) {
-		super(allowConfigurersOfSameType);
-		this.configuration = configuration;
 	}
+//	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType) {
+//		super(allowConfigurersOfSameType);
+//	}
+
+//	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType, YarnConfiguration configuration) {
+//		super(allowConfigurersOfSameType);
+//		this.configuration = configuration;
+//	}
 
 	@Override
 	protected ResourceLocalizer performBuild() throws Exception {
@@ -60,7 +63,7 @@ public final class YarnResourceLocalizerBuilder extends AbstractConfiguredAnnota
 		fb.setType(defaultType);
 		fb.setVisibility(defaultVisibility);
 		fb.setConfiguration(configuration);
-		fb.setCopyEntries(copyEntries);
+		fb.setCopyEntries(copyEntries != null ? copyEntries : new ArrayList<LocalResourcesFactoryBean.CopyEntry>());
 		fb.setHdfsEntries(transferEntries != null ? transferEntries : new ArrayList<LocalResourcesFactoryBean.TransferEntry>());
 		fb.afterPropertiesSet();
 		return fb.getObject();

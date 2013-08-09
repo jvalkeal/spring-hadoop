@@ -30,12 +30,12 @@ public final class YarnEnvironmentBuilder
 	private String classpath;
 
 	public YarnEnvironmentBuilder() {
-		this(true);
+//		this(true);
 	}
 
-	public YarnEnvironmentBuilder(boolean allowConfigurersOfSameType) {
-		super(allowConfigurersOfSameType);
-	}
+//	public YarnEnvironmentBuilder(boolean allowConfigurersOfSameType) {
+//		super(allowConfigurersOfSameType);
+//	}
 
 	@Override
 	protected Map<String, String> performBuild() throws Exception {
