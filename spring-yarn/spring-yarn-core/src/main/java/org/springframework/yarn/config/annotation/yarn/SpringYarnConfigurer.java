@@ -15,8 +15,22 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
+import java.util.Map;
+
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.springframework.yarn.am.YarnAppmaster;
+import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.config.annotation.AnnotationConfigurer;
+import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnAppmasterBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnContainerBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.container.YarnContainer;
+import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
  * Allows for configuring a {@link AnnotationBuilder}. All
@@ -25,13 +39,56 @@ import org.springframework.yarn.config.annotation.AnnotationConfigurer;
  * invoked, each {@link #configure(AnnotationBuilder)} method is invoked.
  *
  * @author Janne Valkealahti
- * @see AbstractConfiguredAnnotationBuilder
  *
- * @param <O> The object being built by the {@link AnnotationBuilder} B
- * @param <B> The {@link AnnotationBuilder} that builds objects of type O. This is
- *            also the {@link AnnotationBuilder} that is being configured.
  */
-public interface SpringYarnConfigurer<B extends AnnotationBuilder<SpringYarnConfigs>> extends
-		AnnotationConfigurer<SpringYarnConfigs, B> {
+public interface SpringYarnConfigurer extends AnnotationConfigurer<SpringYarnConfigs, SpringYarnConfigBuilder> {
+
+	/**
+	 * Configure {@link YarnConfiguration} via {@link YarnConfigBuilder} builder.
+	 *
+	 * @param config the {@link YarnConfiguration} builder
+	 * @throws Exception if error occurred
+	 */
+	void configure(YarnConfigBuilder config) throws Exception;
+
+	/**
+	 * Configure {@link ResourceLocalizer} via {@link YarnResourceLocalizerBuilder} builder.
+	 *
+	 * @param config the {@link ResourceLocalizer} builder
+	 * @throws Exception if error occurred
+	 */
+	void configure(YarnResourceLocalizerBuilder localizer) throws Exception;
+
+	/**
+	 * Configure {@link Map} of environment via {@link YarnEnvironmentBuilder} builder.
+	 *
+	 * @param environment the {@link YarnEnvironmentBuilder} builder
+	 * @throws Exception if error occurred
+	 */
+	void configure(YarnEnvironmentBuilder environment) throws Exception;
+
+	/**
+	 * Configure {@link YarnClient} via {@link YarnClientBuilder} builder.
+	 *
+	 * @param client the {@link YarnClientBuilder} builder
+	 * @throws Exception if error occurred
+	 */
+	void configure(YarnClientBuilder client) throws Exception;
+
+	/**
+	 * Configure {@link YarnAppmaster} via {@link YarnAppmasterBuilder} builder.
+	 *
+	 * @param master the {@link YarnAppmasterBuilder} builder
+	 * @throws Exception if error occurred
+	 */
+	void configure(YarnAppmasterBuilder master) throws Exception;
+
+	/**
+	 * Configure {@link YarnContainer} via {@link YarnContainerBuilder} builder.
+	 *
+	 * @param container the {@link YarnContainerBuilder} builder
+	 * @throws Exception if error occurred
+	 */
+	void configure(YarnContainerBuilder container) throws Exception;
 
 }

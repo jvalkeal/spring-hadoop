@@ -15,14 +15,10 @@
  */
 package org.springframework.yarn.config.annotation.yarn;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.ObjectPostProcessor;
 import org.springframework.yarn.config.annotation.yarn.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.yarn.builders.SpringYarnConfigBuilder;
@@ -32,7 +28,6 @@ import org.springframework.yarn.config.annotation.yarn.builders.YarnConfigBuilde
 import org.springframework.yarn.config.annotation.yarn.builders.YarnContainerBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnEnvironmentBuilder;
 import org.springframework.yarn.config.annotation.yarn.builders.YarnResourceLocalizerBuilder;
-import org.springframework.yarn.fs.ResourceLocalizer;
 
 /**
  * Provides a convenient base class for creating a {@link SpringYarnConfigurer}
@@ -41,7 +36,7 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  * @see EnableYarn
  */
-public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringYarnConfigBuilder> {
+public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 
 	private final static Log log = LogFactory.getLog(SpringYarnConfigurerAdapter.class);
 
@@ -55,10 +50,15 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
     private ObjectPostProcessor<Object> objectPostProcessor = new ObjectPostProcessor<Object>() {
         @Override
         public <T> T postProcess(T object) {
-            throw new IllegalStateException(ObjectPostProcessor.class.getName()+ " is a required bean. Ensure you have used @EnableWebSecurity and @Configuration");
+            throw new IllegalStateException(ObjectPostProcessor.class.getName()
+            		+ " is a required bean. Ensure you have used @EnableYarn and @Configuration");
         }
     };
 
+    @Autowired(required=false)
+    public void setObjectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
+        this.objectPostProcessor = objectPostProcessor;
+    }
 
 	@Override
 	public void init(SpringYarnConfigBuilder builder) throws Exception {
@@ -70,7 +70,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 		Enable enable = annotation.enable();
 
 		if (log.isDebugEnabled()) {
-			log.debug("Enabling " + enable);
+			log.debug("Enabling builder for " + enable);
 		}
 
 		if (enable == Enable.CLIENT) {
@@ -86,53 +86,36 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer<SpringY
 	public void configure(SpringYarnConfigBuilder builder) throws Exception {
 	}
 
-    @Autowired(required=false)
-    public void setObjectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
-        this.objectPostProcessor = objectPostProcessor;
-    }
+	@Override
+    public void configure(YarnConfigBuilder config) throws Exception {
+	}
 
-	/**
-	 * Configure {@link YarnConfiguration} via {@link YarnConfigBuilder} builder.
-	 *
-	 * @param config the {@link YarnConfiguration} builder
-	 * @throws Exception if error occurred
-	 */
-	protected void configure(YarnConfigBuilder config) throws Exception {
+	@Override
+	public void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+	}
+
+	@Override
+	public void configure(YarnEnvironmentBuilder environment) throws Exception {
+	}
+
+	@Override
+	public void configure(YarnClientBuilder client) throws Exception {
+	}
+
+	@Override
+	public void configure(YarnAppmasterBuilder master) throws Exception {
+	}
+
+	@Override
+	public void configure(YarnContainerBuilder container) throws Exception {
 	}
 
 	/**
-	 * Configure {@link ResourceLocalizer} via {@link YarnResourceLocalizerBuilder} builder.
+	 * Gets the Yarn config builder.
 	 *
-	 * @param config the {@link ResourceLocalizer} builder
+	 * @return the Yarn config builder
 	 * @throws Exception if error occurred
 	 */
-	protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
-	}
-
-	/**
-	 * Configure {@link Map} of environment via {@link YarnEnvironmentBuilder} builder.
-	 *
-	 * @param environment the {@link YarnEnvironmentBuilder} builder
-	 * @throws Exception if error occurred
-	 */
-	protected void configure(YarnEnvironmentBuilder environment) throws Exception {
-	}
-
-	/**
-	 * Configure {@link YarnClient} of environment via {@link YarnClientBuilder} builder.
-	 *
-	 * @param client the {@link YarnClientBuilder} builder
-	 * @throws Exception if error occurred
-	 */
-	protected void configure(YarnClientBuilder client) throws Exception {
-	}
-
-	protected void configure(YarnAppmasterBuilder master) throws Exception {
-	}
-
-	protected void configure(YarnContainerBuilder container) throws Exception {
-	}
-
 	protected final YarnConfigBuilder getConfigBuilder() throws Exception {
 		if (yarnConfigBuilder != null) {
 			return yarnConfigBuilder;

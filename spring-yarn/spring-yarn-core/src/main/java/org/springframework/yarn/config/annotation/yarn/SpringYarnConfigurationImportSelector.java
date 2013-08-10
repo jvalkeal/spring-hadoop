@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
@@ -28,6 +29,13 @@ import org.springframework.yarn.config.annotation.yarn.configuration.SpringYarnC
 import org.springframework.yarn.config.annotation.yarn.configuration.SpringYarnConfiguration;
 import org.springframework.yarn.config.annotation.yarn.configuration.SpringYarnContainerConfiguration;
 
+/**
+ * Spring {@link ImportSelector} choosing appropriate {@link Configuration}
+ * based on {@link EnableYarn} annotation.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class SpringYarnConfigurationImportSelector implements ImportSelector {
 
 	private final static Log log = LogFactory.getLog(SpringYarnConfigurationImportSelector.class);
@@ -35,11 +43,9 @@ public class SpringYarnConfigurationImportSelector implements ImportSelector {
 	@Override
 	public String[] selectImports(AnnotationMetadata importingClassMetadata) {
 
-		Map<String, Object> enableConfigurationAttrMap =
-				importingClassMetadata.getAnnotationAttributes(EnableYarn.class.getName());
-		AnnotationAttributes enableConfigurationAttrs = AnnotationAttributes.fromMap(enableConfigurationAttrMap);
-
-		Enable enable = enableConfigurationAttrs.getEnum("enable");
+		Map<String, Object> attrMap = importingClassMetadata.getAnnotationAttributes(EnableYarn.class.getName());
+		AnnotationAttributes enableAttrs = AnnotationAttributes.fromMap(attrMap);
+		Enable enable = enableAttrs.getEnum("enable");
 
 		String[] configs = new String[2];
 
@@ -61,6 +67,5 @@ public class SpringYarnConfigurationImportSelector implements ImportSelector {
 
 		return configs;
 	}
-
 
 }

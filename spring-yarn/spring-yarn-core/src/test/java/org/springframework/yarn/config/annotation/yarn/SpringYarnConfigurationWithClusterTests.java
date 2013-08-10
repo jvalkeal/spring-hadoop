@@ -113,7 +113,7 @@ public class SpringYarnConfigurationWithClusterTests {
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+		public void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
 			localizer
 				.withCopy()
 					.copy("foo.jar", "/tmp", true)
@@ -121,14 +121,14 @@ public class SpringYarnConfigurationWithClusterTests {
 		}
 
 		@Override
-		protected void configure(YarnEnvironmentBuilder environment) throws Exception {
+		public void configure(YarnEnvironmentBuilder environment) throws Exception {
 			environment
 			.withClasspath()
 				.entry("./*");
 		}
 
 		@Override
-		protected void configure(YarnClientBuilder client) throws Exception {
+		public void configure(YarnClientBuilder client) throws Exception {
 		}
 
 	}

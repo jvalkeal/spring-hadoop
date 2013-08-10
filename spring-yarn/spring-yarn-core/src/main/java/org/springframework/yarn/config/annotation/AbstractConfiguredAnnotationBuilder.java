@@ -45,7 +45,8 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 
 	private final static Log log = LogFactory.getLog(AbstractConfiguredAnnotationBuilder.class);
 
-	private final LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>> configurers = new LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>>();
+	private final LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>> configurers =
+			new LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>>();
 
 	private final Map<Class<Object>, Object> sharedObjects = new HashMap<Class<Object>, Object>();
 
@@ -55,18 +56,51 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 
 	private ObjectPostProcessor<Object> objectPostProcessor;
 
+	/**
+	 * Instantiates a new annotation builder.
+	 */
 	protected AbstractConfiguredAnnotationBuilder() {
 		this(ObjectPostProcessor.QUIESCENT_POSTPROCESSOR);
 	}
 
+	/**
+	 * Instantiates a new annotation builder.
+	 *
+	 * @param objectPostProcessor the object post processor
+	 */
 	protected AbstractConfiguredAnnotationBuilder(ObjectPostProcessor<Object> objectPostProcessor) {
 		this(objectPostProcessor,false);
 	}
 
+	/**
+	 * Instantiates a new annotation builder.
+	 *
+	 * @param objectPostProcessor the object post processor
+	 * @param allowConfigurersOfSameType the allow configurers of same type
+	 */
 	protected AbstractConfiguredAnnotationBuilder(ObjectPostProcessor<Object> objectPostProcessor, boolean allowConfigurersOfSameType) {
 		Assert.notNull(objectPostProcessor, "objectPostProcessor cannot be null");
 		this.objectPostProcessor = objectPostProcessor;
 		this.allowConfigurersOfSameType = allowConfigurersOfSameType;
+	}
+
+	@Override
+	protected final O doBuild() throws Exception {
+		synchronized (configurers) {
+			buildState = BuildState.INITIALIZING;
+			beforeInit();
+			init();
+
+			buildState = BuildState.CONFIGURING;
+			beforeConfigure();
+			configure();
+
+			buildState = BuildState.BUILDING;
+			O result = performBuild();
+
+			buildState = BuildState.BUILT;
+			return result;
+		}
 	}
 
 	/**
@@ -163,8 +197,9 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	private <C extends AnnotationConfigurer<O, B>> void add(C configurer) throws Exception {
 		Assert.notNull(configurer, "configurer cannot be null");
 
-		Class<? extends AnnotationConfigurer<O, B>> clazz = (Class<? extends AnnotationConfigurer<O, B>>) configurer
-				.getClass();
+		Class<? extends AnnotationConfigurer<O, B>> clazz =
+				(Class<? extends AnnotationConfigurer<O, B>>) configurer.getClass();
+
 		synchronized (configurers) {
 			if (buildState.isConfigured()) {
 				throw new IllegalStateException("Cannot apply " + configurer + " to already built object");
@@ -276,26 +311,6 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
         return (P) this.objectPostProcessor.postProcess(object);
     }
 
-
-	@Override
-	protected final O doBuild() throws Exception {
-		synchronized (configurers) {
-			buildState = BuildState.INITIALIZING;
-			beforeInit();
-			init();
-
-			buildState = BuildState.CONFIGURING;
-			beforeConfigure();
-			configure();
-
-			buildState = BuildState.BUILDING;
-			O result = performBuild();
-
-			buildState = BuildState.BUILT;
-			return result;
-		}
-	}
-
 	/**
 	 * Invoked prior to invoking each
 	 * {@link AnnotationConfigurer#init(AnnotationBuilder)} method. Subclasses may
@@ -339,6 +354,11 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		}
 	}
 
+	/**
+	 * Gets all configurers.
+	 *
+	 * @return the configurers
+	 */
 	private Collection<AnnotationConfigurer<O, B>> getConfigurers() {
 		List<AnnotationConfigurer<O, B>> result = new ArrayList<AnnotationConfigurer<O, B>>();
 		for (List<AnnotationConfigurer<O, B>> configs : this.configurers.values()) {
@@ -362,6 +382,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 * The build state for the application
 	 */
 	private static enum BuildState {
+
 		/**
 		 * This is the state before the {@link AnnotationBuilder#build()} is invoked
 		 */
@@ -373,19 +394,20 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		 * been invoked.
 		 */
 		INITIALIZING(1),
+
 		/**
 		 * The state from after all
-		 * {@link AnnotationConfigurer#init(AnnotationBuilder)} have been invoked
-		 * until after all the
-		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)} methods have
-		 * been invoked.
+		 * {@link AnnotationConfigurer#init(AnnotationBuilder)}
+		 * have been invoked until after all the
+		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)}
+		 * methods have been invoked.
 		 */
 		CONFIGURING(2),
 
 		/**
 		 * From the point after all the
-		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)} have completed
-		 * to just after
+		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)}
+		 * have completed to just after
 		 * {@link AbstractConfiguredAnnotationBuilder#performBuild()}.
 		 */
 		BUILDING(3),
@@ -401,6 +423,11 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 			this.order = order;
 		}
 
+		/**
+		 * Checks if is initializing.
+		 *
+		 * @return true, if is initializing
+		 */
 		public boolean isInitializing() {
 			return INITIALIZING.order == order;
 		}
@@ -408,7 +435,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		/**
 		 * Determines if the state is CONFIGURING or later
 		 *
-		 * @return
+		 * @return true, if configured
 		 */
 		public boolean isConfigured() {
 			return order >= CONFIGURING.order;

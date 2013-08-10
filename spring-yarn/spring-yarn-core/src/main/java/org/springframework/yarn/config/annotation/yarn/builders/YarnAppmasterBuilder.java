@@ -18,8 +18,6 @@ package org.springframework.yarn.config.annotation.yarn.builders;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
-import org.springframework.yarn.YarnSystemConstants;
-import org.springframework.yarn.am.CommandLineAppmasterRunner;
 import org.springframework.yarn.am.StaticAppmaster;
 import org.springframework.yarn.am.YarnAppmaster;
 import org.springframework.yarn.am.allocate.DefaultContainerAllocator;
@@ -27,26 +25,19 @@ import org.springframework.yarn.am.container.DefaultContainerLauncher;
 import org.springframework.yarn.am.monitor.DefaultContainerMonitor;
 import org.springframework.yarn.config.annotation.AbstractConfiguredAnnotationBuilder;
 import org.springframework.yarn.config.annotation.ObjectPostProcessor;
-import org.springframework.yarn.config.annotation.yarn.configurers.ClientMasterRunnerConfigurer;
 import org.springframework.yarn.config.annotation.yarn.configurers.MasterContainerRunnerConfigurer;
 import org.springframework.yarn.fs.ResourceLocalizer;
-import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
 
 public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuilder<YarnAppmaster, YarnAppmasterBuilder> {
 
-	private Class<?> clazz;
+//	private Class<?> clazz;
 	private Configuration configuration;
 	private ResourceLocalizer resourceLocalizer;
 	private Map<String, String> environment;
 	private String[] commands;
 
 	public YarnAppmasterBuilder() {
-//		this(true);
 	}
-
-//	public YarnAppmasterBuilder(boolean allowConfigurersOfSameType) {
-//		super(allowConfigurersOfSameType);
-//	}
 
 	public YarnAppmasterBuilder(ObjectPostProcessor<Object> objectPostProcessor) {
 		super(objectPostProcessor);
@@ -56,14 +47,6 @@ public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuil
 	protected YarnAppmaster performBuild() throws Exception {
 		StaticAppmaster am = new StaticAppmaster();
 
-//		LaunchCommandsFactoryBean fb = new LaunchCommandsFactoryBean();
-//		fb.setRunner(CommandLineAppmasterRunner.class);
-//		fb.setContextFile(clazz.getCanonicalName());
-//		fb.setBeanName(YarnSystemConstants.DEFAULT_ID_CONTAINER);
-//		fb.setStdout("<LOG_DIR>/Container.stdout");
-//		fb.setStderr("<LOG_DIR>/Container.stderr");
-//		fb.afterPropertiesSet();
-//		am.setCommands(fb.getObject());
 		if (commands != null) {
 			am.setCommands(commands);
 		}
@@ -77,12 +60,11 @@ public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuil
 		launcher.setEnvironment(environment);
 		launcher.setResourceLocalizer(resourceLocalizer);
 		am.setLauncher(launcher);
+
 		DefaultContainerAllocator allocator = new DefaultContainerAllocator();
 		allocator.setConfiguration(configuration);
 		allocator.setEnvironment(environment);
-
 		allocator = postProcess(allocator);
-
 		am.setAllocator(allocator);
 
 		am.setMonitor(new DefaultContainerMonitor());
@@ -106,10 +88,10 @@ public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuil
 		this.environment = environment;
 	}
 
-	public YarnAppmasterBuilder clazz(Class<?> clazz) {
-		this.clazz = clazz;
-		return this;
-	}
+//	public YarnAppmasterBuilder clazz(Class<?> clazz) {
+//		this.clazz = clazz;
+//		return this;
+//	}
 
 	public void setCommands(String[] commands) {
 		this.commands = commands;

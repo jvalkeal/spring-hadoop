@@ -109,7 +109,7 @@ public class SpringYarnConfigurationTests {
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		protected void configure(YarnConfigBuilder config) throws Exception {
+		public void configure(YarnConfigBuilder config) throws Exception {
 			config
 				.fileSystemUri("hdfs://foo.uri")
 				.withResources()
@@ -121,7 +121,7 @@ public class SpringYarnConfigurationTests {
 		}
 
 		@Override
-		protected void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+		public void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
 			localizer
 				.withCopy()
 					.copy("foo.jar", "/tmp", true)
@@ -129,11 +129,11 @@ public class SpringYarnConfigurationTests {
 		}
 
 		@Override
-		protected void configure(YarnEnvironmentBuilder environment) throws Exception {
+		public void configure(YarnEnvironmentBuilder environment) throws Exception {
 		}
 
 		@Override
-		protected void configure(YarnClientBuilder client) throws Exception {
+		public void configure(YarnClientBuilder client) throws Exception {
 		}
 
 	}

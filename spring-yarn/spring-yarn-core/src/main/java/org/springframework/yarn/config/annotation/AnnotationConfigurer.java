@@ -39,8 +39,8 @@ public interface AnnotationConfigurer<O, B extends AnnotationBuilder<O>> {
 	 * {@link #configure(AnnotationBuilder)} method uses the correct shared
 	 * objects when building.
 	 *
-	 * @param builder
-	 * @throws Exception
+	 * @param builder the builder
+	 * @throws Exception if error occurred
 	 */
 	void init(B builder) throws Exception;
 
@@ -48,8 +48,8 @@ public interface AnnotationConfigurer<O, B extends AnnotationBuilder<O>> {
 	 * Configure the {@link AnnotationBuilder} by setting the necessary properties
 	 * on the {@link AnnotationBuilder}.
 	 *
-	 * @param builder
-	 * @throws Exception
+	 * @param builder the builder
+	 * @throws Exception if error occurred
 	 */
 	void configure(B builder) throws Exception;
 
