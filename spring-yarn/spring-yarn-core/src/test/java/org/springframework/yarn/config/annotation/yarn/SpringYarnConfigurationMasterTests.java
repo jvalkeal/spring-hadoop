@@ -49,7 +49,7 @@ import org.springframework.yarn.support.YarnContextUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
-public class SpringYarnConfigurationTests {
+public class SpringYarnConfigurationMasterTests {
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -70,9 +70,9 @@ public class SpringYarnConfigurationTests {
 		Map<String, String> environment = (Map<String, String>) ctx.getBean(YarnSystemConstants.DEFAULT_ID_ENVIRONMENT);
 		assertNotNull(environment);
 
-		assertTrue(ctx.containsBean(YarnSystemConstants.DEFAULT_ID_CLIENT));
-		YarnClient client = (YarnClient) ctx.getBean(YarnSystemConstants.DEFAULT_ID_CLIENT);
-		assertNotNull(client);
+//		assertTrue(ctx.containsBean(YarnSystemConstants.DEFAULT_ID_CLIENT));
+//		YarnClient client = (YarnClient) ctx.getBean(YarnSystemConstants.DEFAULT_ID_CLIENT);
+//		assertNotNull(client);
 
 		assertTrue(ctx.containsBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 		assertNotNull(ctx.getBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
@@ -107,7 +107,7 @@ public class SpringYarnConfigurationTests {
 	}
 
 	@Configuration
-	@EnableYarn(enable=Enable.CLIENT)
+	@EnableYarn(enable=Enable.APPMASTER)
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
@@ -135,16 +135,16 @@ public class SpringYarnConfigurationTests {
 		}
 
 		@Override
-		public void configure(YarnClientBuilder client) throws Exception {
-		}
-
-		@Override
 		public void configure(YarnAppmasterBuilder master) throws Exception {
+			Properties properties = new Properties();
+			properties.put("foo1", "jee1");
+
 			master
 				.withContainerRunner()
-					.arguments(new Properties())
 					.withArguments()
-						.property("foo", "jee");
+						.property("foo2", "jee2")
+						.and().and()
+					.arguments(properties);
 		}
 
 	}

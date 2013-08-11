@@ -18,6 +18,9 @@ package org.springframework.yarn.config.annotation.yarn.builders;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+import org.springframework.beans.BeanUtils;
+import org.springframework.yarn.am.AbstractAppmaster;
+import org.springframework.yarn.am.AbstractServicesAppmaster;
 import org.springframework.yarn.am.StaticAppmaster;
 import org.springframework.yarn.am.YarnAppmaster;
 import org.springframework.yarn.am.allocate.DefaultContainerAllocator;
@@ -30,13 +33,16 @@ import org.springframework.yarn.fs.ResourceLocalizer;
 
 public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuilder<YarnAppmaster, YarnAppmasterBuilder> {
 
-//	private Class<?> clazz;
+	/** Appmaster class, defaults to StaticAppmaster */
+	private Class<? extends YarnAppmaster> appmasterClazz = StaticAppmaster.class;
+
 	private Configuration configuration;
 	private ResourceLocalizer resourceLocalizer;
 	private Map<String, String> environment;
 	private String[] commands;
 
 	public YarnAppmasterBuilder() {
+		super();
 	}
 
 	public YarnAppmasterBuilder(ObjectPostProcessor<Object> objectPostProcessor) {
@@ -45,31 +51,41 @@ public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuil
 
 	@Override
 	protected YarnAppmaster performBuild() throws Exception {
-		StaticAppmaster am = new StaticAppmaster();
 
-		if (commands != null) {
-			am.setCommands(commands);
+		YarnAppmaster appmaster = BeanUtils.instantiate(appmasterClazz);
+
+		if (appmaster instanceof AbstractAppmaster) {
+			AbstractAppmaster abstractAppmaster = (AbstractAppmaster) appmaster;
+			if (commands != null) {
+				abstractAppmaster.setCommands(commands);
+			}
+
+			abstractAppmaster.setConfiguration(configuration);
+			abstractAppmaster.setEnvironment(environment);
+			abstractAppmaster.setResourceLocalizer(resourceLocalizer);
+			if (appmaster instanceof AbstractServicesAppmaster) {
+				AbstractServicesAppmaster abstractServicesAppmaster = (AbstractServicesAppmaster)appmaster;
+
+				DefaultContainerLauncher launcher = new DefaultContainerLauncher();
+				launcher.setConfiguration(configuration);
+				launcher.setEnvironment(environment);
+				launcher.setResourceLocalizer(resourceLocalizer);
+				abstractServicesAppmaster.setLauncher(launcher);
+
+				DefaultContainerAllocator allocator = new DefaultContainerAllocator();
+				allocator.setConfiguration(configuration);
+				allocator.setEnvironment(environment);
+				abstractServicesAppmaster.setAllocator(postProcess(allocator));
+
+				abstractServicesAppmaster.setMonitor(new DefaultContainerMonitor());
+			}
+
 		}
+		return appmaster;
+	}
 
-		am.setConfiguration(configuration);
-		am.setEnvironment(environment);
-		am.setResourceLocalizer(resourceLocalizer);
-
-		DefaultContainerLauncher launcher = new DefaultContainerLauncher();
-		launcher.setConfiguration(configuration);
-		launcher.setEnvironment(environment);
-		launcher.setResourceLocalizer(resourceLocalizer);
-		am.setLauncher(launcher);
-
-		DefaultContainerAllocator allocator = new DefaultContainerAllocator();
-		allocator.setConfiguration(configuration);
-		allocator.setEnvironment(environment);
-		allocator = postProcess(allocator);
-		am.setAllocator(allocator);
-
-		am.setMonitor(new DefaultContainerMonitor());
-
-		return am;
+	public MasterContainerRunnerConfigurer withContainerRunner() throws Exception {
+		return apply(new MasterContainerRunnerConfigurer());
 	}
 
 	public void configuration(Configuration configuration) {
@@ -80,18 +96,14 @@ public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuil
 		this.resourceLocalizer = resourceLocalizer;
 	}
 
-	public MasterContainerRunnerConfigurer withContainerRunner() throws Exception {
-		return apply(new MasterContainerRunnerConfigurer());
-	}
-
 	public void setEnvironment(Map<String, String> environment) {
 		this.environment = environment;
 	}
 
-//	public YarnAppmasterBuilder clazz(Class<?> clazz) {
-//		this.clazz = clazz;
-//		return this;
-//	}
+	public YarnAppmasterBuilder clazz(Class<? extends YarnAppmaster> clazz) {
+		appmasterClazz = clazz;
+		return this;
+	}
 
 	public void setCommands(String[] commands) {
 		this.commands = commands;
