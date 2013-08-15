@@ -114,12 +114,14 @@ public abstract class AnnotationConfigurerAdapter<O, B extends AnnotationBuilder
 
 		/**
 		 * Adds an {@link ObjectPostProcessor} to use
+		 *
 		 * @param objectPostProcessor the {@link ObjectPostProcessor} to add
 		 * @return true if the {@link ObjectPostProcessor} was added, else false
 		 */
-		private boolean addObjectPostProcessor(ObjectPostProcessor<?extends Object> objectPostProcessor) {
+		private boolean addObjectPostProcessor(ObjectPostProcessor<? extends Object> objectPostProcessor) {
 			return this.postProcessors.add(objectPostProcessor);
 		}
+
 	}
 
 }

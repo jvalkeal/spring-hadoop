@@ -120,7 +120,6 @@ public class MasterContainerRunnerConfigurer extends AnnotationConfigurerAdapter
 		private Properties properties;
 
 		public ArgumentsBuilder(PropertiesConfigurer<Properties, ArgumentsBuilder> propertiesConfigurer) {
-			super();
 			this.propertiesConfigurer = propertiesConfigurer;
 			this.propertiesConfigurer.setBuilder(this);
 		}
