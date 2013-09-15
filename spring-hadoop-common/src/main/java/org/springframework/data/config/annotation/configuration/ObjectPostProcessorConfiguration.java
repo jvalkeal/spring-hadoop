@@ -23,12 +23,12 @@ import org.springframework.data.config.annotation.ObjectPostProcessor;
 /**
  * Spring {@link Configuration} that exports the default
  * {@link ObjectPostProcessor}. This class is not intended to be imported
- * manually rather it is imported automatically when using {@link EnableYarn}
+ * manually rather it is imported automatically when using {@link EnableAnnotationConfiguration}
  *
  * @author Rob Winch
  * @author Janne Valkealahti
  *
- * @see EnableYarn
+ * @see EnableAnnotationConfiguration
  */
 @Configuration
 public class ObjectPostProcessorConfiguration {

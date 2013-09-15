@@ -30,7 +30,7 @@ import org.springframework.data.config.annotation.AnnotationBuilder;
 public interface ResourceConfigureAware {
 
 	/**
-	 * Configure resources.
+	 * Configure {@link Resource}s.
 	 *
 	 * @param resources the resources
 	 */

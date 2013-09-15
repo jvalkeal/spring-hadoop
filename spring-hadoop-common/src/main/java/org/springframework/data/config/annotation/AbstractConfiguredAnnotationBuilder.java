@@ -288,28 +288,28 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		return (C) configs.get(0);
 	}
 
-    /**
-     * Specifies the {@link ObjectPostProcessor} to use.
-     * @param objectPostProcessor the {@link ObjectPostProcessor} to use. Cannot be null
-     * @return the {@link AnnotationBuilder} for further customizations
-     */
-    @SuppressWarnings("unchecked")
-    public O objectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
-        Assert.notNull(objectPostProcessor,"objectPostProcessor cannot be null");
-        this.objectPostProcessor = objectPostProcessor;
-        return (O) this;
-    }
+	/**
+	 * Specifies the {@link ObjectPostProcessor} to use.
+	 * @param objectPostProcessor the {@link ObjectPostProcessor} to use. Cannot be null
+	 * @return the {@link AnnotationBuilder} for further customizations
+	 */
+	@SuppressWarnings("unchecked")
+	public O objectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
+		Assert.notNull(objectPostProcessor,"objectPostProcessor cannot be null");
+		this.objectPostProcessor = objectPostProcessor;
+		return (O) this;
+	}
 
-    /**
-     * Performs post processing of an object. The default is to delegate to the
-     * {@link ObjectPostProcessor}.
-     *
-     * @param object the Object to post process
-     * @return the possibly modified Object to use
-     */
-    protected <P> P postProcess(P object) {
-        return (P) this.objectPostProcessor.postProcess(object);
-    }
+	/**
+	 * Performs post processing of an object. The default is to delegate to the
+	 * {@link ObjectPostProcessor}.
+	 *
+	 * @param object the Object to post process
+	 * @return the possibly modified Object to use
+	 */
+	protected <P> P postProcess(P object) {
+		return (P) this.objectPostProcessor.postProcess(object);
+	}
 
 	/**
 	 * Invoked prior to invoking each

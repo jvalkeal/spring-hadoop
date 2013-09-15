@@ -47,18 +47,18 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 	private YarnAppmasterBuilder yarnAppmasterBuilder;
 	private YarnContainerBuilder yarnContainerBuilder;
 
-    private ObjectPostProcessor<Object> objectPostProcessor = new ObjectPostProcessor<Object>() {
-        @Override
-        public <T> T postProcess(T object) {
-            throw new IllegalStateException(ObjectPostProcessor.class.getName()
-            		+ " is a required bean. Ensure you have used @EnableYarn and @Configuration");
-        }
-    };
+	private ObjectPostProcessor<Object> objectPostProcessor = new ObjectPostProcessor<Object>() {
+		@Override
+		public <T> T postProcess(T object) {
+			throw new IllegalStateException(ObjectPostProcessor.class.getName()
+					+ " is a required bean. Ensure you have used @EnableYarn and @Configuration");
+		}
+	};
 
-    @Autowired(required=false)
-    public void setObjectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
-        this.objectPostProcessor = objectPostProcessor;
-    }
+	@Autowired(required=false)
+	public void setObjectPostProcessor(ObjectPostProcessor<Object> objectPostProcessor) {
+		this.objectPostProcessor = objectPostProcessor;
+	}
 
 	@Override
 	public void init(SpringYarnConfigBuilder builder) throws Exception {
@@ -87,7 +87,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 	}
 
 	@Override
-    public void configure(YarnConfigBuilder config) throws Exception {
+	public void configure(YarnConfigBuilder config) throws Exception {
 	}
 
 	@Override

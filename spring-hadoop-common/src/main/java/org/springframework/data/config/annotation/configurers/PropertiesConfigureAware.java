@@ -27,7 +27,7 @@ import java.util.Properties;
 public interface PropertiesConfigureAware {
 
 	/**
-	 * Configure properties.
+	 * Configure {@link Properties}.
 	 *
 	 * @param properties the properties
 	 */

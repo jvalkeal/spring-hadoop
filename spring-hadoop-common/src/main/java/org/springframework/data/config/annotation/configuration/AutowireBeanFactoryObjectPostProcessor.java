@@ -20,54 +20,63 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.Aware;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.Lifecycle;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.data.config.annotation.ObjectPostProcessor;
 import org.springframework.util.Assert;
 
-
+/**
+ *
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ */
 final class AutowireBeanFactoryObjectPostProcessor implements ObjectPostProcessor<Object>, DisposableBean, SmartLifecycle {
 
 	private final static Log log = LogFactory.getLog(AutowireBeanFactoryObjectPostProcessor.class);
 
-    private final AutowireCapableBeanFactory autowireBeanFactory;
-    private final List<DisposableBean> disposableBeans = new ArrayList<DisposableBean>();
-    private final List<Lifecycle> lifecycleBeans = new ArrayList<Lifecycle>();
+	private final AutowireCapableBeanFactory autowireBeanFactory;
+	private final List<DisposableBean> disposableBeans = new ArrayList<DisposableBean>();
+	private final List<Lifecycle> lifecycleBeans = new ArrayList<Lifecycle>();
 
-    private boolean running;
+	private boolean running;
 
-    public AutowireBeanFactoryObjectPostProcessor(AutowireCapableBeanFactory autowireBeanFactory) {
-        Assert.notNull(autowireBeanFactory, "autowireBeanFactory cannot be null");
-        this.autowireBeanFactory = autowireBeanFactory;
-    }
+	/**
+	 * Instantiates a new autowire bean factory object post processor.
+	 *
+	 * @param autowireBeanFactory the autowire bean factory
+	 */
+	public AutowireBeanFactoryObjectPostProcessor(AutowireCapableBeanFactory autowireBeanFactory) {
+		Assert.notNull(autowireBeanFactory, "autowireBeanFactory cannot be null");
+		this.autowireBeanFactory = autowireBeanFactory;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T postProcess(T object) {
-        T result = (T) autowireBeanFactory.initializeBean(object, null);
-        if(result instanceof DisposableBean) {
-            disposableBeans.add((DisposableBean) result);
-        }
-        if(result instanceof Lifecycle) {
-        	lifecycleBeans.add((Lifecycle) result);
-        }
-        return result;
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T postProcess(T object) {
+		T result = (T) autowireBeanFactory.initializeBean(object, null);
+		if(result instanceof DisposableBean) {
+			disposableBeans.add((DisposableBean) result);
+		}
+		if(result instanceof Lifecycle) {
+			lifecycleBeans.add((Lifecycle) result);
+		}
+		return result;
+	}
 
-    @Override
-    public void destroy() throws Exception {
-        for(DisposableBean disposable : disposableBeans) {
-            try {
-                disposable.destroy();
-            } catch(Exception error) {
-            	log.error(error);
-            }
-        }
-    }
+	@Override
+	public void destroy() throws Exception {
+		for(DisposableBean disposable : disposableBeans) {
+			try {
+				disposable.destroy();
+			} catch(Exception error) {
+				log.error(error);
+			}
+		}
+	}
 
 	@Override
 	public void start() {
