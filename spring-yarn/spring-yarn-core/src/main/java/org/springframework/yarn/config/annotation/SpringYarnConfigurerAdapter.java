@@ -35,6 +35,7 @@ import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizer
  *
  * @author Janne Valkealahti
  * @see EnableYarn
+ *
  */
 public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 

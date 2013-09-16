@@ -13,24 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.config.annotation;
+package org.springframework.data.config.annotation.simple;
 
-/**
- * Interface for building an {@link Object}.
- *
- * @author Rob Winch
- * @author Janne Valkealahti
- *
- * @param <O> The type of the Object being built
- */
-public interface AnnotationBuilder<O> {
+import org.springframework.context.annotation.Import;
+import org.springframework.data.config.annotation.EnableAnnotationConfiguration;
+import org.springframework.data.config.annotation.configuration.ObjectPostProcessorConfiguration;
 
-	/**
-	 * Builds the object and returns it or null.
-	 *
-	 * @return the Object to be built or null if the implementation allows it.
-	 * @throws Exception if an error occurred when building the Object
-	 */
-	O build() throws Exception;
+@EnableAnnotationConfiguration
+@Import({SimpleTestConfiguration.class,ObjectPostProcessorConfiguration.class})
+public @interface EnableSimpleTest {
 
 }

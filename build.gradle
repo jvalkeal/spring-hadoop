@@ -559,6 +559,11 @@ project('spring-data-hadoop-core') {
 
 project('spring-data-hadoop-common') {
 	description = 'Spring for Apache Hadoop Common'
+	dependencies {
+		testCompile "org.springframework:spring-test:$springVersion"
+		testCompile "junit:junit:$junitVersion"
+		testRuntime "cglib:cglib:$cglibVersion"
+	}
 }
 
 project('spring-data-hadoop-batch') {

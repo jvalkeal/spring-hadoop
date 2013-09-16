@@ -16,8 +16,8 @@
 package org.springframework.data.config.annotation;
 
 /**
- * Allows for configuring a {@link AnnotationBuilder}. All
- * {@link AnnotationConfigurer} first have their {@link #init(AnnotationBuilder)}
+ * Allows for configuring an {@link AnnotationBuilder}. All
+ * {@link AnnotationConfigurer}s first have their {@link #init(AnnotationBuilder)}
  * method invoked. After all {@link #init(AnnotationBuilder)} methods have been
  * invoked, each {@link #configure(AnnotationBuilder)} method is invoked.
  *
@@ -33,7 +33,7 @@ package org.springframework.data.config.annotation;
 public interface AnnotationConfigurer<O, B extends AnnotationBuilder<O>> {
 
 	/**
-	 * Initialize the {@link AnnotationBuilder}. Here only shared state should be
+	 * Initialise the {@link AnnotationBuilder}. Here only shared state should be
 	 * created and modified, but not properties on the {@link AnnotationBuilder}
 	 * used for building the object. This ensures that the
 	 * {@link #configure(AnnotationBuilder)} method uses the correct shared

@@ -92,8 +92,6 @@ public abstract class AnnotationConfigurerAdapter<O, B extends AnnotationBuilder
 	/**
 	 * An {@link ObjectPostProcessor} that delegates work to numerous
 	 * {@link ObjectPostProcessor} implementations.
-	 *
-	 * @author Rob Winch
 	 */
 	private static final class CompositeObjectPostProcessor implements ObjectPostProcessor<Object> {
 

@@ -28,11 +28,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 /**
- * <p>A base {@link AnnotationBuilder} that allows {@link AnnotationConfigurer} to be
+ * A base {@link AnnotationBuilder} that allows {@link AnnotationConfigurer} to be
  * applied to it. This makes modifying the {@link AnnotationBuilder} a strategy
- * that can be customized and broken up into a number of
+ * that can be customised and broken up into a number of
  * {@link AnnotationConfigurer} objects that have more specific goals than that
- * of the {@link AnnotationBuilder}.</p>
+ * of the {@link AnnotationBuilder}.
  *
  * @author Rob Winch
  * @author Janne Valkealahti
@@ -138,6 +138,23 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		configurer.addObjectPostProcessor(objectPostProcessor);
 		configurer.setBuilder((B) this);
 		return configurer;
+	}
+
+	/**
+	 * Similar to {@link #apply(AnnotationConfigurer)} but checks the state
+	 * to determine if {@link #apply(AnnotationConfigurer)} needs to be called first.
+	 *
+	 * @param configurer the configurer
+	 * @return Configurer passed as parameter
+	 * @throws Exception if error occurred
+	 */
+	@SuppressWarnings("unchecked")
+	public <C extends AnnotationConfigurerAdapter<O, B>> C getOrApply(C configurer) throws Exception {
+		C existing = (C) getConfigurer(configurer.getClass());
+		if (existing != null) {
+			return existing;
+		}
+		return apply(configurer);
 	}
 
 	/**
@@ -338,18 +355,14 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 
 	@SuppressWarnings("unchecked")
 	private void init() throws Exception {
-		Collection<AnnotationConfigurer<O, B>> configurers = getConfigurers();
-
-		for (AnnotationConfigurer<O, B> configurer : configurers) {
+		for (AnnotationConfigurer<O, B> configurer : getConfigurers()) {
 			configurer.init((B) this);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private void configure() throws Exception {
-		Collection<AnnotationConfigurer<O, B>> configurers = getConfigurers();
-
-		for (AnnotationConfigurer<O, B> configurer : configurers) {
+		for (AnnotationConfigurer<O, B> configurer : getConfigurers()) {
 			configurer.configure((B) this);
 		}
 	}
