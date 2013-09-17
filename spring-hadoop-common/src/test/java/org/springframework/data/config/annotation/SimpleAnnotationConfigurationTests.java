@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.config.annotation.simple.EnableSimpleTest;
 import org.springframework.data.config.annotation.simple.SimpleTestConfig;
+import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanABuilder;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigBuilder;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigurerAdapter;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,7 +43,7 @@ public class SimpleAnnotationConfigurationTests {
 	public void testSimpleConfig() throws Exception {
 		assertNotNull(ctx);
 		assertTrue(ctx.containsBean("simpleConfig"));
-		SimpleTestConfig config = (SimpleTestConfig) ctx.getBean("simpleConfig");
+		SimpleTestConfig config = ctx.getBean("simpleConfig", SimpleTestConfig.class);
 		assertTrue(config.simpleData.equals("foo"));
 		assertNotNull(config.simpleProperties.getProperty("foo"));
 		assertTrue(config.simpleProperties.getProperty("foo").equals("jee"));
@@ -54,12 +55,17 @@ public class SimpleAnnotationConfigurationTests {
 
 		@Override
 		public void configure(SimpleTestConfigBuilder config) throws Exception {
+			config.withProperties().property("foo", "jee");
 		}
 
 		@Override
-		public void init(SimpleTestConfigBuilder config) throws Exception {
-			config.withProperties().property("foo", "jee");
+		public void configure(SimpleTestConfigBeanABuilder a) {
 		}
+
+//		@Override
+//		public void init(SimpleTestConfigBuilder config) throws Exception {
+//			config.setSharedObject(sharedType, object);
+//		}
 
 	}
 

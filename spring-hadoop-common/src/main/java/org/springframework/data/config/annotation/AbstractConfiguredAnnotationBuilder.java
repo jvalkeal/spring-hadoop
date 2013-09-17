@@ -115,7 +115,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 			try {
 				return build();
 			} catch (Exception e) {
-				log.debug("Failed to perform build. Returning null", e);
+				log.error("Failed to perform build. Returning null", e);
 				return null;
 			}
 		} else {

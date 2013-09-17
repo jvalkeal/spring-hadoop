@@ -20,10 +20,15 @@ public class SimpleTestConfigurerAdapter implements SimpleTestConfigurer {
 
 	@Override
 	public void init(SimpleTestConfigBuilder config) throws Exception {
+//		configure(config);
 	}
 
 	@Override
 	public void configure(SimpleTestConfigBuilder config) throws Exception {
+	}
+
+	@Override
+	public void configure(SimpleTestConfigBeanABuilder a) {
 	}
 
 }

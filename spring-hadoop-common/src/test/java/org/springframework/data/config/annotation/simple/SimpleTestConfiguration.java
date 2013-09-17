@@ -28,9 +28,16 @@ public class SimpleTestConfiguration extends AbstractAnnotationConfiguration<Sim
 	SimpleTestConfigBuilder builder = new SimpleTestConfigBuilder();
 
 	@Bean(name="simpleConfig")
-	SimpleTestConfig simpleTestConfig() throws Exception {
-		return builder.build();
+	public SimpleTestConfig simpleTestConfig() {
+		SimpleTestConfig config = builder.getOrBuild();
+		return config;
 	}
+
+//	@Bean(name="simpleConfigData")
+//	public String simpleTestConfigData() {
+//		SimpleTestConfig config = builder.getOrBuild();
+//		return config.simpleData;
+//	}
 
 	@Override
 	protected void onConfigurers(List<AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder>> configurers)	throws Exception {

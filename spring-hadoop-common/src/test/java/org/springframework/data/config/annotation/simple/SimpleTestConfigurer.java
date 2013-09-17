@@ -19,4 +19,6 @@ import org.springframework.data.config.annotation.AnnotationConfigurer;
 
 public interface SimpleTestConfigurer extends AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> {
 
+	void configure(SimpleTestConfigBeanABuilder a);
+
 }
