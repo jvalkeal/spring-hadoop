@@ -62,10 +62,10 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 	}
 
 	@Override
-	public void init(SpringYarnConfigBuilder builder) throws Exception {
-		builder.setYarnConfigBuilder(getConfigBuilder());
-		builder.setYarnLocalizerBuilder(getLocalizerBuilder());
-		builder.setEnvironmentBuilder(getEnvironmentBuilder());
+	public final void init(SpringYarnConfigBuilder builder) throws Exception {
+		builder.setSharedObject(YarnConfigBuilder.class, getConfigBuilder());
+		builder.setSharedObject(YarnResourceLocalizerBuilder.class, getLocalizerBuilder());
+		builder.setSharedObject(YarnEnvironmentBuilder.class, getEnvironmentBuilder());
 
 		EnableYarn annotation = AnnotationUtils.findAnnotation(getClass(), EnableYarn.class);
 		Enable enable = annotation.enable();
@@ -75,11 +75,11 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 		}
 
 		if (enable == Enable.CLIENT) {
-			builder.setYarnClientBuilder(getClientBuilder());
+			builder.setSharedObject(YarnClientBuilder.class, getClientBuilder());
 		} else if (enable == Enable.APPMASTER) {
-			builder.setYarnAppmasterBuilder(getAppmasterBuilder());
+			builder.setSharedObject(YarnAppmasterBuilder.class, getAppmasterBuilder());
 		} else if (enable == Enable.CONTAINER) {
-			builder.setYarnContainerBuilder(getContainerBuilder());
+			builder.setSharedObject(YarnContainerBuilder.class, getContainerBuilder());
 		}
 	}
 

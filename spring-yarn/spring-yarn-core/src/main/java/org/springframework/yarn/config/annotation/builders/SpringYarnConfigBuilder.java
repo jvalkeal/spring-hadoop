@@ -32,13 +32,6 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  */
 public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<SpringYarnConfigs, SpringYarnConfigBuilder> {
 
-	private YarnConfigBuilder yarnConfigBuilder;
-	private YarnResourceLocalizerBuilder yarnResourceLocalizerBuilder;
-	private YarnEnvironmentBuilder yarnEnvironmentBuilder;
-	private YarnClientBuilder yarnClientBuilder;
-	private YarnAppmasterBuilder yarnAppmasterBuilder;
-	private YarnContainerBuilder yarnContainerBuilder;
-
 	private Configuration yarnConfiguration;
 
 	public SpringYarnConfigBuilder() {
@@ -49,17 +42,20 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		SpringYarnConfigs config = new SpringYarnConfigs();
 
 		Configuration configuration = (yarnConfiguration == null)
-				? (YarnConfiguration) yarnConfigBuilder.build()
+				? (YarnConfiguration) getSharedObject(YarnConfigBuilder.class).build()
 				: yarnConfiguration;
+
 		config.setConfiguration(configuration);
 
+		YarnResourceLocalizerBuilder yarnResourceLocalizerBuilder = getSharedObject(YarnResourceLocalizerBuilder.class);
 		yarnResourceLocalizerBuilder.configuration(configuration);
 		ResourceLocalizer localizer = yarnResourceLocalizerBuilder.build();
 		config.setLocalizer(localizer);
 
-		Map<String, String> env = yarnEnvironmentBuilder.build();
+		Map<String, String> env = getSharedObject(YarnEnvironmentBuilder.class).build();
 		config.setEnvironment(env);
 
+		YarnClientBuilder yarnClientBuilder = getSharedObject(YarnClientBuilder.class);
 		if (yarnClientBuilder != null) {
 			yarnClientBuilder.configuration(configuration);
 			yarnClientBuilder.setResourceLocalizer(localizer);
@@ -67,6 +63,7 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 			config.setYarnClient(yarnClientBuilder.build());
 		}
 
+		YarnAppmasterBuilder yarnAppmasterBuilder = getSharedObject(YarnAppmasterBuilder.class);
 		if (yarnAppmasterBuilder != null) {
 			yarnAppmasterBuilder.configuration(configuration);
 			yarnAppmasterBuilder.setResourceLocalizer(localizer);
@@ -74,6 +71,7 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 			config.setYarnAppmaster(yarnAppmasterBuilder.build());
 		}
 
+		YarnContainerBuilder yarnContainerBuilder = getSharedObject(YarnContainerBuilder.class);
 		if (yarnContainerBuilder != null) {
 			config.setYarnContainer(yarnContainerBuilder.build());
 		}
@@ -83,30 +81,6 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 
 	public void setYarnConfiguration(Configuration yarnConfiguration) {
 		this.yarnConfiguration = yarnConfiguration;
-	}
-
-	public void setYarnConfigBuilder(YarnConfigBuilder yarnConfigBuilder) {
-		this.yarnConfigBuilder = yarnConfigBuilder;
-	}
-
-	public void setYarnLocalizerBuilder(YarnResourceLocalizerBuilder yarnResourceLocalizerBuilder) {
-		this.yarnResourceLocalizerBuilder = yarnResourceLocalizerBuilder;
-	}
-
-	public void setEnvironmentBuilder(YarnEnvironmentBuilder yarnEnvironmentBuilder) {
-		this.yarnEnvironmentBuilder = yarnEnvironmentBuilder;
-	}
-
-	public void setYarnClientBuilder(YarnClientBuilder yarnClientBuilder) {
-		this.yarnClientBuilder = yarnClientBuilder;
-	}
-
-	public void setYarnAppmasterBuilder(YarnAppmasterBuilder yarnAppmasterBuilder) {
-		this.yarnAppmasterBuilder = yarnAppmasterBuilder;
-	}
-
-	public void setYarnContainerBuilder(YarnContainerBuilder yarnContainerBuilder) {
-		this.yarnContainerBuilder = yarnContainerBuilder;
 	}
 
 }

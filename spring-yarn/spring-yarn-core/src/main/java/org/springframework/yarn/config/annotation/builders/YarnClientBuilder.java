@@ -18,7 +18,6 @@ package org.springframework.yarn.config.annotation.builders;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBuilder;
 import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.client.YarnClientFactoryBean;
@@ -34,12 +33,7 @@ public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnC
 	private String[] commands;
 
 	public YarnClientBuilder() {
-//		this(true);
 	}
-
-//	public YarnClientBuilder(boolean allowConfigurersOfSameType) {
-//		super(allowConfigurersOfSameType);
-//	}
 
 	@Override
 	protected YarnClient performBuild() throws Exception {

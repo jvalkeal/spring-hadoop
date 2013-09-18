@@ -59,8 +59,6 @@ public class SpringYarnConfiguration extends AbstractAnnotationConfiguration<Spr
 
 	protected SpringYarnConfigBuilder builder = new SpringYarnConfigBuilder();
 
-	private List<SpringYarnConfigurer> configurers;
-
 	@Bean(name=YarnSystemConstants.DEFAULT_ID_CONFIGURATION)
 	public YarnConfiguration yarnConfiguration() throws Exception {
 		SpringYarnConfigs config = builder.build();
