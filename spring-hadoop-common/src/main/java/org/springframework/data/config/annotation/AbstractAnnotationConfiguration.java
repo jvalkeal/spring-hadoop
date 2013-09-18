@@ -18,8 +18,6 @@ package org.springframework.data.config.annotation;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ImportAware;
@@ -29,17 +27,15 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 
 /**
- *
+ * Base implementation of @{@Configuration} class.
  *
  * @author Janne Valkealahti
  *
- * @param <B>
- * @param <O>
+ * @param <O> The object that used builder returns
+ * @param <B> The type of the builder
  */
 public abstract class AbstractAnnotationConfiguration<B extends AnnotationBuilder<O>, O>
 		implements ImportAware, BeanClassLoaderAware {
-
-	private final static Log log = LogFactory.getLog(AbstractAnnotationConfiguration.class);
 
 	private List<AnnotationConfigurer<O,B>> configurers;
 

@@ -28,8 +28,8 @@ import org.springframework.data.config.annotation.ObjectPostProcessor;
 import org.springframework.util.Assert;
 
 /**
- *
- *
+ * Post processor handling lifecycle methods of
+ * POJOs created from builder/configurer.
  *
  * @author Janne Valkealahti
  *

@@ -95,20 +95,16 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	@Override
 	protected final O doBuild() throws Exception {
 		synchronized (mainConfigurers) {
-			buildState = BuildState.INITIALIZING;
-//			buildState = BuildState.INITIALIZING_MAINS;
+			buildState = BuildState.INITIALIZING_MAINS;
 			beforeInit();
 			initMainConfigurers();
 
-//			buildState = BuildState.INITIALIZING_POSTS;
-
-			buildState = BuildState.CONFIGURING;
-//			buildState = BuildState.CONFIGURING_MAINS;
-			beforeConfigure();
-
+			buildState = BuildState.CONFIGURING_MAINS;
+			beforeConfigureMains();
 			configureMainConfigurers();
 
-//			buildState = BuildState.CONFIGURING_POSTS;
+			buildState = BuildState.CONFIGURING_POSTS;
+			beforeConfigurePosts();
 			configurePostConfigurers();
 
 			buildState = BuildState.BUILDING;
@@ -235,9 +231,6 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 
 		if (!buildState.isConfigured()) {
 			synchronized (mainConfigurers) {
-//				if (buildState.isConfigured()) {
-//					throw new IllegalStateException("Cannot apply " + configurer + " to already built object");
-//				}
 				List<AnnotationConfigurer<O, B>> configs = allowConfigurersOfSameType ? this.mainConfigurers.get(clazz) : null;
 				if (configs == null) {
 					configs = new ArrayList<AnnotationConfigurer<O, B>>(1);
@@ -250,19 +243,13 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 			}
 		} else {
 			synchronized (postConfigurers) {
-//				if (buildState.isConfigured()) {
-//					throw new IllegalStateException("Cannot apply " + configurer + " to already built object");
-//				}
 				List<AnnotationConfigurer<O, B>> configs = allowConfigurersOfSameType ? this.postConfigurers.get(clazz) : null;
 				if (configs == null) {
 					configs = new ArrayList<AnnotationConfigurer<O, B>>(1);
 				}
 				configs.add(configurer);
 				this.postConfigurers.put(clazz, configs);
-				// TODO: when we call init for post configurers
-				if (buildState.isInitializing()) {
-					configurer.init((B) this);
-				}
+				configurer.init((B) this);
 			}
 		}
 	}
@@ -372,12 +359,21 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	}
 
 	/**
-	 * Invoked prior to invoking each
+	 * Invoked prior to invoking each main
 	 * {@link AnnotationConfigurer#configure(AnnotationBuilder)} method.
 	 * Subclasses may override this method to hook into the lifecycle without
 	 * using a {@link AnnotationConfigurer}.
 	 */
-	protected void beforeConfigure() throws Exception {
+	protected void beforeConfigureMains() throws Exception {
+	}
+
+	/**
+	 * Invoked prior to invoking each post
+	 * {@link AnnotationConfigurer#configure(AnnotationBuilder)} method.
+	 * Subclasses may override this method to hook into the lifecycle without
+	 * using a {@link AnnotationConfigurer}.
+	 */
+	protected void beforeConfigurePosts() throws Exception {
 	}
 
 	/**
@@ -455,16 +451,25 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		 * all the {@link AnnotationConfigurer#init(AnnotationBuilder)} methods have
 		 * been invoked.
 		 */
-		INITIALIZING(1),
+		INITIALIZING_MAINS(1),
 
 		/**
-		 * The state from after all
+		 * The state from after all main
 		 * {@link AnnotationConfigurer#init(AnnotationBuilder)}
 		 * have been invoked until after all the
 		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)}
 		 * methods have been invoked.
 		 */
-		CONFIGURING(2),
+		CONFIGURING_MAINS(2),
+
+		/**
+		 * The state from after all post
+		 * {@link AnnotationConfigurer#init(AnnotationBuilder)}
+		 * have been invoked until after all the
+		 * {@link AnnotationConfigurer#configure(AnnotationBuilder)}
+		 * methods have been invoked.
+		 */
+		CONFIGURING_POSTS(3),
 
 		/**
 		 * From the point after all the
@@ -472,12 +477,12 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		 * have completed to just after
 		 * {@link AbstractConfiguredAnnotationBuilder#performBuild()}.
 		 */
-		BUILDING(3),
+		BUILDING(4),
 
 		/**
 		 * After the object has been completely built.
 		 */
-		BUILT(4);
+		BUILT(5);
 
 		private final int order;
 
@@ -491,7 +496,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		 * @return true, if is initializing
 		 */
 		public boolean isInitializing() {
-			return INITIALIZING.order == order;
+			return INITIALIZING_MAINS.order == order;
 		}
 
 		/**
@@ -500,7 +505,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		 * @return true, if configured
 		 */
 		public boolean isConfigured() {
-			return order >= CONFIGURING.order;
+			return order >= CONFIGURING_MAINS.order;
 		}
 	}
 
