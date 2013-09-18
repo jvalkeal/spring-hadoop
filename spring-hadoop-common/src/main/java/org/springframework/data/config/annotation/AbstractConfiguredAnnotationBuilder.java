@@ -28,11 +28,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 /**
- * A base {@link AnnotationBuilder} that allows {@link AnnotationConfigurer} to be
+ * A base {@link AnnotationBuilder} that allows {@link AnnotationConfigurer}s to be
  * applied to it. This makes modifying the {@link AnnotationBuilder} a strategy
  * that can be customised and broken up into a number of
  * {@link AnnotationConfigurer} objects that have more specific goals than that
  * of the {@link AnnotationBuilder}.
+ * <p>
+ *
  *
  * @author Rob Winch
  * @author Janne Valkealahti
@@ -45,13 +47,19 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 
 	private final static Log log = LogFactory.getLog(AbstractConfiguredAnnotationBuilder.class);
 
-	private final LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>> configurers =
+	/** Configurers which are added to this builder before the configure step */
+	private final LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>> mainConfigurers =
+			new LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>>();
+
+	/** Configurers which are added to this builder during the configuration phase */
+	private final LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>> postConfigurers =
 			new LinkedHashMap<Class<? extends AnnotationConfigurer<O, B>>, List<AnnotationConfigurer<O, B>>>();
 
 	private final Map<Class<Object>, Object> sharedObjects = new HashMap<Class<Object>, Object>();
 
 	private final boolean allowConfigurersOfSameType;
 
+	/** Current state of this builder */
 	private BuildState buildState = BuildState.UNBUILT;
 
 	private ObjectPostProcessor<Object> objectPostProcessor;
@@ -86,14 +94,22 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 
 	@Override
 	protected final O doBuild() throws Exception {
-		synchronized (configurers) {
+		synchronized (mainConfigurers) {
 			buildState = BuildState.INITIALIZING;
+//			buildState = BuildState.INITIALIZING_MAINS;
 			beforeInit();
-			init();
+			initMainConfigurers();
+
+//			buildState = BuildState.INITIALIZING_POSTS;
 
 			buildState = BuildState.CONFIGURING;
+//			buildState = BuildState.CONFIGURING_MAINS;
 			beforeConfigure();
-			configure();
+
+			configureMainConfigurers();
+
+//			buildState = BuildState.CONFIGURING_POSTS;
+			configurePostConfigurers();
 
 			buildState = BuildState.BUILDING;
 			O result = performBuild();
@@ -217,18 +233,36 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 		Class<? extends AnnotationConfigurer<O, B>> clazz =
 				(Class<? extends AnnotationConfigurer<O, B>>) configurer.getClass();
 
-		synchronized (configurers) {
-			if (buildState.isConfigured()) {
-				throw new IllegalStateException("Cannot apply " + configurer + " to already built object");
+		if (!buildState.isConfigured()) {
+			synchronized (mainConfigurers) {
+//				if (buildState.isConfigured()) {
+//					throw new IllegalStateException("Cannot apply " + configurer + " to already built object");
+//				}
+				List<AnnotationConfigurer<O, B>> configs = allowConfigurersOfSameType ? this.mainConfigurers.get(clazz) : null;
+				if (configs == null) {
+					configs = new ArrayList<AnnotationConfigurer<O, B>>(1);
+				}
+				configs.add(configurer);
+				this.mainConfigurers.put(clazz, configs);
+				if (buildState.isInitializing()) {
+					configurer.init((B) this);
+				}
 			}
-			List<AnnotationConfigurer<O, B>> configs = allowConfigurersOfSameType ? this.configurers.get(clazz) : null;
-			if (configs == null) {
-				configs = new ArrayList<AnnotationConfigurer<O, B>>(1);
-			}
-			configs.add(configurer);
-			this.configurers.put(clazz, configs);
-			if (buildState.isInitializing()) {
-				configurer.init((B) this);
+		} else {
+			synchronized (postConfigurers) {
+//				if (buildState.isConfigured()) {
+//					throw new IllegalStateException("Cannot apply " + configurer + " to already built object");
+//				}
+				List<AnnotationConfigurer<O, B>> configs = allowConfigurersOfSameType ? this.postConfigurers.get(clazz) : null;
+				if (configs == null) {
+					configs = new ArrayList<AnnotationConfigurer<O, B>>(1);
+				}
+				configs.add(configurer);
+				this.postConfigurers.put(clazz, configs);
+				// TODO: when we call init for post configurers
+				if (buildState.isInitializing()) {
+					configurer.init((B) this);
+				}
 			}
 		}
 	}
@@ -242,7 +276,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> List<C> getConfigurers(Class<C> clazz) {
-		List<C> configs = (List<C>) this.configurers.get(clazz);
+		List<C> configs = (List<C>) this.mainConfigurers.get(clazz);
 		if (configs == null) {
 			return new ArrayList<C>();
 		}
@@ -258,7 +292,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> List<C> removeConfigurers(Class<C> clazz) {
-		List<C> configs = (List<C>) this.configurers.remove(clazz);
+		List<C> configs = (List<C>) this.mainConfigurers.remove(clazz);
 		if (configs == null) {
 			return new ArrayList<C>();
 		}
@@ -275,7 +309,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> C getConfigurer(Class<C> clazz) {
-		List<AnnotationConfigurer<O, B>> configs = this.configurers.get(clazz);
+		List<AnnotationConfigurer<O, B>> configs = this.mainConfigurers.get(clazz);
 		if (configs == null) {
 			return null;
 		}
@@ -295,7 +329,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 */
 	@SuppressWarnings("unchecked")
 	public <C extends AnnotationConfigurer<O, B>> C removeConfigurer(Class<C> clazz) {
-		List<AnnotationConfigurer<O, B>> configs = this.configurers.remove(clazz);
+		List<AnnotationConfigurer<O, B>> configs = this.mainConfigurers.remove(clazz);
 		if (configs == null) {
 			return null;
 		}
@@ -354,15 +388,22 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	protected abstract O performBuild() throws Exception;
 
 	@SuppressWarnings("unchecked")
-	private void init() throws Exception {
-		for (AnnotationConfigurer<O, B> configurer : getConfigurers()) {
+	private void initMainConfigurers() throws Exception {
+		for (AnnotationConfigurer<O, B> configurer : getMainConfigurers()) {
 			configurer.init((B) this);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void configure() throws Exception {
-		for (AnnotationConfigurer<O, B> configurer : getConfigurers()) {
+	private void configureMainConfigurers() throws Exception {
+		for (AnnotationConfigurer<O, B> configurer : getMainConfigurers()) {
+			configurer.configure((B) this);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void configurePostConfigurers() throws Exception {
+		for (AnnotationConfigurer<O, B> configurer : getPostConfigurers()) {
 			configurer.configure((B) this);
 		}
 	}
@@ -372,9 +413,17 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 *
 	 * @return the configurers
 	 */
-	private Collection<AnnotationConfigurer<O, B>> getConfigurers() {
+	private Collection<AnnotationConfigurer<O, B>> getMainConfigurers() {
 		List<AnnotationConfigurer<O, B>> result = new ArrayList<AnnotationConfigurer<O, B>>();
-		for (List<AnnotationConfigurer<O, B>> configs : this.configurers.values()) {
+		for (List<AnnotationConfigurer<O, B>> configs : this.mainConfigurers.values()) {
+			result.addAll(configs);
+		}
+		return result;
+	}
+
+	private Collection<AnnotationConfigurer<O, B>> getPostConfigurers() {
+		List<AnnotationConfigurer<O, B>> result = new ArrayList<AnnotationConfigurer<O, B>>();
+		for (List<AnnotationConfigurer<O, B>> configs : this.postConfigurers.values()) {
 			result.addAll(configs);
 		}
 		return result;
@@ -386,7 +435,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 * @return true, if unbuilt else false
 	 */
 	private boolean isUnbuilt() {
-		synchronized (configurers) {
+		synchronized (mainConfigurers) {
 			return buildState == BuildState.UNBUILT;
 		}
 	}

@@ -19,8 +19,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.config.annotation.EnableAnnotationConfiguration;
 import org.springframework.data.config.annotation.configuration.ObjectPostProcessorConfiguration;
 
+/**
+ * Example annotation which imports @{@link Configuration}s.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @EnableAnnotationConfiguration
 @Import({SimpleTestConfiguration.class,ObjectPostProcessorConfiguration.class})
 public @interface EnableSimpleTest {
-
 }

@@ -15,18 +15,28 @@
  */
 package org.springframework.data.config.annotation.simple;
 
-import org.springframework.data.config.annotation.AnnotationConfigurer;
+import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBuilder;
 
 /**
- * Example of an interface used in {@link SimpleTestConfigurerAdapter}.
+ * {@link AnnotationBuilder} for {@link SimpleTestConfigBeanB}.
  *
  * @author Janne Valkealahti
  *
  */
-public interface SimpleTestConfigurer extends AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> {
+public class SimpleTestConfigBeanBBuilder extends AbstractConfiguredAnnotationBuilder<SimpleTestConfigBeanB, SimpleTestConfigBeanBBuilder> {
 
-	void configure(SimpleTestConfigBeanABuilder a) throws Exception;
+	private String data;
 
-	void configure(SimpleTestConfigBeanBBuilder b) throws Exception;
+	@Override
+	protected SimpleTestConfigBeanB performBuild() throws Exception {
+		SimpleTestConfigBeanB bean = new SimpleTestConfigBeanB();
+		bean.dataB = data;
+		return bean;
+	}
+
+	public SimpleTestConfigBeanBBuilder setData(String data) {
+		this.data = data;
+		return this;
+	}
 
 }

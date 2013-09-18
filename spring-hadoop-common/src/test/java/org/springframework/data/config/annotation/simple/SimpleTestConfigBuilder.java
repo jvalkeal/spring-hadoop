@@ -22,6 +22,12 @@ import org.springframework.data.config.annotation.configurers.PropertiesConfigur
 import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
 
 
+/**
+ * {@link AnnotationBuilder} for {@link SimpleTestConfig}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class SimpleTestConfigBuilder extends AbstractConfiguredAnnotationBuilder<SimpleTestConfig, SimpleTestConfigBuilder>
 		implements PropertiesConfigureAware {
 
@@ -29,7 +35,10 @@ public class SimpleTestConfigBuilder extends AbstractConfiguredAnnotationBuilder
 
 	@Override
 	protected SimpleTestConfig performBuild() throws Exception {
-		return new SimpleTestConfig("foo", properties);
+		SimpleTestConfig bean = new SimpleTestConfig("simpleData", properties);
+		bean.simpleBeanA = getSharedObject(SimpleTestConfigBeanABuilder.class).build();
+		bean.simpleBeanB = getSharedObject(SimpleTestConfigBeanBBuilder.class).build();
+		return bean;
 	}
 
 	@Override

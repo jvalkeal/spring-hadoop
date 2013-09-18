@@ -15,12 +15,23 @@
  */
 package org.springframework.data.config.annotation.simple;
 
-
+/**
+ * Generic adapter example which user would extend
+ * in @{@link org.springframework.context.annotation.Configuration}
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class SimpleTestConfigurerAdapter implements SimpleTestConfigurer {
 
+	private SimpleTestConfigBeanABuilder beanABuilder;
+	private SimpleTestConfigBeanBBuilder beanBBuilder;
+
 	@Override
-	public void init(SimpleTestConfigBuilder config) throws Exception {
-//		configure(config);
+	public final void init(SimpleTestConfigBuilder config) throws Exception {
+		config.setSharedObject(String.class, "simpleSharedData");
+		config.setSharedObject(SimpleTestConfigBeanABuilder.class, getSimpleTestConfigBeanABuilder());
+		config.setSharedObject(SimpleTestConfigBeanBBuilder.class, getSimpleTestConfigBeanBBuilder());
 	}
 
 	@Override
@@ -28,7 +39,29 @@ public class SimpleTestConfigurerAdapter implements SimpleTestConfigurer {
 	}
 
 	@Override
-	public void configure(SimpleTestConfigBeanABuilder a) {
+	public void configure(SimpleTestConfigBeanABuilder a) throws Exception {
+	}
+
+	@Override
+	public void configure(SimpleTestConfigBeanBBuilder b) throws Exception {
+	}
+
+	protected final SimpleTestConfigBeanBBuilder getSimpleTestConfigBeanBBuilder() throws Exception {
+		if (beanBBuilder != null) {
+			return beanBBuilder;
+		}
+		beanBBuilder = new SimpleTestConfigBeanBBuilder();
+		configure(beanBBuilder);
+		return beanBBuilder;
+	}
+
+	protected final SimpleTestConfigBeanABuilder getSimpleTestConfigBeanABuilder() throws Exception {
+		if (beanABuilder != null) {
+			return beanABuilder;
+		}
+		beanABuilder = new SimpleTestConfigBeanABuilder();
+		configure(beanABuilder);
+		return beanABuilder;
 	}
 
 }

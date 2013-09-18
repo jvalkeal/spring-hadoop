@@ -15,23 +15,37 @@
  */
 package org.springframework.data.config.annotation;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.data.config.annotation.simple.EnableSimpleTest;
 import org.springframework.data.config.annotation.simple.SimpleTestConfig;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanABuilder;
+import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanB;
+import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanBBuilder;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigBuilder;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigurerAdapter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+/**
+ * Tests for generic javaconfig builder/configurer concepts.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 public class SimpleAnnotationConfigurationTests {
@@ -44,9 +58,32 @@ public class SimpleAnnotationConfigurationTests {
 		assertNotNull(ctx);
 		assertTrue(ctx.containsBean("simpleConfig"));
 		SimpleTestConfig config = ctx.getBean("simpleConfig", SimpleTestConfig.class);
-		assertTrue(config.simpleData.equals("foo"));
-		assertNotNull(config.simpleProperties.getProperty("foo"));
-		assertTrue(config.simpleProperties.getProperty("foo").equals("jee"));
+		assertThat(config.simpleData, notNullValue());
+		assertThat(config.simpleData, is("simpleData"));
+
+		assertThat(config.simpleProperties, notNullValue());
+		assertThat(config.simpleProperties.getProperty("simpleKey1"), notNullValue());
+		assertThat(config.simpleProperties.getProperty("simpleKey1"), is("simpleValue1"));
+
+		assertThat(config.simpleBeanA, notNullValue());
+		assertThat(config.simpleBeanA.dataA, notNullValue());
+		assertThat(config.simpleBeanA.resources, notNullValue());
+
+		assertThat(config.simpleBeanA.dataA, is("simpleDataA"));
+		assertThat(config.simpleBeanA.resources.size(), is(2));
+		Iterator<Resource> iterator = config.simpleBeanA.resources.iterator();
+		String fileName1 = iterator.next().getFilename();
+		String fileName2 = iterator.next().getFilename();
+		String[] fileNames = new String[2];
+		fileNames[0] = fileName1.equals("simpleResourceA1") ? fileName1 : fileName2;
+		fileNames[1] = fileName2.equals("simpleResourceA2") ? fileName2 : fileName1;
+		assertThat(fileNames[0], is("simpleResourceA1"));
+		assertThat(fileNames[1], is("simpleResourceA2"));
+
+		assertTrue(ctx.containsBean("simpleConfigData"));
+		assertTrue(ctx.containsBean("simpleConfigBeanB"));
+		SimpleTestConfigBeanB beanB = ctx.getBean("simpleConfigBeanB", SimpleTestConfigBeanB.class);
+		assertThat(beanB.dataB, is("simpleDataB"));
 	}
 
 	@Configuration
@@ -55,17 +92,25 @@ public class SimpleAnnotationConfigurationTests {
 
 		@Override
 		public void configure(SimpleTestConfigBuilder config) throws Exception {
-			config.withProperties().property("foo", "jee");
+			config
+				.withProperties()
+					.property("simpleKey1", "simpleValue1");
 		}
 
 		@Override
-		public void configure(SimpleTestConfigBeanABuilder a) {
+		public void configure(SimpleTestConfigBeanABuilder beanA) throws Exception {
+			beanA
+				.withResources()
+					.resource("simpleResourceA1")
+					.resource("simpleResourceA2")
+					.and()
+				.setData("simpleDataA");
 		}
 
-//		@Override
-//		public void init(SimpleTestConfigBuilder config) throws Exception {
-//			config.setSharedObject(sharedType, object);
-//		}
+		@Override
+		public void configure(SimpleTestConfigBeanBBuilder beanB) throws Exception {
+			beanB.setData("simpleDataB");
+		}
 
 	}
 

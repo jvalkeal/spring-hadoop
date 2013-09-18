@@ -22,6 +22,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.config.annotation.AbstractAnnotationConfiguration;
 import org.springframework.data.config.annotation.AnnotationConfigurer;
 
+/**
+ * @{@link Configuration} which is imported from @{@ EnableSimpleTest}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 @Configuration
 public class SimpleTestConfiguration extends AbstractAnnotationConfiguration<SimpleTestConfigBuilder, SimpleTestConfig> {
 
@@ -33,11 +39,17 @@ public class SimpleTestConfiguration extends AbstractAnnotationConfiguration<Sim
 		return config;
 	}
 
-//	@Bean(name="simpleConfigData")
-//	public String simpleTestConfigData() {
-//		SimpleTestConfig config = builder.getOrBuild();
-//		return config.simpleData;
-//	}
+	@Bean(name="simpleConfigData")
+	public String simpleTestConfigData() {
+		SimpleTestConfig config = builder.getOrBuild();
+		return config.simpleData;
+	}
+
+	@Bean(name="simpleConfigBeanB")
+	public SimpleTestConfigBeanB simpleTestConfigBeanB() {
+		SimpleTestConfig config = builder.getOrBuild();
+		return config.simpleBeanB;
+	}
 
 	@Override
 	protected void onConfigurers(List<AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder>> configurers)	throws Exception {

@@ -17,14 +17,30 @@ package org.springframework.data.config.annotation.simple;
 
 import java.util.Properties;
 
+/**
+ * Main pojo used to collect together configs.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class SimpleTestConfig {
 
 	public String simpleData;
 	public Properties simpleProperties;
+	public SimpleTestConfigBeanA simpleBeanA;
+	public SimpleTestConfigBeanB simpleBeanB;
 
 	public SimpleTestConfig(String config, Properties properties) {
 		simpleData = config;
 		simpleProperties = properties;
+	}
+
+	public void setSimpleBeanB(SimpleTestConfigBeanB simpleBeanB) {
+		this.simpleBeanB = simpleBeanB;
+	}
+
+	public void setSimpleBeanA(SimpleTestConfigBeanA simpleBeanA) {
+		this.simpleBeanA = simpleBeanA;
 	}
 
 }
