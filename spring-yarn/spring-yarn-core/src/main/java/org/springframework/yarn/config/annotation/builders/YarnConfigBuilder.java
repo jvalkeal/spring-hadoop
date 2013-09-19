@@ -46,12 +46,7 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 	private String rmAddress;
 
 	public YarnConfigBuilder() {
-//		this(true);
 	}
-
-//	public YarnConfigBuilder(boolean allowConfigurersOfSameType) {
-//		super(allowConfigurersOfSameType);
-//	}
 
 	public YarnConfigBuilder(ObjectPostProcessor<Object> objectPostProcessor) {
 		super(objectPostProcessor);
@@ -72,7 +67,6 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		YarnConfiguration c = fb.getObject();
 		c = postProcess(c);
 		return c;
-//		return fb.getObject();
 	}
 
 	@Override
@@ -110,16 +104,5 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		rmAddress = address;
 		return this;
 	}
-
-
-//    private <C extends AnnotationConfigurerAdapter<YarnConfiguration, AnnotationBuilder<YarnConfiguration>>> C getOrApply(C configurer)
-//            throws Exception {
-//        C existingConfig = (C) getConfigurer(configurer.getClass());
-//        if(existingConfig != null) {
-//            return existingConfig;
-//        }
-//        return apply(configurer);
-//    }
-
 
 }
