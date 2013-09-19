@@ -48,14 +48,6 @@ public final class YarnResourceLocalizerBuilder extends AbstractConfiguredAnnota
 	public YarnResourceLocalizerBuilder() {
 
 	}
-//	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType) {
-//		super(allowConfigurersOfSameType);
-//	}
-
-//	public YarnResourceLocalizerBuilder(boolean allowConfigurersOfSameType, YarnConfiguration configuration) {
-//		super(allowConfigurersOfSameType);
-//		this.configuration = configuration;
-//	}
 
 	@Override
 	protected ResourceLocalizer performBuild() throws Exception {

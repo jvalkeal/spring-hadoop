@@ -41,7 +41,7 @@ public class PropertiesConfigurer <O, B extends AnnotationBuilder<O>>
 	 * @return the {@link PropertiesConfigurer} for chaining
 	 */
 	public PropertiesConfigurer<O,B> properties(Properties properties) {
-		properties.putAll(properties);
+		this.properties.putAll(properties);
 		return this;
 	}
 

@@ -22,7 +22,17 @@ import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
 import org.springframework.util.StringUtils;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
 
+/**
+ * {@link org.springframework.data.config.annotation.AnnotationConfigurer AnnotationConfigurer}
+ * which knows how to handle configuring a classpath.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class EnvironmentClasspathConfigurer extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentBuilder> {
+
+	private Boolean defaultClasspath;
+	private String delimiter;
 
 	private ArrayList<String> entries = new ArrayList<String>();
 
@@ -33,6 +43,16 @@ public class EnvironmentClasspathConfigurer extends AnnotationConfigurerAdapter<
 
 	public EnvironmentClasspathConfigurer entry(String entry) {
 		entries.add(entry);
+		return this;
+	}
+
+	public EnvironmentClasspathConfigurer defaultYarnAppClasspath(boolean defaultClasspath) {
+		this.defaultClasspath = defaultClasspath;
+		return this;
+	}
+
+	public EnvironmentClasspathConfigurer delimiter(String delimiter) {
+		this.delimiter = delimiter;
 		return this;
 	}
 

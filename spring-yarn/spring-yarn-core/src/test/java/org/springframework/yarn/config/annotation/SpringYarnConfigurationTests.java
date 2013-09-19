@@ -134,6 +134,18 @@ public class SpringYarnConfigurationTests {
 
 		@Override
 		public void configure(YarnEnvironmentBuilder environment) throws Exception {
+				environment
+					.propertiesLocation("cfg-1.properties","cfg-2.properties")
+					.withClasspath()
+						.entry("cpEntry1")
+						.defaultYarnAppClasspath(true)
+						.delimiter(":")
+						.and()
+					.withProperties()
+						.properties(new Properties())
+						.property("key1", "value1")
+						.and()
+					.entry("key2", "value2");
 		}
 
 		@Override
