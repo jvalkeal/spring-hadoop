@@ -26,7 +26,7 @@ def javaProjects() {
 }
 
 def hadoopProjects() {
-	subprojects.findAll { project -> project.name.contains('-hadoop-') || project.name.contains('-cascading') }
+	subprojects.findAll { project -> (project.name.contains('-hadoop-') || project.name.contains('-cascading')) && !project.name.contains('-common') }
 }
 
 def yarnProjects() {
@@ -560,6 +560,17 @@ project('spring-data-hadoop-core') {
 	description = 'Spring for Apache Hadoop Core'
 }
 
+project('spring-data-hadoop-common') {
+	description = 'Spring for Apache Hadoop Common'
+	dependencies {
+		testCompile "org.springframework:spring-test:$springVersion"
+		testCompile "org.hamcrest:hamcrest-core:$hamcrestVersion"
+		testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
+		testCompile "junit:junit:$junitVersion"
+		testRuntime "cglib:cglib:$cglibVersion"
+	}
+}
+
 project('spring-data-hadoop-batch') {
 	description = 'Spring for Apache Hadoop Batch Features'
 
@@ -787,6 +798,7 @@ if (gradle.ext.mr2) {
 	project('spring-yarn:spring-yarn-core') {
 		description = 'Spring Yarn Core'
 		dependencies {
+			compile project(":spring-data-hadoop-common")
 			compile "org.apache.hadoop:hadoop-yarn-client:$hadoopVersion"
 			compile("org.apache.hadoop:hadoop-common:$hadoopVersion") { dep ->
 				exclude module: "junit"
