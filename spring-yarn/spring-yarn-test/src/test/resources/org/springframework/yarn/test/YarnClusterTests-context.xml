@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:yarn="http://www.springframework.org/schema/yarn"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/yarn http://www.springframework.org/schema/yarn/spring-yarn.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -12,7 +13,7 @@
 		<property name="clusterId" value="YarnClusterTests"/>
 		<property name="autoStart" value="true"/>
 	</bean>
-	
+
 	<bean id="yarnConfiguredConfiguration" class="org.springframework.yarn.test.support.ConfigurationDelegatingFactoryBean">
 		<property name="cluster" ref="yarnCluster"/>
 	</bean>
@@ -20,29 +21,24 @@
 	<yarn:configuration id="yarnConfiguration" configuration-ref="yarnConfiguredConfiguration"/>
 
 	<yarn:localresources>
-		<yarn:copy src="file:build/dependency-libs/*" staging="true"/>
+		<yarn:copy src="file:build/dependency-all-libs/*" staging="true"/>
 		<yarn:copy src="file:build/libs/*" staging="true"/>
 		<yarn:hdfs path="/*" staging="true"/>
 	</yarn:localresources>
-	
+
+	<!-- do not rely on default classpath, instead use all dependencies -->
 	<yarn:environment include-system-env="false">
-		<yarn:classpath default-yarn-app-classpath="true" delimiter=":">
+		<yarn:classpath default-yarn-app-classpath="false" delimiter=":">
 			./*
 		</yarn:classpath>
 	</yarn:environment>
 
-	<yarn:client app-name="simple-command" memory="1000">
-		<yarn:master-command>
-			<![CDATA[
-			java
-			org.springframework.yarn.am.CommandLineAppmasterRunner
-			YarnClusterTests-appmaster-context.xml
-			yarnAppmaster
-			container-count=4
-			1><LOG_DIR>/AppMaster.stdout
-			2><LOG_DIR>/AppMaster.stderr
-			]]>
-		</yarn:master-command>
+	<util:properties id="arguments">
+		<prop key="container-count">4</prop>
+	</util:properties>
+
+	<yarn:client app-name="simple-command" memory="3000">
+		<yarn:master-runner context-file="YarnClusterTests-appmaster-context.xml" arguments="arguments"/>
 	</yarn:client>
 
 </beans>

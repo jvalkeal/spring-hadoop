@@ -20,6 +20,11 @@
         <surname>Risberg</surname>
         <affiliation>Pivotal</affiliation>
       </author>
+      <author>
+        <firstname>Janne</firstname>
+        <surname>Valkealahti</surname>
+        <affiliation>Pivotal</affiliation>
+      </author>
     </authorgroup>
 
 
@@ -52,6 +57,7 @@
       <xi:include href="reference/cascading.xml"/>
       <xi:include href="reference/runners.xml"/>
       <xi:include href="reference/security.xml"/>
+      <xi:include href="reference/yarn.xml"/>
   </part>
   <part id="dev">
       <title>Developing Spring for Apache Hadoop Applications</title>
@@ -61,9 +67,6 @@
   <part id="samples">
       <title>Spring for Apache Hadoop sample applications</title>
       <xi:include href="samples/introduction.xml"/>
-      <xi:include href="samples/sample-prerequisites.xml"/>
-      <xi:include href="samples/spring-wordcount.xml"/>
-      <xi:include href="samples/spring-batch-wordcount.xml"/>
   </part>
 
   <part id="resources">
