@@ -19,11 +19,18 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.data.config.annotation.AnnotationBuilder;
 import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.client.YarnClientFactoryBean;
 import org.springframework.yarn.config.annotation.configurers.ClientMasterRunnerConfigurer;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
+/**
+ * {@link AnnotationBuilder} for {@link YarnClient}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnClient, YarnClientBuilder> {
 
 	private Configuration configuration;
@@ -49,6 +56,16 @@ public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnC
 		return fb.getObject();
 	}
 
+	/**
+	 * Add commands for starting {@link YarnAppmaster}.
+	 *
+	 * @return the client master runner configurer
+	 * @throws Exception the exception
+	 */
+	public ClientMasterRunnerConfigurer withMasterRunner() throws Exception {
+		return apply(new ClientMasterRunnerConfigurer());
+	}
+
 	public void configuration(Configuration configuration) {
 		this.configuration = configuration;
 	}
@@ -56,10 +73,6 @@ public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnC
 	public YarnClientBuilder appName(String appName) {
 		this.appName = appName;
 		return this;
-	}
-
-	public ClientMasterRunnerConfigurer withMasterRunner() throws Exception {
-		return apply(new ClientMasterRunnerConfigurer());
 	}
 
 	public void setCommands(String[] commands) {

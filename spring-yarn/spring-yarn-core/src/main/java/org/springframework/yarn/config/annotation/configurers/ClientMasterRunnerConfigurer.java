@@ -15,6 +15,8 @@
  */
 package org.springframework.yarn.config.annotation.configurers;
 
+import java.util.Properties;
+
 import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.am.CommandLineAppmasterRunner;
@@ -22,25 +24,82 @@ import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
 import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
 
+/**
+ * {@link AnnotationConfigurer} for {@link YarnAppmaster} launch commands.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public class ClientMasterRunnerConfigurer extends AnnotationConfigurerAdapter<YarnClient, YarnClientBuilder> {
 
-	private Class<?> clazz;
+	/** Spring context configuration class */
+	private Class<?> contextClazz;
+
+	/** Spring context configuration file */
+	private String contextFile;
+
+	/** Bean name in launcher */
+	private String beanName = YarnSystemConstants.DEFAULT_ID_APPMASTER;
+
+	/** Stdout path */
+	private String stdout = "<LOG_DIR>/Appmaster.stdout";
+
+	/** Stderr path */
+	private String stderr = "<LOG_DIR>/Appmaster.stderr";
+
+	private Properties arguments;
 
 	@Override
 	public void configure(YarnClientBuilder builder) throws Exception {
 		LaunchCommandsFactoryBean fb = new LaunchCommandsFactoryBean();
 		fb.setRunner(CommandLineAppmasterRunner.class);
-		fb.setContextFile(clazz.getCanonicalName());
-		fb.setBeanName(YarnSystemConstants.DEFAULT_ID_APPMASTER);
-		fb.setStdout("<LOG_DIR>/Appmaster.stdout");
-		fb.setStderr("<LOG_DIR>/Appmaster.stderr");
+		fb.setContextFile(determineContextConfig());
+		fb.setBeanName(beanName);
+		fb.setStdout(stdout);
+		fb.setStderr(stderr);
+		fb.setArguments(arguments);
 		fb.afterPropertiesSet();
 		builder.setCommands(fb.getObject());
 	}
 
-	public ClientMasterRunnerConfigurer clazz(Class<?> clazz) {
-		this.clazz = clazz;
+	public ClientMasterRunnerConfigurer contextClass(Class<?> clazz) {
+		contextClazz = clazz;
 		return this;
+	}
+
+	public ClientMasterRunnerConfigurer contextFile(String file) {
+		contextFile = file;
+		return this;
+	}
+
+	public ClientMasterRunnerConfigurer beanName(String bean) {
+		beanName = bean;
+		return this;
+	}
+
+	public ClientMasterRunnerConfigurer stdout(String path) {
+		stdout = path;
+		return this;
+	}
+
+	public ClientMasterRunnerConfigurer stderr(String path) {
+		stderr = path;
+		return this;
+	}
+
+	public ClientMasterRunnerConfigurer arguments(Properties arguments) {
+		this.arguments = arguments;
+		return this;
+	}
+
+	private String determineContextConfig() {
+		if (contextFile != null) {
+			return contextFile;
+		} else if (contextClazz != null) {
+			return contextClazz.getCanonicalName();
+		} else {
+			return YarnSystemConstants.DEFAULT_CONTEXT_FILE_APPMASTER;
+		}
 	}
 
 }

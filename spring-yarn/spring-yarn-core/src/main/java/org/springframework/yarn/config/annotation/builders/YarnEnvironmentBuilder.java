@@ -39,7 +39,8 @@ public final class YarnEnvironmentBuilder
 		implements PropertiesConfigureAware {
 
 	private String classpath;
-	private Boolean defaultClasspath;
+	private boolean defaultClasspath = true;
+	private boolean includeSystemEnv;
 	private String delimiter;
 	private Properties properties = new Properties();
 
@@ -52,8 +53,8 @@ public final class YarnEnvironmentBuilder
 		fb.setProperties(properties);
 		fb.setClasspath(classpath);
 		fb.setDelimiter(":");
-		fb.setDefaultYarnAppClasspath(true);
-		fb.setIncludeSystemEnv(false);
+		fb.setDefaultYarnAppClasspath(defaultClasspath);
+		fb.setIncludeSystemEnv(includeSystemEnv);
 		fb.afterPropertiesSet();
 		return fb.getObject();
 	}
@@ -116,11 +117,16 @@ public final class YarnEnvironmentBuilder
 		return this;
 	}
 
+	public YarnEnvironmentBuilder includeSystemEnv(boolean includeSystemEnv) {
+		this.includeSystemEnv = includeSystemEnv;
+		return this;
+	}
+
 	public void setClasspath(String classpath) {
 		this.classpath = classpath;
 	}
 
-	public void setDefaultClasspath(Boolean defaultClasspath) {
+	public void setDefaultClasspath(boolean defaultClasspath) {
 		this.defaultClasspath = defaultClasspath;
 	}
 
