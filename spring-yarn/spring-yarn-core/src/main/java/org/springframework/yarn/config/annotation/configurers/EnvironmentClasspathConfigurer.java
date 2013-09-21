@@ -21,6 +21,7 @@ import java.util.Map;
 import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
 import org.springframework.util.StringUtils;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 
 /**
  * {@link org.springframework.data.config.annotation.AnnotationConfigurer AnnotationConfigurer}
@@ -29,7 +30,7 @@ import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilde
  * @author Janne Valkealahti
  *
  */
-public class EnvironmentClasspathConfigurer extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder> {
+public class EnvironmentClasspathConfigurer extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder> {
 
 	private Boolean defaultClasspath;
 	private String delimiter;

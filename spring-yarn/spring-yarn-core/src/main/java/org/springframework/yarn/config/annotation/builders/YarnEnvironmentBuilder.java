@@ -35,8 +35,8 @@ import org.springframework.yarn.configuration.EnvironmentFactoryBean;
  *
  */
 public final class YarnEnvironmentBuilder
-		extends AbstractConfiguredAnnotationBuilder<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder>
-		implements PropertiesConfigureAware {
+		extends AbstractConfiguredAnnotationBuilder<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>
+		implements PropertiesConfigureAware, YarnEnvironmentConfigure {
 
 	private String classpath;
 	private boolean defaultClasspath = true;
@@ -98,16 +98,16 @@ public final class YarnEnvironmentBuilder
 		return apply(new EnvironmentClasspathConfigurer());
 	}
 
-	public PropertiesConfigurer<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder> withProperties() throws Exception {
-		return apply(new PropertiesConfigurer<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder>());
+	public PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder> withProperties() throws Exception {
+		return apply(new PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>());
 	}
 
-	public YarnEnvironmentBuilder entry(String key, String value) {
+	public YarnEnvironmentConfigure entry(String key, String value) {
 		properties.put(key, value);
 		return this;
 	}
 
-	public YarnEnvironmentBuilder propertiesLocation(String... locations) throws IOException {
+	public YarnEnvironmentConfigure propertiesLocation(String... locations) throws IOException {
 		for (String location : locations) {
 			PropertiesFactoryBean fb = new PropertiesFactoryBean();
 			fb.setLocation(new ClassPathResource(location));
@@ -117,7 +117,7 @@ public final class YarnEnvironmentBuilder
 		return this;
 	}
 
-	public YarnEnvironmentBuilder includeSystemEnv(boolean includeSystemEnv) {
+	public YarnEnvironmentConfigure includeSystemEnv(boolean includeSystemEnv) {
 		this.includeSystemEnv = includeSystemEnv;
 		return this;
 	}

@@ -23,13 +23,17 @@ import org.springframework.data.config.annotation.ObjectPostProcessor;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnAppmasterConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnClientConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnContainerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnContainerConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
 
 /**
  * Provides a convenient base class for creating a {@link SpringYarnConfigurer}
@@ -94,11 +98,11 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 	}
 
 	@Override
-	public void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+	public void configure(YarnResourceLocalizerConfigure localizer) throws Exception {
 	}
 
 	@Override
-	public void configure(YarnEnvironmentBuilder environment) throws Exception {
+	public void configure(YarnEnvironmentConfigure environment) throws Exception {
 	}
 
 	@Override
@@ -106,11 +110,11 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 	}
 
 	@Override
-	public void configure(YarnAppmasterBuilder master) throws Exception {
+	public void configure(YarnAppmasterConfigure master) throws Exception {
 	}
 
 	@Override
-	public void configure(YarnContainerBuilder container) throws Exception {
+	public void configure(YarnContainerConfigure container) throws Exception {
 	}
 
 	/**

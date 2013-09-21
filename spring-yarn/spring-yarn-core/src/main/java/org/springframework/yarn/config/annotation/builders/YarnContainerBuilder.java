@@ -19,7 +19,8 @@ import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBu
 import org.springframework.yarn.container.YarnContainer;
 import org.springframework.yarn.container.YarnContainerFactoryBean;
 
-public final class YarnContainerBuilder extends AbstractConfiguredAnnotationBuilder<YarnContainer, YarnContainerBuilder, YarnContainerBuilder> {
+public final class YarnContainerBuilder extends AbstractConfiguredAnnotationBuilder<YarnContainer, YarnContainerConfigure, YarnContainerBuilder>
+		implements YarnContainerConfigure {
 
 	private Class<? extends YarnContainer> clazz;
 

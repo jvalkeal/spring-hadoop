@@ -35,6 +35,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
@@ -59,7 +60,7 @@ public class DefaultEnvironmentAnnotationTests {
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		public void configure(YarnEnvironmentBuilder environment) throws Exception {
+		public void configure(YarnEnvironmentConfigure environment) throws Exception {
 				environment
 					.entry("myvar1", "myvalue1")
 					.entry("foo", "jee");

@@ -24,13 +24,17 @@ import org.springframework.yarn.am.YarnAppmaster;
 import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnAppmasterConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnClientConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnContainerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnContainerConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
 import org.springframework.yarn.container.YarnContainer;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
@@ -59,7 +63,7 @@ public interface SpringYarnConfigurer extends AnnotationConfigurer<SpringYarnCon
 	 * @param config the {@link ResourceLocalizer} builder
 	 * @throws Exception if error occurred
 	 */
-	void configure(YarnResourceLocalizerBuilder localizer) throws Exception;
+	void configure(YarnResourceLocalizerConfigure localizer) throws Exception;
 
 	/**
 	 * Configure {@link Map} of environment via {@link YarnEnvironmentBuilder} builder.
@@ -67,7 +71,7 @@ public interface SpringYarnConfigurer extends AnnotationConfigurer<SpringYarnCon
 	 * @param environment the {@link YarnEnvironmentBuilder} builder
 	 * @throws Exception if error occurred
 	 */
-	void configure(YarnEnvironmentBuilder environment) throws Exception;
+	void configure(YarnEnvironmentConfigure environment) throws Exception;
 
 	/**
 	 * Configure {@link YarnClient} via {@link YarnClientBuilder} builder.
@@ -83,7 +87,7 @@ public interface SpringYarnConfigurer extends AnnotationConfigurer<SpringYarnCon
 	 * @param master the {@link YarnAppmasterBuilder} builder
 	 * @throws Exception if error occurred
 	 */
-	void configure(YarnAppmasterBuilder master) throws Exception;
+	void configure(YarnAppmasterConfigure master) throws Exception;
 
 	/**
 	 * Configure {@link YarnContainer} via {@link YarnContainerBuilder} builder.
@@ -91,6 +95,6 @@ public interface SpringYarnConfigurer extends AnnotationConfigurer<SpringYarnCon
 	 * @param container the {@link YarnContainerBuilder} builder
 	 * @throws Exception if error occurred
 	 */
-	void configure(YarnContainerBuilder container) throws Exception;
+	void configure(YarnContainerConfigure container) throws Exception;
 
 }

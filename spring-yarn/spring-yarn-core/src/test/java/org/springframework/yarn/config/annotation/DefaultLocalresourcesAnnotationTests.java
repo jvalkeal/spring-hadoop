@@ -43,6 +43,7 @@ import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.TransferEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
@@ -99,7 +100,7 @@ public class DefaultLocalresourcesAnnotationTests {
 		}
 
 		@Override
-		public void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+		public void configure(YarnResourceLocalizerConfigure localizer) throws Exception {
 			localizer
 			.withCopy()
 				.copy("foo.jar", "/tmp", true)

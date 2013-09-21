@@ -38,7 +38,8 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  *
  */
 public final class YarnResourceLocalizerBuilder
-		extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, YarnResourceLocalizerBuilder, YarnResourceLocalizerBuilder> {
+		extends AbstractConfiguredAnnotationBuilder<ResourceLocalizer, YarnResourceLocalizerConfigure, YarnResourceLocalizerBuilder>
+		implements YarnResourceLocalizerConfigure {
 
 	private Configuration configuration;
 	private LocalResourceType defaultType = LocalResourceType.FILE;

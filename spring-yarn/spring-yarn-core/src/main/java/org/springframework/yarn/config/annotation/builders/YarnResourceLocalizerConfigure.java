@@ -15,6 +15,14 @@
  */
 package org.springframework.yarn.config.annotation.builders;
 
+import org.springframework.yarn.config.annotation.configurers.LocalResourcesCopyConfigurer;
+import org.springframework.yarn.config.annotation.configurers.LocalResourcesHdfsConfigurer;
+
 public interface YarnResourceLocalizerConfigure {
+
+	LocalResourcesCopyConfigurer withCopy() throws Exception;
+
+	LocalResourcesHdfsConfigurer withHdfs() throws Exception;
+
 
 }

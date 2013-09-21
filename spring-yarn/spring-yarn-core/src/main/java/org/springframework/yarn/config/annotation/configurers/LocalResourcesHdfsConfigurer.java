@@ -20,10 +20,11 @@ import java.util.Collection;
 
 import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.TransferEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
-public class LocalResourcesHdfsConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizerBuilder, YarnResourceLocalizerBuilder> {
+public class LocalResourcesHdfsConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizerConfigure, YarnResourceLocalizerBuilder> {
 
 	private Collection<TransferEntry> hdfsEntries = new ArrayList<TransferEntry>();
 

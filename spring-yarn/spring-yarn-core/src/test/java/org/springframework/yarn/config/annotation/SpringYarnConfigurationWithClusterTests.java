@@ -41,7 +41,9 @@ import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 import org.springframework.yarn.support.YarnContextUtils;
@@ -115,7 +117,7 @@ public class SpringYarnConfigurationWithClusterTests {
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		public void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+		public void configure(YarnResourceLocalizerConfigure localizer) throws Exception {
 			localizer
 				.withCopy()
 					.copy("foo.jar", "/tmp", true)
@@ -123,7 +125,7 @@ public class SpringYarnConfigurationWithClusterTests {
 		}
 
 		@Override
-		public void configure(YarnEnvironmentBuilder environment) throws Exception {
+		public void configure(YarnEnvironmentConfigure environment) throws Exception {
 			environment
 			.withClasspath()
 				.entry("./*");

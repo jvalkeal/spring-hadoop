@@ -39,6 +39,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
@@ -77,7 +78,7 @@ public class PropertiesEnvironmentAnnotationTests {
 		}
 
 		@Override
-		public void configure(YarnEnvironmentBuilder environment) throws Exception {
+		public void configure(YarnEnvironmentConfigure environment) throws Exception {
 				environment
 					.propertiesLocation("cfg-1.properties","cfg-2.properties")
 					.withProperties()

@@ -15,6 +15,10 @@
  */
 package org.springframework.yarn.config.annotation.builders;
 
+import org.springframework.yarn.config.annotation.configurers.MasterContainerRunnerConfigurer;
+
 public interface YarnAppmasterConfigure {
+
+	MasterContainerRunnerConfigurer withContainerRunner() throws Exception;
 
 }

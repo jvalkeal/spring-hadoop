@@ -41,11 +41,14 @@ import org.springframework.yarn.config.annotation.EnableYarn;
 import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnAppmasterConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 import org.springframework.yarn.support.YarnContextUtils;
@@ -126,7 +129,7 @@ public class SpringYarnConfigurationMasterTests {
 		}
 
 		@Override
-		public void configure(YarnResourceLocalizerBuilder localizer) throws Exception {
+		public void configure(YarnResourceLocalizerConfigure localizer) throws Exception {
 			localizer
 				.withCopy()
 					.copy("foo.jar", "/tmp", true)
@@ -134,11 +137,11 @@ public class SpringYarnConfigurationMasterTests {
 		}
 
 		@Override
-		public void configure(YarnEnvironmentBuilder environment) throws Exception {
+		public void configure(YarnEnvironmentConfigure environment) throws Exception {
 		}
 
 		@Override
-		public void configure(YarnAppmasterBuilder master) throws Exception {
+		public void configure(YarnAppmasterConfigure master) throws Exception {
 			Properties properties = new Properties();
 			properties.put("foo1", "jee1");
 

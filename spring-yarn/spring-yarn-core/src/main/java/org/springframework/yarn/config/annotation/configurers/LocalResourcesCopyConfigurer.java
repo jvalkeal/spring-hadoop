@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.springframework.data.config.annotation.AnnotationConfigurer;
 import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
@@ -31,7 +32,7 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public class LocalResourcesCopyConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizerBuilder, YarnResourceLocalizerBuilder> {
+public class LocalResourcesCopyConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizerConfigure, YarnResourceLocalizerBuilder> {
 
 	private Collection<CopyEntry> copyEntries = new ArrayList<CopyEntry>();
 

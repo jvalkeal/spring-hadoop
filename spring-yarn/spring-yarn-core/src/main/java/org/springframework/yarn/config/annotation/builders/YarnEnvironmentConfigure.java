@@ -15,6 +15,20 @@
  */
 package org.springframework.yarn.config.annotation.builders;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
+import org.springframework.yarn.config.annotation.configurers.EnvironmentClasspathConfigurer;
+
 public interface YarnEnvironmentConfigure {
+
+	EnvironmentClasspathConfigurer withClasspath() throws Exception;
+
+	PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder> withProperties() throws Exception;
+
+	YarnEnvironmentConfigure propertiesLocation(String... locations) throws IOException;
+
+	YarnEnvironmentConfigure entry(String key, String value);
 
 }
