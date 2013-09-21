@@ -42,7 +42,8 @@ import org.springframework.util.Assert;
  * @param <O> The object that this builder returns
  * @param <B> The type of this builder (that is returned by the base class)
  */
-public abstract class AbstractConfiguredAnnotationBuilder<O, B extends AnnotationBuilder<O>>
+//public abstract class AbstractConfiguredAnnotationBuilder<O, B extends AnnotationBuilder<O>, I extends B>
+public abstract class AbstractConfiguredAnnotationBuilder<O,I,B extends AnnotationBuilder<O>>
 		extends AbstractAnnotationBuilder<O> {
 
 	private final static Log log = LogFactory.getLog(AbstractConfiguredAnnotationBuilder.class);
@@ -145,7 +146,8 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 * @throws Exception if error occurred
 	 */
 	@SuppressWarnings("unchecked")
-	public <C extends AnnotationConfigurerAdapter<O, B>> C apply(C configurer) throws Exception {
+//	public <C extends AnnotationConfigurerAdapter<O, B, I>> C apply(C configurer) throws Exception {
+	public <C extends AnnotationConfigurerAdapter<O,I,B>> C apply(C configurer) throws Exception {
 		add(configurer);
 		configurer.addObjectPostProcessor(objectPostProcessor);
 		configurer.setBuilder((B) this);
@@ -161,7 +163,7 @@ public abstract class AbstractConfiguredAnnotationBuilder<O, B extends Annotatio
 	 * @throws Exception if error occurred
 	 */
 	@SuppressWarnings("unchecked")
-	public <C extends AnnotationConfigurerAdapter<O, B>> C getOrApply(C configurer) throws Exception {
+	public <C extends AnnotationConfigurerAdapter<O,I,B>> C getOrApply(C configurer) throws Exception {
 		C existing = (C) getConfigurer(configurer.getClass());
 		if (existing != null) {
 			return existing;

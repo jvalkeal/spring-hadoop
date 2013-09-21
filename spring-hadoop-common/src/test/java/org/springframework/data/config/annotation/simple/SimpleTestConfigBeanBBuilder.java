@@ -16,6 +16,8 @@
 package org.springframework.data.config.annotation.simple;
 
 import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.data.config.annotation.configurers.ResourceConfigure;
+import org.springframework.data.config.annotation.configurers.ResourceConfigurer;
 
 /**
  * {@link AnnotationBuilder} for {@link SimpleTestConfigBeanB}.
@@ -23,20 +25,36 @@ import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBu
  * @author Janne Valkealahti
  *
  */
-public class SimpleTestConfigBeanBBuilder extends AbstractConfiguredAnnotationBuilder<SimpleTestConfigBeanB, SimpleTestConfigBeanBBuilder> {
+public class SimpleTestConfigBeanBBuilder
+		extends AbstractConfiguredAnnotationBuilder<SimpleTestConfigBeanB, SimpleTestConfigBeanBConfigure,SimpleTestConfigBeanBBuilder>
+		implements SimpleTestConfigBeanBConfigure {
 
-	private String data;
+	private String dataB;
+	private String dataBB;
 
 	@Override
 	protected SimpleTestConfigBeanB performBuild() throws Exception {
 		SimpleTestConfigBeanB bean = new SimpleTestConfigBeanB();
-		bean.dataB = data;
+		bean.dataB = dataB;
+		bean.dataBB = dataBB;
 		return bean;
 	}
 
-	public SimpleTestConfigBeanBBuilder setData(String data) {
-		this.data = data;
+	@Override
+	public SimpleTestConfigBeanBConfigure setData(String data) {
+		this.dataB = data;
 		return this;
+	}
+
+	@Override
+	public SimpleTestConfigBeanBConfigure setDataBB(String data) {
+		this.dataBB = data;
+		return this;
+	}
+
+	@Override
+	public ResourceConfigure<SimpleTestConfigBeanBConfigure> withResources() throws Exception {
+		return getOrApply(new ResourceConfigurer<SimpleTestConfigBeanB,SimpleTestConfigBeanBConfigure,SimpleTestConfigBeanBBuilder>());
 	}
 
 }

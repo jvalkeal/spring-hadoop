@@ -36,7 +36,7 @@ import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
  * @author Janne Valkealahti
  *
  */
-public class MasterContainerRunnerConfigurer extends AnnotationConfigurerAdapter<YarnAppmaster, YarnAppmasterBuilder> {
+public class MasterContainerRunnerConfigurer extends AnnotationConfigurerAdapter<YarnAppmaster, YarnAppmasterBuilder, YarnAppmasterBuilder> {
 
 	private Class<?> contextClass;
 	private String contextFile = "container-context.xml";
@@ -106,9 +106,9 @@ public class MasterContainerRunnerConfigurer extends AnnotationConfigurerAdapter
 		return this;
 	}
 
-	public PropertiesConfigurer<Properties, ArgumentsBuilder> withArguments() throws Exception {
+	public PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> withArguments() throws Exception {
 		if (argumentsBuilder == null) {
-			argumentsBuilder = new ArgumentsBuilder(new PropertiesConfigurer<Properties, ArgumentsBuilder>());
+			argumentsBuilder = new ArgumentsBuilder(new PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder>());
 		}
 		return argumentsBuilder.propertiesConfigurer;
 	}
@@ -116,10 +116,10 @@ public class MasterContainerRunnerConfigurer extends AnnotationConfigurerAdapter
 
 	public class ArgumentsBuilder implements AnnotationBuilder<Properties>, PropertiesConfigureAware {
 
-		private PropertiesConfigurer<Properties, ArgumentsBuilder> propertiesConfigurer;
+		private PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> propertiesConfigurer;
 		private Properties properties;
 
-		public ArgumentsBuilder(PropertiesConfigurer<Properties, ArgumentsBuilder> propertiesConfigurer) {
+		public ArgumentsBuilder(PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> propertiesConfigurer) {
 			this.propertiesConfigurer = propertiesConfigurer;
 			this.propertiesConfigurer.setBuilder(this);
 		}

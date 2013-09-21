@@ -13,20 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.config.annotation.simple;
+package org.springframework.yarn.config.annotation.builders;
 
-import org.springframework.data.config.annotation.AnnotationConfigurer;
-
-/**
- * Example of an interface used in {@link SimpleTestConfigurerAdapter}.
- *
- * @author Janne Valkealahti
- *
- */
-public interface SimpleTestConfigurer extends AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> {
-
-	void configure(SimpleTestConfigBeanABuilder a) throws Exception;
-
-	void configure(SimpleTestConfigBeanBConfigure b) throws Exception;
+public interface YarnEnvironmentConfigure {
 
 }

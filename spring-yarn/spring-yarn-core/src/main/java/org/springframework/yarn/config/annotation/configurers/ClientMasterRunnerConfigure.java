@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.config.annotation.simple;
+package org.springframework.yarn.config.annotation.configurers;
 
-import org.springframework.data.config.annotation.AnnotationConfigurer;
+import java.util.Properties;
 
-/**
- * Example of an interface used in {@link SimpleTestConfigurerAdapter}.
- *
- * @author Janne Valkealahti
- *
- */
-public interface SimpleTestConfigurer extends AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> {
+public interface ClientMasterRunnerConfigure {
 
-	void configure(SimpleTestConfigBeanABuilder a) throws Exception;
+	ClientMasterRunnerConfigure contextClass(Class<?> clazz);
 
-	void configure(SimpleTestConfigBeanBConfigure b) throws Exception;
+	ClientMasterRunnerConfigure contextFile(String file);
+
+	ClientMasterRunnerConfigure beanName(String bean);
+
+	ClientMasterRunnerConfigure stdout(String path);
+
+	ClientMasterRunnerConfigure stderr(String path);
+
+	ClientMasterRunnerConfigure arguments(Properties arguments);
 
 }

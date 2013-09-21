@@ -32,8 +32,10 @@ import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
  *
  * @param <O> The Object being built by B
  * @param <B> The Builder that is building O and is configured by {@link AnnotationConfigurerAdapter}
+ * @param <I> The type of an interface of B
  */
-public class ResourceConfigurer <O, B extends AnnotationBuilder<O>> extends AnnotationConfigurerAdapter<O,B> {
+public class ResourceConfigurer <O,I,B extends AnnotationBuilder<O>>
+		extends AnnotationConfigurerAdapter<O,I,B> implements ResourceConfigure<I> {
 
 	private Set<Resource> resources = new HashSet<Resource>();
 	private final DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -51,9 +53,9 @@ public class ResourceConfigurer <O, B extends AnnotationBuilder<O>> extends Anno
 	 * Adds a {@link Set} of {@link Resource}s to this builder.
 	 *
 	 * @param resources the resources
-	 * @return the {@link ResourceConfigurer} for chaining
+	 * @return the {@link ResourceConfigure} for chaining
 	 */
-	public ResourceConfigurer<O,B> resource(Set<Resource> resources) {
+	public ResourceConfigure<I> resource(Set<Resource> resources) {
 		this.resources.addAll(resources);
 		return this;
 	}
@@ -62,9 +64,9 @@ public class ResourceConfigurer <O, B extends AnnotationBuilder<O>> extends Anno
 	 * Adds a {@link Resource} to this builder.
 	 *
 	 * @param resources the resources
-	 * @return the {@link ResourceConfigurer} for chaining
+	 * @return the {@link ResourceConfigure} for chaining
 	 */
-	public ResourceConfigurer<O,B> resource(Resource resource) {
+	public ResourceConfigure<I> resource(Resource resource) {
 		resources.add(resource);
 		return this;
 	}
@@ -73,9 +75,9 @@ public class ResourceConfigurer <O, B extends AnnotationBuilder<O>> extends Anno
 	 * Adds a {@link Resource} to this builder.
 	 *
 	 * @param resources the resources
-	 * @return the {@link ResourceConfigurer} for chaining
+	 * @return the {@link ResourceConfigure} for chaining
 	 */
-	public ResourceConfigurer<O,B> resource(String resource) {
+	public ResourceConfigure<I> resource(String resource) {
 		resources.add(resourceLoader.getResource(resource));
 		return this;
 	}

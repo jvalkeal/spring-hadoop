@@ -42,7 +42,9 @@ import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnClientConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
 import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
@@ -113,7 +115,7 @@ public class SpringYarnConfigurationTests {
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		public void configure(YarnConfigBuilder config) throws Exception {
+		public void configure(YarnConfigConfigure config) throws Exception {
 			config
 				.fileSystemUri("hdfs://foo.uri")
 				.withResources()
@@ -149,7 +151,7 @@ public class SpringYarnConfigurationTests {
 		}
 
 		@Override
-		public void configure(YarnClientBuilder client) throws Exception {
+		public void configure(YarnClientConfigure client) throws Exception {
 		}
 
 		@Override

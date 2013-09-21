@@ -24,7 +24,9 @@ import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnClientConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnContainerBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
@@ -88,7 +90,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 	}
 
 	@Override
-	public void configure(YarnConfigBuilder config) throws Exception {
+	public void configure(YarnConfigConfigure config) throws Exception {
 	}
 
 	@Override
@@ -100,7 +102,7 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 	}
 
 	@Override
-	public void configure(YarnClientBuilder client) throws Exception {
+	public void configure(YarnClientConfigure client) throws Exception {
 	}
 
 	@Override

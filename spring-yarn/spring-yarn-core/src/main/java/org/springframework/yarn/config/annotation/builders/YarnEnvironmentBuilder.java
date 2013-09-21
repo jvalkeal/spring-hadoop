@@ -35,7 +35,7 @@ import org.springframework.yarn.configuration.EnvironmentFactoryBean;
  *
  */
 public final class YarnEnvironmentBuilder
-		extends AbstractConfiguredAnnotationBuilder<Map<String, String>, YarnEnvironmentBuilder>
+		extends AbstractConfiguredAnnotationBuilder<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder>
 		implements PropertiesConfigureAware {
 
 	private String classpath;
@@ -98,8 +98,8 @@ public final class YarnEnvironmentBuilder
 		return apply(new EnvironmentClasspathConfigurer());
 	}
 
-	public PropertiesConfigurer<Map<String, String>, YarnEnvironmentBuilder> withProperties() throws Exception {
-		return apply(new PropertiesConfigurer<Map<String, String>, YarnEnvironmentBuilder>());
+	public PropertiesConfigurer<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder> withProperties() throws Exception {
+		return apply(new PropertiesConfigurer<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder>());
 	}
 
 	public YarnEnvironmentBuilder entry(String key, String value) {

@@ -31,7 +31,8 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnClient, YarnClientBuilder> {
+public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnClient, YarnClientBuilder, YarnClientBuilder>
+		implements YarnClientConfigure {
 
 	private Configuration configuration;
 	private ResourceLocalizer resourceLocalizer;
@@ -62,6 +63,7 @@ public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnC
 	 * @return the client master runner configurer
 	 * @throws Exception the exception
 	 */
+	@Override
 	public ClientMasterRunnerConfigurer withMasterRunner() throws Exception {
 		return apply(new ClientMasterRunnerConfigurer());
 	}

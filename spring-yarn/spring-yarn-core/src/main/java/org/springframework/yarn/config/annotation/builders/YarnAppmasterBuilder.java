@@ -31,7 +31,7 @@ import org.springframework.yarn.am.monitor.DefaultContainerMonitor;
 import org.springframework.yarn.config.annotation.configurers.MasterContainerRunnerConfigurer;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
-public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuilder<YarnAppmaster, YarnAppmasterBuilder> {
+public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuilder<YarnAppmaster, YarnAppmasterBuilder, YarnAppmasterBuilder> {
 
 	/** Appmaster class, defaults to StaticAppmaster */
 	private Class<? extends YarnAppmaster> appmasterClazz = StaticAppmaster.class;

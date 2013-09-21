@@ -29,11 +29,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.data.config.annotation.configurers.ResourceConfigure;
+import org.springframework.data.config.annotation.configurers.ResourceConfigurer;
 import org.springframework.data.config.annotation.simple.EnableSimpleTest;
 import org.springframework.data.config.annotation.simple.SimpleTestConfig;
+import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanA;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanABuilder;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanB;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanBBuilder;
+import org.springframework.data.config.annotation.simple.SimpleTestConfigBeanBConfigure;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigBuilder;
 import org.springframework.data.config.annotation.simple.SimpleTestConfigurerAdapter;
 import org.springframework.test.context.ContextConfiguration;
@@ -84,6 +88,7 @@ public class SimpleAnnotationConfigurationTests {
 		assertTrue(ctx.containsBean("simpleConfigBeanB"));
 		SimpleTestConfigBeanB beanB = ctx.getBean("simpleConfigBeanB", SimpleTestConfigBeanB.class);
 		assertThat(beanB.dataB, is("simpleDataB"));
+		assertThat(beanB.dataBB, is("simpleDataBB"));
 	}
 
 	@Configuration
@@ -108,8 +113,11 @@ public class SimpleAnnotationConfigurationTests {
 		}
 
 		@Override
-		public void configure(SimpleTestConfigBeanBBuilder beanB) throws Exception {
-			beanB.setData("simpleDataB");
+		public void configure(SimpleTestConfigBeanBConfigure beanB) throws Exception {
+			beanB
+				.setData("simpleDataB")
+				.setDataBB("simpleDataBB")
+				.withResources().and();
 		}
 
 	}

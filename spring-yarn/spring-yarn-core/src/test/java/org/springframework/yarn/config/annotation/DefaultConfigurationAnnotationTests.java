@@ -33,6 +33,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
@@ -59,7 +60,7 @@ public class DefaultConfigurationAnnotationTests {
 	static class Config extends SpringYarnConfigurerAdapter {
 
 		@Override
-		public void configure(YarnConfigBuilder config) throws Exception {
+		public void configure(YarnConfigConfigure config) throws Exception {
 			config
 				.fileSystemUri("hdfs://foo.uri")
 				.resourceManagerAddress("10.10.10.10:8032")

@@ -23,8 +23,10 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.springframework.core.io.Resource;
 import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBuilder;
 import org.springframework.data.config.annotation.ObjectPostProcessor;
+import org.springframework.data.config.annotation.configurers.PropertiesConfigure;
 import org.springframework.data.config.annotation.configurers.PropertiesConfigureAware;
 import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
+import org.springframework.data.config.annotation.configurers.ResourceConfigure;
 import org.springframework.data.config.annotation.configurers.ResourceConfigureAware;
 import org.springframework.data.config.annotation.configurers.ResourceConfigurer;
 import org.springframework.yarn.configuration.ConfigurationFactoryBean;
@@ -36,8 +38,8 @@ import org.springframework.yarn.configuration.ConfigurationFactoryBean;
  * @author Janne Valkealahti
  *
  */
-public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<YarnConfiguration, YarnConfigBuilder>
-		implements PropertiesConfigureAware, ResourceConfigureAware {
+public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<YarnConfiguration,YarnConfigConfigure,YarnConfigBuilder>
+		implements PropertiesConfigureAware, ResourceConfigureAware, YarnConfigConfigure {
 
 	private final Set<Resource> resources = new HashSet<Resource>();
 	private final Properties properties = new Properties();
@@ -79,8 +81,9 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		getResources().addAll(resources);
 	}
 
-	public ResourceConfigurer<YarnConfiguration, YarnConfigBuilder> withResources() throws Exception {
-		return apply(new ResourceConfigurer<YarnConfiguration, YarnConfigBuilder>());
+	@Override
+	public ResourceConfigure<YarnConfigConfigure> withResources() throws Exception {
+		return apply(new ResourceConfigurer<YarnConfiguration, YarnConfigConfigure, YarnConfigBuilder>());
 	}
 
 	public Properties getProperties() {
@@ -91,16 +94,19 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		return resources;
 	}
 
-	public PropertiesConfigurer<YarnConfiguration, YarnConfigBuilder> withProperties() throws Exception {
-		return apply(new PropertiesConfigurer<YarnConfiguration, YarnConfigBuilder>());
+	@Override
+	public PropertiesConfigure<YarnConfigConfigure> withProperties() throws Exception {
+		return apply(new PropertiesConfigurer<YarnConfiguration, YarnConfigConfigure, YarnConfigBuilder>());
 	}
 
-	public YarnConfigBuilder fileSystemUri(String uri) {
+	@Override
+	public YarnConfigConfigure fileSystemUri(String uri) {
 		fileSystemUri = uri;
 		return this;
 	}
 
-	public YarnConfigBuilder resourceManagerAddress(String address) {
+	@Override
+	public YarnConfigConfigure resourceManagerAddress(String address) {
 		rmAddress = address;
 		return this;
 	}

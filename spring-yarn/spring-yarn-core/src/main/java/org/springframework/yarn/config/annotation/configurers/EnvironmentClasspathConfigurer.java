@@ -29,7 +29,7 @@ import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilde
  * @author Janne Valkealahti
  *
  */
-public class EnvironmentClasspathConfigurer extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentBuilder> {
+public class EnvironmentClasspathConfigurer extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentBuilder, YarnEnvironmentBuilder> {
 
 	private Boolean defaultClasspath;
 	private String delimiter;

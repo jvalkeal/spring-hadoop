@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.springframework.core.io.Resource;
 import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.data.config.annotation.configurers.ResourceConfigure;
 import org.springframework.data.config.annotation.configurers.ResourceConfigureAware;
 import org.springframework.data.config.annotation.configurers.ResourceConfigurer;
 
@@ -29,7 +30,8 @@ import org.springframework.data.config.annotation.configurers.ResourceConfigurer
  * @author Janne Valkealahti
  *
  */
-public class SimpleTestConfigBeanABuilder extends AbstractConfiguredAnnotationBuilder<SimpleTestConfigBeanA, SimpleTestConfigBeanABuilder>
+public class SimpleTestConfigBeanABuilder
+		extends AbstractConfiguredAnnotationBuilder<SimpleTestConfigBeanA, SimpleTestConfigBeanABuilder, SimpleTestConfigBeanABuilder>
 		implements ResourceConfigureAware {
 
 	private String data;
@@ -57,8 +59,8 @@ public class SimpleTestConfigBeanABuilder extends AbstractConfiguredAnnotationBu
 		return this;
 	}
 
-	public ResourceConfigurer<SimpleTestConfigBeanA, SimpleTestConfigBeanABuilder> withResources() throws Exception {
-		return getOrApply(new ResourceConfigurer<SimpleTestConfigBeanA, SimpleTestConfigBeanABuilder>());
+	public ResourceConfigure<SimpleTestConfigBeanABuilder> withResources() throws Exception {
+		return getOrApply(new ResourceConfigurer<SimpleTestConfigBeanA, SimpleTestConfigBeanABuilder,SimpleTestConfigBeanABuilder>());
 	}
 
 }

@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.config.annotation.simple;
+package org.springframework.data.config.annotation.configurers;
 
-import org.springframework.data.config.annotation.AnnotationConfigurer;
+import java.util.Set;
+
+import org.springframework.core.io.Resource;
+import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
 
 /**
- * Example of an interface used in {@link SimpleTestConfigurerAdapter}.
+ *
  *
  * @author Janne Valkealahti
  *
+ * @param <B> The type of Builder
+ * @param <I> The type of an interface of B
  */
-public interface SimpleTestConfigurer extends AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> {
+public interface ResourceConfigure<I> extends AnnotationConfigurerBuilder<I> {
 
-	void configure(SimpleTestConfigBeanABuilder a) throws Exception;
+	ResourceConfigure<I> resource(Set<Resource> resources);
 
-	void configure(SimpleTestConfigBeanBConfigure b) throws Exception;
+	ResourceConfigure<I> resource(Resource resource);
+
+	ResourceConfigure<I> resource(String resource);
+
 
 }

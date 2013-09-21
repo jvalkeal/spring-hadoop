@@ -15,18 +15,12 @@
  */
 package org.springframework.data.config.annotation.simple;
 
-import org.springframework.data.config.annotation.AnnotationConfigurer;
+import org.springframework.data.config.annotation.configurers.ResourceConfigure;
 
-/**
- * Example of an interface used in {@link SimpleTestConfigurerAdapter}.
- *
- * @author Janne Valkealahti
- *
- */
-public interface SimpleTestConfigurer extends AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> {
+public interface SimpleTestConfigBeanBConfigure {
 
-	void configure(SimpleTestConfigBeanABuilder a) throws Exception;
-
-	void configure(SimpleTestConfigBeanBConfigure b) throws Exception;
+	SimpleTestConfigBeanBConfigure setData(String data);
+	SimpleTestConfigBeanBConfigure setDataBB(String data);
+	ResourceConfigure<SimpleTestConfigBeanBConfigure> withResources() throws Exception;
 
 }

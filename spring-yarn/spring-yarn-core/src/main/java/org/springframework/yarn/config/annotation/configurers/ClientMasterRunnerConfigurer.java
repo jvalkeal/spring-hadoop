@@ -30,7 +30,8 @@ import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
  * @author Janne Valkealahti
  *
  */
-public class ClientMasterRunnerConfigurer extends AnnotationConfigurerAdapter<YarnClient, YarnClientBuilder> {
+public class ClientMasterRunnerConfigurer extends AnnotationConfigurerAdapter<YarnClient, YarnClientBuilder, YarnClientBuilder>
+		implements ClientMasterRunnerConfigure {
 
 	/** Spring context configuration class */
 	private Class<?> contextClazz;
@@ -62,32 +63,38 @@ public class ClientMasterRunnerConfigurer extends AnnotationConfigurerAdapter<Ya
 		builder.setCommands(fb.getObject());
 	}
 
-	public ClientMasterRunnerConfigurer contextClass(Class<?> clazz) {
+	@Override
+	public ClientMasterRunnerConfigure contextClass(Class<?> clazz) {
 		contextClazz = clazz;
 		return this;
 	}
 
-	public ClientMasterRunnerConfigurer contextFile(String file) {
+	@Override
+	public ClientMasterRunnerConfigure contextFile(String file) {
 		contextFile = file;
 		return this;
 	}
 
-	public ClientMasterRunnerConfigurer beanName(String bean) {
+	@Override
+	public ClientMasterRunnerConfigure beanName(String bean) {
 		beanName = bean;
 		return this;
 	}
 
-	public ClientMasterRunnerConfigurer stdout(String path) {
+	@Override
+	public ClientMasterRunnerConfigure stdout(String path) {
 		stdout = path;
 		return this;
 	}
 
-	public ClientMasterRunnerConfigurer stderr(String path) {
+	@Override
+	public ClientMasterRunnerConfigure stderr(String path) {
 		stderr = path;
 		return this;
 	}
 
-	public ClientMasterRunnerConfigurer arguments(Properties arguments) {
+	@Override
+	public ClientMasterRunnerConfigure arguments(Properties arguments) {
 		this.arguments = arguments;
 		return this;
 	}

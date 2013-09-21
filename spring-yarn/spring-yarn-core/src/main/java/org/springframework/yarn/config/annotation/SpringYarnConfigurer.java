@@ -25,7 +25,9 @@ import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.builders.SpringYarnConfigBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnClientConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnConfigConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnContainerBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerBuilder;
@@ -49,7 +51,7 @@ public interface SpringYarnConfigurer extends AnnotationConfigurer<SpringYarnCon
 	 * @param config the {@link YarnConfiguration} builder
 	 * @throws Exception if error occurred
 	 */
-	void configure(YarnConfigBuilder config) throws Exception;
+	void configure(YarnConfigConfigure config) throws Exception;
 
 	/**
 	 * Configure {@link ResourceLocalizer} via {@link YarnResourceLocalizerBuilder} builder.
@@ -73,7 +75,7 @@ public interface SpringYarnConfigurer extends AnnotationConfigurer<SpringYarnCon
 	 * @param client the {@link YarnClientBuilder} builder
 	 * @throws Exception if error occurred
 	 */
-	void configure(YarnClientBuilder client) throws Exception;
+	void configure(YarnClientConfigure client) throws Exception;
 
 	/**
 	 * Configure {@link YarnAppmaster} via {@link YarnAppmasterBuilder} builder.

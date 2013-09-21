@@ -29,8 +29,8 @@ import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
  * @param <O> The Object being built by B
  * @param <B> The Builder that is building O and is configured by {@link AnnotationConfigurerAdapter}
  */
-public class PropertiesConfigurer <O, B extends AnnotationBuilder<O>>
-		extends AnnotationConfigurerAdapter<O,B> {
+public class PropertiesConfigurer <O,I,B extends AnnotationBuilder<O>>
+		extends AnnotationConfigurerAdapter<O,I,B> implements PropertiesConfigure<I> {
 
 	private Properties properties = new Properties();
 
@@ -38,9 +38,9 @@ public class PropertiesConfigurer <O, B extends AnnotationBuilder<O>>
 	 * Adds a {@link Properties} to this builder.
 	 *
 	 * @param properties the properties
-	 * @return the {@link PropertiesConfigurer} for chaining
+	 * @return the {@link PropertiesConfigure} for chaining
 	 */
-	public PropertiesConfigurer<O,B> properties(Properties properties) {
+	public PropertiesConfigure<I> properties(Properties properties) {
 		this.properties.putAll(properties);
 		return this;
 	}
@@ -50,9 +50,9 @@ public class PropertiesConfigurer <O, B extends AnnotationBuilder<O>>
 	 *
 	 * @param key the key
 	 * @param value the value
-	 * @return the {@link PropertiesConfigurer} for chaining
+	 * @return the {@link PropertiesConfigure} for chaining
 	 */
-	public PropertiesConfigurer<O,B> property(String key, String value) {
+	public PropertiesConfigure<I> property(String key, String value) {
 		properties.put(key, value);
 		return this;
 	}

@@ -28,7 +28,7 @@ import org.springframework.data.config.annotation.configurers.PropertiesConfigur
  * @author Janne Valkealahti
  *
  */
-public class SimpleTestConfigBuilder extends AbstractConfiguredAnnotationBuilder<SimpleTestConfig, SimpleTestConfigBuilder>
+public class SimpleTestConfigBuilder extends AbstractConfiguredAnnotationBuilder<SimpleTestConfig, SimpleTestConfigBuilder,SimpleTestConfigBuilder>
 		implements PropertiesConfigureAware {
 
 	private final Properties properties = new Properties();
@@ -50,8 +50,8 @@ public class SimpleTestConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		return properties;
 	}
 
-	public PropertiesConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> withProperties() throws Exception {
-		return getOrApply(new PropertiesConfigurer<SimpleTestConfig, SimpleTestConfigBuilder>());
+	public PropertiesConfigurer<SimpleTestConfig, SimpleTestConfigBuilder,SimpleTestConfigBuilder> withProperties() throws Exception {
+		return getOrApply(new PropertiesConfigurer<SimpleTestConfig, SimpleTestConfigBuilder,SimpleTestConfigBuilder>());
 	}
 
 }
