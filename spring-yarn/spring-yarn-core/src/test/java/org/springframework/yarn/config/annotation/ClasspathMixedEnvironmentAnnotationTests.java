@@ -39,7 +39,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
-import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -84,10 +83,11 @@ public class ClasspathMixedEnvironmentAnnotationTests {
 		@Override
 		public void configure(YarnEnvironmentConfigure environment) throws Exception {
 				environment
+					.withProperties()
+						.and()
 					.withClasspath()
 						.entry("./*")
 						.defaultYarnAppClasspath(true)
-						.delimiter(":")
 						.and()
 					.entry("myvar1", "myvalue1")
 					.entry("foo", "jee");

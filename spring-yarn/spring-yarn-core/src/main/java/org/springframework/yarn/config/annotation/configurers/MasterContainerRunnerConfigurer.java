@@ -36,7 +36,9 @@ import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
  * @author Janne Valkealahti
  *
  */
-public class MasterContainerRunnerConfigurer extends AnnotationConfigurerAdapter<YarnAppmaster, YarnAppmasterBuilder, YarnAppmasterBuilder> {
+public class MasterContainerRunnerConfigurer
+		extends AnnotationConfigurerAdapter<YarnAppmaster, YarnAppmasterBuilder, YarnAppmasterBuilder>
+		implements MasterContainerRunnerConfigure {
 
 	private Class<?> contextClass;
 	private String contextFile = "container-context.xml";

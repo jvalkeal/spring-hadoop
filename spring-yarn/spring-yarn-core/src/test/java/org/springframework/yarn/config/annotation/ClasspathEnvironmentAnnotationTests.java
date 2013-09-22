@@ -81,8 +81,7 @@ public class ClasspathEnvironmentAnnotationTests {
 				environment
 					.withClasspath()
 						.entry("./*")
-						.defaultYarnAppClasspath(true)
-						.delimiter(":");
+						.defaultYarnAppClasspath(true);
 		}
 
 	}

@@ -30,7 +30,8 @@ import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
  * @author Janne Valkealahti
  *
  */
-public class ClientMasterRunnerConfigurer extends AnnotationConfigurerAdapter<YarnClient, YarnClientBuilder, YarnClientBuilder>
+public class ClientMasterRunnerConfigurer
+		extends AnnotationConfigurerAdapter<YarnClient, YarnClientBuilder, YarnClientBuilder>
 		implements ClientMasterRunnerConfigure {
 
 	/** Spring context configuration class */

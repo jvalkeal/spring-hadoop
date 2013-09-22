@@ -144,7 +144,6 @@ public class SpringYarnConfigurationTests {
 					.withClasspath()
 						.entry("cpEntry1")
 						.defaultYarnAppClasspath(true)
-						.delimiter(":")
 						.and()
 					.withProperties()
 						.properties(new Properties())

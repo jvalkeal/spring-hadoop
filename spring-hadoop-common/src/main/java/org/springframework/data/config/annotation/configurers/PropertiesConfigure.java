@@ -20,6 +20,9 @@ import java.util.Properties;
 import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
 
 /**
+ * Interface for {@link PropertiesConfigurer} which act
+ * as intermediate gatekeeper between a user and
+ * an {@link AnnotationConfigurer}.
  *
  * @author Janne Valkealahti
  *

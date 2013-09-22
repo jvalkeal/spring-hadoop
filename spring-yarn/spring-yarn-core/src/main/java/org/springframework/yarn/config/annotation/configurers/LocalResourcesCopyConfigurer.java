@@ -32,7 +32,9 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public class LocalResourcesCopyConfigurer extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizerConfigure, YarnResourceLocalizerBuilder> {
+public class LocalResourcesCopyConfigurer
+		extends AnnotationConfigurerAdapter<ResourceLocalizer, YarnResourceLocalizerConfigure, YarnResourceLocalizerBuilder>
+		implements LocalResourcesCopyConfigure {
 
 	private Collection<CopyEntry> copyEntries = new ArrayList<CopyEntry>();
 

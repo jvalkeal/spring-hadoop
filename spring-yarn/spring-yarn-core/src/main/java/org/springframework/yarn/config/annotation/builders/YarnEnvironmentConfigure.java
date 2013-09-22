@@ -16,19 +16,65 @@
 package org.springframework.yarn.config.annotation.builders;
 
 import java.io.IOException;
-import java.util.Map;
 
-import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
+import org.springframework.data.config.annotation.configurers.PropertiesConfigure;
+import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
 import org.springframework.yarn.config.annotation.configurers.EnvironmentClasspathConfigurer;
 
+/**
+ * Interface for {@link YarnEnvironmentBuilder} used from
+ * a {@link SpringYarnConfigurerAdapter}.
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public interface YarnEnvironmentConfigure {
 
+	/**
+	 * Specify a classpath environment variable.
+	 * <p>
+	 * Applies a new {@link EnvironmentClasspathConfigurer} into current
+	 * builder. Equivalents between JavaConfig and XML are shown below.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * &#064;Configuration
+	 * &#064;EnableYarn
+	 * static class Config extends SpringYarnConfigurerAdapter {
+	 *
+	 *   &#064;Override
+	 *   public void configure(YarnEnvironmentBuilder environment) throws Exception {
+	 *     environment
+	 *       .withClasspath()
+	 *         .entry("cpEntry1")
+	 *         .entry("cpEntry2")
+	 *         .defaultYarnAppClasspath(true)
+	 *         .delimiter(":")
+	 *   }
+	 *
+	 * }
+	 * </pre>
+	 * <p>XML:
+	 * <pre>
+	 * &lt;yarn:environment>
+	 *   &lt;yarn:classpath default-yarn-app-classpath="true" delimiter=":">
+	 *     cpEntry1
+	 *     cpEntry2
+	 *   &lt;/yarn:classpath>
+	 * &lt;/yarn:environment>
+	 * </pre>
+	 *
+	 * @return {@link EnvironmentClasspathConfigurer} for classpath
+	 * @throws Exception if error occurred
+	 */
 	EnvironmentClasspathConfigurer withClasspath() throws Exception;
 
-	PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder> withProperties() throws Exception;
+	YarnEnvironmentConfigure entry(String key, String value);
 
 	YarnEnvironmentConfigure propertiesLocation(String... locations) throws IOException;
 
-	YarnEnvironmentConfigure entry(String key, String value);
+	YarnEnvironmentConfigure includeSystemEnv(boolean includeSystemEnv);
+
+	PropertiesConfigure<YarnEnvironmentConfigure> withProperties() throws Exception;
 
 }

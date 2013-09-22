@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.yarn.config.annotation.builders;
+package org.springframework.yarn.config.annotation.configurers;
 
-import org.springframework.yarn.config.annotation.configurers.MasterContainerRunnerConfigurer;
+import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 
-public interface YarnAppmasterConfigure {
+/**
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ */
+public interface EnvironmentClasspathConfigure extends AnnotationConfigurerBuilder<YarnEnvironmentConfigure> {
 
-	MasterContainerRunnerConfigurer withContainerRunner() throws Exception;
+	EnvironmentClasspathConfigure entry(String entry);
 
-	void setCommands(String[] commands);
+	EnvironmentClasspathConfigure entries(String... entries);
+
+	EnvironmentClasspathConfigure defaultYarnAppClasspath(boolean defaultClasspath);
 
 }

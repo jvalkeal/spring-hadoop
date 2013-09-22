@@ -27,6 +27,7 @@ import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
  * @author Janne Valkealahti
  *
  * @param <O> The Object being built by B
+ * @param <I> The type of interface or builder itself returned by the configurer
  * @param <B> The Builder that is building O and is configured by {@link AnnotationConfigurerAdapter}
  */
 public class PropertiesConfigurer <O,I,B extends AnnotationBuilder<O>>

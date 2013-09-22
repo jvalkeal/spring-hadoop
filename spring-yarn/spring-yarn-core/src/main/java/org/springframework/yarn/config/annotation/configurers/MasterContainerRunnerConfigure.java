@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.yarn.config.annotation.builders;
+package org.springframework.yarn.config.annotation.configurers;
 
-import org.springframework.yarn.config.annotation.configurers.MasterContainerRunnerConfigurer;
-
-public interface YarnAppmasterConfigure {
-
-	MasterContainerRunnerConfigurer withContainerRunner() throws Exception;
-
-	void setCommands(String[] commands);
+public interface MasterContainerRunnerConfigure {
 
 }

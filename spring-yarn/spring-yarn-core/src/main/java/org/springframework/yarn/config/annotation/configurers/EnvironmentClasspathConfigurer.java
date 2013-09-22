@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
-import org.springframework.util.StringUtils;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentBuilder;
 import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfigure;
 
@@ -30,30 +29,37 @@ import org.springframework.yarn.config.annotation.builders.YarnEnvironmentConfig
  * @author Janne Valkealahti
  *
  */
-public class EnvironmentClasspathConfigurer extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder> {
+public class EnvironmentClasspathConfigurer
+		extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>
+		implements EnvironmentClasspathConfigure {
 
 	private Boolean defaultClasspath;
-	private String delimiter;
 
-	private ArrayList<String> entries = new ArrayList<String>();
+	private ArrayList<String> classpathEntries = new ArrayList<String>();
 
 	@Override
 	public void configure(YarnEnvironmentBuilder builder) throws Exception {
-		builder.setClasspath(StringUtils.collectionToDelimitedString(entries, ":"));
+		builder.addClasspathEntries(classpathEntries);
+		builder.setDefaultClasspath(defaultClasspath);
 	}
 
-	public EnvironmentClasspathConfigurer entry(String entry) {
-		entries.add(entry);
+	@Override
+	public EnvironmentClasspathConfigure entry(String entry) {
+		classpathEntries.add(entry);
 		return this;
 	}
 
-	public EnvironmentClasspathConfigurer defaultYarnAppClasspath(boolean defaultClasspath) {
+	@Override
+	public EnvironmentClasspathConfigure entries(String... entries) {
+		for (String entry : entries) {
+			classpathEntries.add(entry);
+		}
+		return this;
+	}
+
+	@Override
+	public EnvironmentClasspathConfigure defaultYarnAppClasspath(boolean defaultClasspath) {
 		this.defaultClasspath = defaultClasspath;
-		return this;
-	}
-
-	public EnvironmentClasspathConfigurer delimiter(String delimiter) {
-		this.delimiter = delimiter;
 		return this;
 	}
 

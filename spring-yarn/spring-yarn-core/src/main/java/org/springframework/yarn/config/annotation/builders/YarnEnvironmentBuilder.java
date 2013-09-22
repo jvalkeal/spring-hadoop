@@ -16,15 +16,18 @@
 package org.springframework.yarn.config.annotation.builders;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBuilder;
+import org.springframework.data.config.annotation.AnnotationBuilder;
+import org.springframework.data.config.annotation.configurers.PropertiesConfigure;
 import org.springframework.data.config.annotation.configurers.PropertiesConfigureAware;
 import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
-import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
+import org.springframework.util.StringUtils;
 import org.springframework.yarn.config.annotation.configurers.EnvironmentClasspathConfigurer;
 import org.springframework.yarn.configuration.EnvironmentFactoryBean;
 
@@ -38,75 +41,46 @@ public final class YarnEnvironmentBuilder
 		extends AbstractConfiguredAnnotationBuilder<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>
 		implements PropertiesConfigureAware, YarnEnvironmentConfigure {
 
-	private String classpath;
 	private boolean defaultClasspath = true;
 	private boolean includeSystemEnv;
-	private String delimiter;
+	private String delimiter = ":";
 	private Properties properties = new Properties();
+	private ArrayList<String> classpathEntries = new ArrayList<String>();
 
-	public YarnEnvironmentBuilder() {
-	}
+	/**
+	 * Instantiates a new yarn environment builder.
+	 */
+	public YarnEnvironmentBuilder() {}
 
 	@Override
 	protected Map<String, String> performBuild() throws Exception {
 		EnvironmentFactoryBean fb = new EnvironmentFactoryBean();
 		fb.setProperties(properties);
-		fb.setClasspath(classpath);
-		fb.setDelimiter(":");
+		fb.setClasspath(StringUtils.collectionToDelimitedString(classpathEntries, delimiter));
+		fb.setDelimiter(delimiter);
 		fb.setDefaultYarnAppClasspath(defaultClasspath);
 		fb.setIncludeSystemEnv(includeSystemEnv);
 		fb.afterPropertiesSet();
 		return fb.getObject();
 	}
 
-	/**
-	 * Specify a classpath environment variable.
-	 * <p>
-	 * Applies a new {@link EnvironmentClasspathConfigurer} into current
-	 * builder. Equivalents between JavaConfig and XML are shown below.
-	 *
-	 * <p>JavaConfig:
-	 * <pre>
-	 * &#064;Configuration
-	 * &#064;EnableYarn
-	 * static class Config extends SpringYarnConfigurerAdapter {
-	 *
-	 *   &#064;Override
-	 *   public void configure(YarnEnvironmentBuilder environment) throws Exception {
-	 *     environment
-	 *       .withClasspath()
-	 *         .entry("cpEntry1")
-	 *         .defaultYarnAppClasspath(true)
-	 *         .delimiter(":")
-	 *   }
-	 *
-	 * }
-	 * </pre>
-	 * <p>XML:
-	 * <pre>
-	 * &lt;yarn:environment>
-	 *   &lt;yarn:classpath default-yarn-app-classpath="true" delimiter=":">
-	 *     cpEntry1
-	 *   &lt;/yarn:classpath>
-	 * &lt;/yarn:environment>
-	 * </pre>
-	 *
-	 * @return {@link EnvironmentClasspathConfigurer} for classpath
-	 * @throws Exception if error occurred
-	 */
+	@Override
+	public void configureProperties(Properties properties) {
+		this.properties.putAll(properties);
+	}
+
+	@Override
 	public EnvironmentClasspathConfigurer withClasspath() throws Exception {
 		return apply(new EnvironmentClasspathConfigurer());
 	}
 
-	public PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder> withProperties() throws Exception {
-		return apply(new PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>());
-	}
-
+	@Override
 	public YarnEnvironmentConfigure entry(String key, String value) {
 		properties.put(key, value);
 		return this;
 	}
 
+	@Override
 	public YarnEnvironmentConfigure propertiesLocation(String... locations) throws IOException {
 		for (String location : locations) {
 			PropertiesFactoryBean fb = new PropertiesFactoryBean();
@@ -117,13 +91,19 @@ public final class YarnEnvironmentBuilder
 		return this;
 	}
 
+	@Override
 	public YarnEnvironmentConfigure includeSystemEnv(boolean includeSystemEnv) {
 		this.includeSystemEnv = includeSystemEnv;
 		return this;
 	}
 
-	public void setClasspath(String classpath) {
-		this.classpath = classpath;
+	@Override
+	public PropertiesConfigure<YarnEnvironmentConfigure> withProperties() throws Exception {
+		return apply(new PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>());
+	}
+
+	public void addClasspathEntries(ArrayList<String> classpathEntries) {
+		this.classpathEntries.addAll(classpathEntries);
 	}
 
 	public void setDefaultClasspath(boolean defaultClasspath) {
@@ -132,11 +112,6 @@ public final class YarnEnvironmentBuilder
 
 	public void setDelimiter(String delimiter) {
 		this.delimiter = delimiter;
-	}
-
-	@Override
-	public void configureProperties(Properties properties) {
-		this.properties.putAll(properties);
 	}
 
 }
