@@ -26,7 +26,6 @@ import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
  *
  * @author Janne Valkealahti
  *
- * @param <B>
  * @param <I>
  */
 public interface PropertiesConfigure<I> extends AnnotationConfigurerBuilder<I> {

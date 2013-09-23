@@ -30,11 +30,11 @@ import org.springframework.core.GenericTypeResolver;
  * @author Janne Valkealahti
  *
  * @param <O> The Object being built by B
+ * @param <I>
  * @param <B> The Builder that is building O and is configured by {@link AnnotationConfigurerAdapter}
  */
-//public abstract class AnnotationConfigurerAdapter<O, B extends AnnotationBuilder<O>, I extends B>
 public abstract class AnnotationConfigurerAdapter<O,I,B extends AnnotationBuilder<O>>
-		implements AnnotationConfigurer<O,B>/*, AnnotationConfigurerBuilder<I,B>*/ {
+		implements AnnotationConfigurer<O,B> {
 
 	private B builder;
 
@@ -52,12 +52,7 @@ public abstract class AnnotationConfigurerAdapter<O,I,B extends AnnotationBuilde
 	 *
 	 * @return the {@link AnnotationBuilder}
 	 */
-//	public B and() {
-//		return getBuilder();
-//	}
-
 	@SuppressWarnings("unchecked")
-//	@Override
 	public I and() {
 		// we're either casting to itself or its interface
 		return (I) getBuilder();

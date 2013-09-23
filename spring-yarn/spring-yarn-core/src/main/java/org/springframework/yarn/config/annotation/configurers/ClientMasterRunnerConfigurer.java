@@ -49,6 +49,7 @@ public class ClientMasterRunnerConfigurer
 	/** Stderr path */
 	private String stderr = "<LOG_DIR>/Appmaster.stderr";
 
+	/** Command line arguments */
 	private Properties arguments;
 
 	@Override

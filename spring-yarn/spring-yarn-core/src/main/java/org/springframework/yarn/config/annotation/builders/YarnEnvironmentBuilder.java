@@ -28,6 +28,7 @@ import org.springframework.data.config.annotation.configurers.PropertiesConfigur
 import org.springframework.data.config.annotation.configurers.PropertiesConfigureAware;
 import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
 import org.springframework.util.StringUtils;
+import org.springframework.yarn.config.annotation.configurers.EnvironmentClasspathConfigure;
 import org.springframework.yarn.config.annotation.configurers.EnvironmentClasspathConfigurer;
 import org.springframework.yarn.configuration.EnvironmentFactoryBean;
 
@@ -70,7 +71,7 @@ public final class YarnEnvironmentBuilder
 	}
 
 	@Override
-	public EnvironmentClasspathConfigurer withClasspath() throws Exception {
+	public EnvironmentClasspathConfigure withClasspath() throws Exception {
 		return apply(new EnvironmentClasspathConfigurer());
 	}
 
@@ -102,14 +103,29 @@ public final class YarnEnvironmentBuilder
 		return apply(new PropertiesConfigurer<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>());
 	}
 
+	/**
+	 * Adds the classpath entries.
+	 *
+	 * @param classpathEntries the classpath entries
+	 */
 	public void addClasspathEntries(ArrayList<String> classpathEntries) {
 		this.classpathEntries.addAll(classpathEntries);
 	}
 
+	/**
+	 * Sets the default classpath.
+	 *
+	 * @param defaultClasspath the new default classpath
+	 */
 	public void setDefaultClasspath(boolean defaultClasspath) {
 		this.defaultClasspath = defaultClasspath;
 	}
 
+	/**
+	 * Sets the delimiter.
+	 *
+	 * @param delimiter the new delimiter
+	 */
 	public void setDelimiter(String delimiter) {
 		this.delimiter = delimiter;
 	}

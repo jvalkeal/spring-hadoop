@@ -21,11 +21,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
 
 /**
- *
+ * Interface for {@link ResourceConfigurer} which act
+ * as intermediate gatekeeper between a user and
+ * an {@link AnnotationConfigurer}.
  *
  * @author Janne Valkealahti
  *
- * @param <B> The type of Builder
  * @param <I> The type of an interface of B
  */
 public interface ResourceConfigure<I> extends AnnotationConfigurerBuilder<I> {
@@ -35,6 +36,5 @@ public interface ResourceConfigure<I> extends AnnotationConfigurerBuilder<I> {
 	ResourceConfigure<I> resource(Resource resource);
 
 	ResourceConfigure<I> resource(String resource);
-
 
 }

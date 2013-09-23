@@ -17,6 +17,12 @@ package org.springframework.yarn.config.annotation.configurers;
 
 import java.util.Properties;
 
+/**
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public interface ClientMasterRunnerConfigure {
 
 	ClientMasterRunnerConfigure contextClass(Class<?> clazz);

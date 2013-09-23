@@ -15,6 +15,10 @@
  */
 package org.springframework.yarn.config.annotation.configurers;
 
-public interface LocalResourcesCopyConfigure {
+import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
+
+public interface LocalResourcesCopyConfigure/*<I> extends AnnotationConfigurerBuilder<I>*/ {
+
+//	LocalResourcesCopyConfigure<I> copy(String src, String dest, boolean staging);
 
 }

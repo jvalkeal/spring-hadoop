@@ -19,11 +19,31 @@ import java.io.IOException;
 
 import org.springframework.data.config.annotation.configurers.PropertiesConfigure;
 import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
+import org.springframework.yarn.config.annotation.configurers.EnvironmentClasspathConfigure;
 import org.springframework.yarn.config.annotation.configurers.EnvironmentClasspathConfigurer;
 
 /**
  * Interface for {@link YarnEnvironmentBuilder} used from
  * a {@link SpringYarnConfigurerAdapter}.
+ * <p>
+ * Typically configuration is used as shown below.
+ * <p>
+ * <pre>
+ * &#064;Configuration
+ * &#064;EnableYarn
+ * static class Config extends SpringYarnConfigurerAdapter {
+ *
+ *   &#064;Override
+ *   public void configure(YarnEnvironmentBuilder environment) throws Exception {
+ *     environment
+ *       .withClasspath()
+ *         .entry("cpEntry1")
+ *         .entry("cpEntry2")
+ *         .defaultYarnAppClasspath(true);
+ *   }
+ *
+ * }
+ * </pre>
  *
  * @author Janne Valkealahti
  *
@@ -38,20 +58,12 @@ public interface YarnEnvironmentConfigure {
 	 *
 	 * <p>JavaConfig:
 	 * <pre>
-	 * &#064;Configuration
-	 * &#064;EnableYarn
-	 * static class Config extends SpringYarnConfigurerAdapter {
-	 *
-	 *   &#064;Override
-	 *   public void configure(YarnEnvironmentBuilder environment) throws Exception {
-	 *     environment
-	 *       .withClasspath()
-	 *         .entry("cpEntry1")
-	 *         .entry("cpEntry2")
-	 *         .defaultYarnAppClasspath(true)
-	 *         .delimiter(":")
-	 *   }
-	 *
+	 * public void configure(YarnEnvironmentBuilder environment) throws Exception {
+	 *   environment
+	 *     .withClasspath()
+	 *       .entry("cpEntry1")
+	 *       .entry("cpEntry2")
+	 *       .defaultYarnAppClasspath(true);
 	 * }
 	 * </pre>
 	 * <p>XML:
@@ -67,14 +79,109 @@ public interface YarnEnvironmentConfigure {
 	 * @return {@link EnvironmentClasspathConfigurer} for classpath
 	 * @throws Exception if error occurred
 	 */
-	EnvironmentClasspathConfigurer withClasspath() throws Exception;
+	EnvironmentClasspathConfigure withClasspath() throws Exception;
 
+	/**
+	 * Specify an environment variable.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnEnvironmentConfigure environment) throws Exception {
+	 *   environment
+	 *     .entry("myKey1","myValue1")
+	 *     .entry("myKey2","myValue2");
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;yarn:environment>
+	 *   myKey1=myValue1
+	 *   myKey2=myValue2
+	 * &lt;/yarn:environment>
+	 * </pre>
+	 *
+	 * @param key The environment key
+	 * @param value The environment value
+	 * @return {@link YarnEnvironmentConfigure} for chaining
+	 */
 	YarnEnvironmentConfigure entry(String key, String value);
 
+	/**
+	 * Specify properties locations.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnEnvironmentConfigure environment) throws Exception {
+	 *   environment
+	 *     .entry("myKey1","myValue1")
+	 *     .entry("myKey2","myValue2")
+	 *     .propertiesLocation("cfg-1.properties", "cfg-2.properties");
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;yarn:environment properties-location="cfg-1.properties, cfg-2.properties">
+	 *   myKey1=myValue1
+	 *   myKey2=myValue2
+	 * &lt;/yarn:environment>
+	 * </pre>
+	 *
+	 * @param locations The properties file locations
+	 * @return {@link YarnEnvironmentConfigure} for chaining
+	 * @throws IOException if error occurred
+	 */
 	YarnEnvironmentConfigure propertiesLocation(String... locations) throws IOException;
 
+	/**
+	 * Specify if existing system environment variables should
+	 * be included automatically.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnEnvironmentConfigure environment) throws Exception {
+	 *   environment
+	 *     .includeSystemEnv(false);
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;yarn:environment include-system-env="false"/>
+	 * </pre>
+	 *
+	 * @param includeSystemEnv if system env variables should be included
+	 * @return {@link YarnEnvironmentConfigure} for chaining
+	 */
 	YarnEnvironmentConfigure includeSystemEnv(boolean includeSystemEnv);
 
+	/**
+	 * Specify properties with a {@link PropertiesConfigure}.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnEnvironmentConfigure environment) throws Exception {
+	 *   Properties props = new Properties();
+	 *   environment
+	 *     .withProperties()
+	 *       .properties(props)
+	 *       .property("myKey1", ",myValue1")
+	 *       .and();
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;util:properties id="props" location="props.properties"/>
+	 *   <prop key="myKey1">myValue1</prop>
+	 * &lt;/util:properties>
+	 * &lt;yarn:environment properties-ref="props"/>
+	 * </pre>
+	 *
+	 * @return {@link PropertiesConfigure} for chaining
+	 * @throws Exception if error occurred
+	 */
 	PropertiesConfigure<YarnEnvironmentConfigure> withProperties() throws Exception;
 
 }

@@ -40,9 +40,9 @@ import org.springframework.util.Assert;
  * @author Janne Valkealahti
  *
  * @param <O> The object that this builder returns
+ * @param <I>
  * @param <B> The type of this builder (that is returned by the base class)
  */
-//public abstract class AbstractConfiguredAnnotationBuilder<O, B extends AnnotationBuilder<O>, I extends B>
 public abstract class AbstractConfiguredAnnotationBuilder<O,I,B extends AnnotationBuilder<O>>
 		extends AbstractAnnotationBuilder<O> {
 
