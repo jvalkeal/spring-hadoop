@@ -16,9 +16,13 @@
 package org.springframework.yarn.config.annotation.configurers;
 
 import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
+import org.springframework.yarn.config.annotation.configurers.LocalResourcesCopyConfigurer.ConfiguredCopyEntry;
 
-public interface LocalResourcesCopyConfigure/*<I> extends AnnotationConfigurerBuilder<I>*/ {
+public interface LocalResourcesCopyConfigure extends AnnotationConfigurerBuilder<YarnResourceLocalizerConfigure> {
 
-//	LocalResourcesCopyConfigure<I> copy(String src, String dest, boolean staging);
+	LocalResourcesCopyConfigure copy(String src, String dest, boolean staging);
+
+	ConfiguredCopyEntry source(String source);
 
 }

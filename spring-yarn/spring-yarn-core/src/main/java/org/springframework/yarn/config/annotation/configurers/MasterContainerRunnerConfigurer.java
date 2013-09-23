@@ -22,9 +22,11 @@ import org.springframework.data.config.annotation.AnnotationBuilder;
 import org.springframework.data.config.annotation.AnnotationConfigurerAdapter;
 import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.am.YarnAppmaster;
+import org.springframework.data.config.annotation.configurers.PropertiesConfigure;
 import org.springframework.data.config.annotation.configurers.PropertiesConfigureAware;
 import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnAppmasterConfigure;
 import org.springframework.yarn.config.annotation.builders.YarnConfigBuilder;
 import org.springframework.yarn.container.CommandLineContainerRunner;
 import org.springframework.yarn.launch.AbstractCommandLineRunner;
@@ -37,7 +39,7 @@ import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
  *
  */
 public class MasterContainerRunnerConfigurer
-		extends AnnotationConfigurerAdapter<YarnAppmaster, YarnAppmasterBuilder, YarnAppmasterBuilder>
+		extends AnnotationConfigurerAdapter<YarnAppmaster, YarnAppmasterConfigure, YarnAppmasterBuilder>
 		implements MasterContainerRunnerConfigure {
 
 	private Class<?> contextClass;
@@ -73,41 +75,49 @@ public class MasterContainerRunnerConfigurer
 		super.init(builder);
 	}
 
-	public MasterContainerRunnerConfigurer contextClass(Class<?> contextClass) {
+	@Override
+	public MasterContainerRunnerConfigure contextClass(Class<?> contextClass) {
 		this.contextClass = contextClass;
 		return this;
 	}
 
-	public MasterContainerRunnerConfigurer contextFile(String contextFile) {
+	@Override
+	public MasterContainerRunnerConfigure contextFile(String contextFile) {
 		this.contextFile = contextFile;
 		return this;
 	}
 
-	public MasterContainerRunnerConfigurer stdout(String stdout) {
+	@Override
+	public MasterContainerRunnerConfigure stdout(String stdout) {
 		this.stdout = stdout;
 		return this;
 	}
 
-	public MasterContainerRunnerConfigurer stderr(String stderr) {
+	@Override
+	public MasterContainerRunnerConfigure stderr(String stderr) {
 		this.stderr = stderr;
 		return this;
 	}
 
-	public MasterContainerRunnerConfigurer beanName(String beanName) {
+	@Override
+	public MasterContainerRunnerConfigure beanName(String beanName) {
 		this.beanName = beanName;
 		return this;
 	}
 
-	public MasterContainerRunnerConfigurer runnerClass(Class<? extends AbstractCommandLineRunner<?>> runnerClazz) {
+	@Override
+	public MasterContainerRunnerConfigure runnerClass(Class<? extends AbstractCommandLineRunner<?>> runnerClazz) {
 		this.runnerClazz = runnerClazz;
 		return this;
 	}
 
-	public MasterContainerRunnerConfigurer arguments(Properties arguments) {
+	@Override
+	public MasterContainerRunnerConfigure arguments(Properties arguments) {
 		this.arguments = arguments;
 		return this;
 	}
 
+	// TODO: change into PropertiesConfigure
 	public PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> withArguments() throws Exception {
 		if (argumentsBuilder == null) {
 			argumentsBuilder = new ArgumentsBuilder(new PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder>());

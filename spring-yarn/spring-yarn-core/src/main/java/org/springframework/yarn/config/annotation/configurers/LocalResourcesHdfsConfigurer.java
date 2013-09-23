@@ -35,7 +35,8 @@ public class LocalResourcesHdfsConfigurer
 		builder.setHdfsEntries(hdfsEntries);
 	}
 
-	public LocalResourcesHdfsConfigurer hdfs(String path) {
+	@Override
+	public LocalResourcesHdfsConfigure hdfs(String path) {
 		hdfsEntries.add(new TransferEntry(null, null, path, null, null, false));
 		return this;
 	}

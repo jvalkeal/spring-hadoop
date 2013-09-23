@@ -43,12 +43,13 @@ public class LocalResourcesCopyConfigurer
 		builder.setCopyEntries(copyEntries);
 	}
 
-//	@Override
-	public LocalResourcesCopyConfigurer copy(String src, String dest, boolean staging) {
+	@Override
+	public LocalResourcesCopyConfigure copy(String src, String dest, boolean staging) {
 		copyEntries.add(new CopyEntry(src, dest, staging));
 		return this;
 	}
 
+	@Override
 	public ConfiguredCopyEntry source(String source) {
 		return new ConfiguredCopyEntry(source);
 	}

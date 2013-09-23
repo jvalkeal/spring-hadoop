@@ -15,6 +15,11 @@
  */
 package org.springframework.yarn.config.annotation.configurers;
 
-public interface LocalResourcesHdfsConfigure {
+import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnResourceLocalizerConfigure;
+
+public interface LocalResourcesHdfsConfigure extends AnnotationConfigurerBuilder<YarnResourceLocalizerConfigure> {
+
+	LocalResourcesHdfsConfigure hdfs(String path);
 
 }
