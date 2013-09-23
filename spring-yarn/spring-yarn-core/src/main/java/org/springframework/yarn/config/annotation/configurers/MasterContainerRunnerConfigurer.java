@@ -50,7 +50,6 @@ public class MasterContainerRunnerConfigurer
 	private Class<? extends AbstractCommandLineRunner<?>> runnerClazz = CommandLineContainerRunner.class;
 
 	private Properties arguments = new Properties();
-	private ArgumentsBuilder argumentsBuilder;
 
 	@Override
 	public void configure(YarnAppmasterBuilder builder) throws Exception {
@@ -59,9 +58,6 @@ public class MasterContainerRunnerConfigurer
 		fb.setContextFile(contextClass != null ?  contextClass.getCanonicalName() : contextFile);
 		fb.setBeanName(beanName);
 
-		if (argumentsBuilder != null) {
-			arguments.putAll(argumentsBuilder.build());
-		}
 		fb.setArguments(arguments);
 
 		fb.setStdout(stdout);
@@ -113,46 +109,14 @@ public class MasterContainerRunnerConfigurer
 
 	@Override
 	public MasterContainerRunnerConfigure arguments(Properties arguments) {
-		this.arguments = arguments;
+		this.arguments.putAll(arguments);
 		return this;
 	}
 
-	// TODO: change into PropertiesConfigure
-	public PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> withArguments() throws Exception {
-		if (argumentsBuilder == null) {
-			argumentsBuilder = new ArgumentsBuilder(new PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder>());
-		}
-		return argumentsBuilder.propertiesConfigurer;
+	@Override
+	public MasterContainerRunnerConfigure argument(String key, String value) {
+		this.arguments.put(key, value);
+		return this;
 	}
-
-
-	public class ArgumentsBuilder implements AnnotationBuilder<Properties>, PropertiesConfigureAware {
-
-		private PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> propertiesConfigurer;
-		private Properties properties;
-
-		public ArgumentsBuilder(PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> propertiesConfigurer) {
-			this.propertiesConfigurer = propertiesConfigurer;
-			this.propertiesConfigurer.setBuilder(this);
-		}
-
-		@Override
-		public Properties build() throws Exception {
-			propertiesConfigurer.configure(argumentsBuilder);
-			return properties;
-		}
-
-		@Override
-		public void configureProperties(Properties properties) {
-			this.properties = properties;
-		}
-
-		public MasterContainerRunnerConfigurer and() {
-			return MasterContainerRunnerConfigurer.this;
-		}
-
-	}
-
-
 
 }

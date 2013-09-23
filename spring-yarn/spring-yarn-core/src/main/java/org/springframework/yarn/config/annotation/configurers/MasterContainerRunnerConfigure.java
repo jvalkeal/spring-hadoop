@@ -18,9 +18,7 @@ package org.springframework.yarn.config.annotation.configurers;
 import java.util.Properties;
 
 import org.springframework.data.config.annotation.AnnotationConfigurerBuilder;
-import org.springframework.data.config.annotation.configurers.PropertiesConfigurer;
 import org.springframework.yarn.config.annotation.builders.YarnAppmasterConfigure;
-import org.springframework.yarn.config.annotation.configurers.MasterContainerRunnerConfigurer.ArgumentsBuilder;
 import org.springframework.yarn.launch.AbstractCommandLineRunner;
 
 public interface MasterContainerRunnerConfigure extends AnnotationConfigurerBuilder<YarnAppmasterConfigure> {
@@ -39,5 +37,6 @@ public interface MasterContainerRunnerConfigure extends AnnotationConfigurerBuil
 
 	MasterContainerRunnerConfigure arguments(Properties arguments);
 
-	PropertiesConfigurer<Properties, ArgumentsBuilder, ArgumentsBuilder> withArguments() throws Exception;
+	MasterContainerRunnerConfigure argument(String key, String value);
+
 }

@@ -31,6 +31,12 @@ import org.springframework.yarn.am.monitor.DefaultContainerMonitor;
 import org.springframework.yarn.config.annotation.configurers.MasterContainerRunnerConfigurer;
 import org.springframework.yarn.fs.ResourceLocalizer;
 
+/**
+ *
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public final class YarnAppmasterBuilder extends AbstractConfiguredAnnotationBuilder<YarnAppmaster, YarnAppmasterConfigure, YarnAppmasterBuilder>
 		implements YarnAppmasterConfigure {
 

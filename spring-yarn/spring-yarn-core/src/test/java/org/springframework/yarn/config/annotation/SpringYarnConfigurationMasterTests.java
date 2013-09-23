@@ -53,14 +53,14 @@ import org.springframework.yarn.fs.LocalResourcesFactoryBean.CopyEntry;
 import org.springframework.yarn.fs.ResourceLocalizer;
 import org.springframework.yarn.support.YarnContextUtils;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 public class SpringYarnConfigurationMasterTests {
 
 	@Autowired
 	private ApplicationContext ctx;
 
-//	@Test
+	@Test
 	public void testSimpleConfig() throws Exception {
 		assertNotNull(ctx);
 		assertTrue(ctx.containsBean("yarnConfiguration"));
@@ -75,10 +75,6 @@ public class SpringYarnConfigurationMasterTests {
 		@SuppressWarnings("unchecked")
 		Map<String, String> environment = (Map<String, String>) ctx.getBean(YarnSystemConstants.DEFAULT_ID_ENVIRONMENT);
 		assertNotNull(environment);
-
-//		assertTrue(ctx.containsBean(YarnSystemConstants.DEFAULT_ID_CLIENT));
-//		YarnClient client = (YarnClient) ctx.getBean(YarnSystemConstants.DEFAULT_ID_CLIENT);
-//		assertNotNull(client);
 
 		assertTrue(ctx.containsBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
 		assertNotNull(ctx.getBean(YarnContextUtils.TASK_SCHEDULER_BEAN_NAME));
@@ -138,8 +134,11 @@ public class SpringYarnConfigurationMasterTests {
 
 		@Override
 		public void configure(YarnEnvironmentConfigure environment) throws Exception {
+			environment
+				.entry("AM_CONTAINER_ID", "container_1360089121174_0011_01_000001");
 		}
 
+		// TODO: need to fake appmaster for it to not try to connect hadoop
 		@Override
 		public void configure(YarnAppmasterConfigure master) throws Exception {
 			Properties properties = new Properties();
@@ -147,10 +146,10 @@ public class SpringYarnConfigurationMasterTests {
 
 			master
 				.withContainerRunner()
-					.withArguments()
-						.property("foo2", "jee2")
-						.and().and()
-					.arguments(properties);
+					.stdout("stdout")
+					.stderr("stderr")
+					.arguments(properties)
+					.argument("foo2", "jee2");
 		}
 
 	}
