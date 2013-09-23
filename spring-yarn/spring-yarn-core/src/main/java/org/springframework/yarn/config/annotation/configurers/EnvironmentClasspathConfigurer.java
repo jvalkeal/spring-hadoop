@@ -33,7 +33,7 @@ public class EnvironmentClasspathConfigurer
 		extends AnnotationConfigurerAdapter<Map<String, String>, YarnEnvironmentConfigure, YarnEnvironmentBuilder>
 		implements EnvironmentClasspathConfigure {
 
-	private Boolean defaultClasspath;
+	private boolean defaultClasspath;
 
 	private ArrayList<String> classpathEntries = new ArrayList<String>();
 
