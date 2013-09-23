@@ -31,7 +31,8 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnClient, YarnClientBuilder, YarnClientBuilder>
+public class YarnClientBuilder
+		extends AbstractConfiguredAnnotationBuilder<YarnClient, YarnClientConfigure, YarnClientBuilder>
 		implements YarnClientConfigure {
 
 	private Configuration configuration;
@@ -40,8 +41,10 @@ public class YarnClientBuilder extends AbstractConfiguredAnnotationBuilder<YarnC
 	private String appName;
 	private String[] commands;
 
-	public YarnClientBuilder() {
-	}
+	/**
+	 * Instantiates a new yarn client builder.
+	 */
+	public YarnClientBuilder() {}
 
 	@Override
 	protected YarnClient performBuild() throws Exception {

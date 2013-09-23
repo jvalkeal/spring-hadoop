@@ -22,6 +22,7 @@ import org.springframework.yarn.YarnSystemConstants;
 import org.springframework.yarn.am.CommandLineAppmasterRunner;
 import org.springframework.yarn.client.YarnClient;
 import org.springframework.yarn.config.annotation.builders.YarnClientBuilder;
+import org.springframework.yarn.config.annotation.builders.YarnClientConfigure;
 import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
 
 /**
@@ -31,7 +32,7 @@ import org.springframework.yarn.launch.LaunchCommandsFactoryBean;
  *
  */
 public class ClientMasterRunnerConfigurer
-		extends AnnotationConfigurerAdapter<YarnClient, YarnClientBuilder, YarnClientBuilder>
+		extends AnnotationConfigurerAdapter<YarnClient, YarnClientConfigure, YarnClientBuilder>
 		implements ClientMasterRunnerConfigure {
 
 	/** Spring context configuration class */
