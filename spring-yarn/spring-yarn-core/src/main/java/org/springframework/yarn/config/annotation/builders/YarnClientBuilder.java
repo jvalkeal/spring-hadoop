@@ -75,7 +75,7 @@ public class YarnClientBuilder
 		this.configuration = configuration;
 	}
 
-	public YarnClientBuilder appName(String appName) {
+	public YarnClientConfigure appName(String appName) {
 		this.appName = appName;
 		return this;
 	}

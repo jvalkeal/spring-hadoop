@@ -19,7 +19,8 @@ import org.springframework.data.config.annotation.AbstractConfiguredAnnotationBu
 import org.springframework.yarn.container.YarnContainer;
 import org.springframework.yarn.container.YarnContainerFactoryBean;
 
-public final class YarnContainerBuilder extends AbstractConfiguredAnnotationBuilder<YarnContainer, YarnContainerConfigure, YarnContainerBuilder>
+public class YarnContainerBuilder
+		extends AbstractConfiguredAnnotationBuilder<YarnContainer, YarnContainerConfigure, YarnContainerBuilder>
 		implements YarnContainerConfigure {
 
 	private Class<? extends YarnContainer> clazz;
@@ -35,7 +36,8 @@ public final class YarnContainerBuilder extends AbstractConfiguredAnnotationBuil
 		return fb.getObject();
 	}
 
-	public YarnContainerBuilder clazz(Class<? extends YarnContainer> clazz) {
+	@Override
+	public YarnContainerConfigure containerClass(Class<? extends YarnContainer> clazz) {
 		this.clazz = clazz;
 		return this;
 	}

@@ -60,4 +60,6 @@ public interface YarnClientConfigure {
 	 */
 	ClientMasterRunnerConfigure withMasterRunner() throws Exception;
 
+	YarnClientConfigure appName(String appName);
+
 }

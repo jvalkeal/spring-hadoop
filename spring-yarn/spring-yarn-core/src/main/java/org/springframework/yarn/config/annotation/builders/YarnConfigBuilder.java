@@ -38,18 +38,25 @@ import org.springframework.yarn.configuration.ConfigurationFactoryBean;
  * @author Janne Valkealahti
  *
  */
-public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<YarnConfiguration,YarnConfigConfigure,YarnConfigBuilder>
+public final class YarnConfigBuilder
+		extends AbstractConfiguredAnnotationBuilder<YarnConfiguration,YarnConfigConfigure,YarnConfigBuilder>
 		implements PropertiesConfigureAware, ResourceConfigureAware, YarnConfigConfigure {
 
 	private final Set<Resource> resources = new HashSet<Resource>();
 	private final Properties properties = new Properties();
-
 	private String fileSystemUri;
 	private String rmAddress;
 
-	public YarnConfigBuilder() {
-	}
+	/**
+	 * Instantiates a new yarn config builder.
+	 */
+	public YarnConfigBuilder() {}
 
+	/**
+	 * Instantiates a new yarn config builder.
+	 *
+	 * @param objectPostProcessor the object post processor
+	 */
 	public YarnConfigBuilder(ObjectPostProcessor<Object> objectPostProcessor) {
 		super(objectPostProcessor);
 	}
@@ -86,14 +93,6 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		return apply(new ResourceConfigurer<YarnConfiguration, YarnConfigConfigure, YarnConfigBuilder>());
 	}
 
-	public Properties getProperties() {
-		return properties;
-	}
-
-	public Set<Resource> getResources() {
-		return resources;
-	}
-
 	@Override
 	public PropertiesConfigure<YarnConfigConfigure> withProperties() throws Exception {
 		return apply(new PropertiesConfigurer<YarnConfiguration, YarnConfigConfigure, YarnConfigBuilder>());
@@ -109,6 +108,24 @@ public final class YarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 	public YarnConfigConfigure resourceManagerAddress(String address) {
 		rmAddress = address;
 		return this;
+	}
+
+	/**
+	 * Gets the properties.
+	 *
+	 * @return the properties
+	 */
+	public Properties getProperties() {
+		return properties;
+	}
+
+	/**
+	 * Gets the resources.
+	 *
+	 * @return the resources
+	 */
+	public Set<Resource> getResources() {
+		return resources;
 	}
 
 }

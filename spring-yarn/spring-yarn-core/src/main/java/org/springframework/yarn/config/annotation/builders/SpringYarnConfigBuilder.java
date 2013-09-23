@@ -30,12 +30,16 @@ import org.springframework.yarn.fs.ResourceLocalizer;
  * @author Janne Valkealahti
  *
  */
-public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder<SpringYarnConfigs, SpringYarnConfigBuilder,SpringYarnConfigBuilder> {
+public class SpringYarnConfigBuilder
+		extends AbstractConfiguredAnnotationBuilder<SpringYarnConfigs,SpringYarnConfigBuilder,SpringYarnConfigBuilder> {
 
+	/** Mostly used by allowing config to be injected i.e from tests */
 	private Configuration yarnConfiguration;
 
-	public SpringYarnConfigBuilder() {
-	}
+	/**
+	 * Instantiates a new spring yarn config builder.
+	 */
+	public SpringYarnConfigBuilder() {}
 
 	@Override
 	protected SpringYarnConfigs performBuild() throws Exception {
@@ -79,6 +83,11 @@ public class SpringYarnConfigBuilder extends AbstractConfiguredAnnotationBuilder
 		return config;
 	}
 
+	/**
+	 * Sets the yarn configuration.
+	 *
+	 * @param yarnConfiguration the new yarn configuration
+	 */
 	public void setYarnConfiguration(Configuration yarnConfiguration) {
 		this.yarnConfiguration = yarnConfiguration;
 	}

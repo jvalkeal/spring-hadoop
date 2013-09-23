@@ -15,6 +15,10 @@
  */
 package org.springframework.yarn.config.annotation.builders;
 
+import org.springframework.yarn.container.YarnContainer;
+
 public interface YarnContainerConfigure {
+
+	YarnContainerConfigure containerClass(Class<? extends YarnContainer> clazz);
 
 }
