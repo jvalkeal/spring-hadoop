@@ -50,16 +50,53 @@ import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
  */
 public interface YarnConfigConfigure {
 
-	// TODO: add javadoc
 	/**
+	 * Specify configuration options as resource properties with a {@link ResourceConfigure}.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnConfigConfigure config) throws Exception {
+	 *   Properties props = new Properties();
+	 *   config
+	 *     .withResources()
+	 *       .resource("cfg-1.properties")
+	 *       .resource("cfg-2.properties")
+	 *       .and();
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;yarn:configuration properties-location="cfg-1.properties, cfg-2.properties"/>
+	 * </pre>
 	 *
 	 * @return {@link ResourceConfigure} for chaining
 	 * @throws Exception if error occurred
 	 */
 	ResourceConfigure<YarnConfigConfigure> withResources() throws Exception;
 
-	// TODO: add javadoc
 	/**
+	 * Specify configuration options as properties with a {@link PropertiesConfigure}.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnConfigConfigure config) throws Exception {
+	 *   Properties props = new Properties();
+	 *   config
+	 *     .withProperties()
+	 *       .properties(props)
+	 *       .property("myKey1", ",myValue1")
+	 *       .and();
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;util:properties id="props" location="props.properties"/>
+	 *   <prop key="myKey1">myValue1</prop>
+	 * &lt;/util:properties>
+	 * &lt;yarn:configuration properties-ref="props"/>
+	 * </pre>
 	 *
 	 * @return {@link PropertiesConfigure} for chaining
 	 * @throws Exception if error occurred

@@ -15,14 +15,85 @@
  */
 package org.springframework.yarn.config.annotation.builders;
 
+import org.springframework.yarn.config.annotation.SpringYarnConfigurerAdapter;
 import org.springframework.yarn.config.annotation.configurers.LocalResourcesCopyConfigurer;
 import org.springframework.yarn.config.annotation.configurers.LocalResourcesHdfsConfigurer;
 
+/**
+ * Interface for {@link YarnResourceLocalizerBuilder} used from
+ * a {@link SpringYarnConfigurerAdapter}.
+ * <p>
+ * Typically configuration is used as shown below.
+ * <p>
+ * <pre>
+ * &#064;Configuration
+ * &#064;EnableYarn
+ * static class Config extends SpringYarnConfigurerAdapter {
+ *
+ *   &#064;Override
+ *   public void configure(YarnResourceLocalizerConfigure localizer) throws Exception {
+ *     localizer
+ *       .withCopy()
+ *         .copy("foo.jar", "/tmp", true)
+ *         .and()
+ *       .withHdfs()
+ *         .hdfs("/tmp/foo.jar");
+ *   }
+ *
+ * }
+ * </pre>
+ *
+ * @author Janne Valkealahti
+ *
+ */
 public interface YarnResourceLocalizerConfigure {
 
+	/**
+	 * Specify configuration options as properties with a {@link LocalResourcesCopyConfigurer}.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnResourceLocalizerConfigure localizer) throws Exception {
+	 *   localizer
+	 *     .withCopy()
+	 *       .copy("foo.jar", "/tmp", true);
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;yarn:localresources>
+	 *   &lt;:hdfs path="/tmp/foo.jar" staging="false"/>
+	 * &lt;/yarn:localresources>
+	 * </pre>
+	 *
+	 * @return {@link LocalResourcesCopyConfigurer} for chaining
+	 * @throws Exception if error occurred
+	 */
 	LocalResourcesCopyConfigurer withCopy() throws Exception;
 
+	/**
+	 * Specify configuration options as properties with a {@link LocalResourcesCopyConfigurer}.
+	 *
+	 * <p>JavaConfig:
+	 * <pre>
+	 * public void configure(YarnResourceLocalizerConfigure localizer) throws Exception {
+	 *   localizer
+	 *     .withHdfs()
+	 *       .hdfs("/tmp/foo.jar");
+	 * }
+	 * </pre>
+	 *
+	 * <p>XML:
+	 * <pre>
+	 * &lt;yarn:localresources>
+	 *   &lt;:hdfs path="/tmp/foo.jar" staging="false"/>
+	 * &lt;/yarn:localresources>
+	 * </pre>
+	 *
+	 * @return {@link LocalResourcesCopyConfigurer} for chaining
+	 * @throws Exception if error occurred
+	 */
 	LocalResourcesHdfsConfigurer withHdfs() throws Exception;
-
 
 }
