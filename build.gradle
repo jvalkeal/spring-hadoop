@@ -587,6 +587,7 @@ project('spring-data-hadoop') {
 
 	dependencies {
 		compile project(":spring-data-hadoop-core")
+		compile project(":spring-data-hadoop-common")
 	}
 
 }
