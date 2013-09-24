@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.data.config.annotation.simple;
+package org.springframework.data.config.annotation.complex;
 
 import java.util.List;
 
@@ -29,32 +29,31 @@ import org.springframework.data.config.annotation.AnnotationConfigurer;
  *
  */
 @Configuration
-public class SimpleTestConfiguration extends AbstractAnnotationConfiguration<SimpleTestConfigBuilder, SimpleTestConfig> {
+public class ComplexTestConfiguration extends AbstractAnnotationConfiguration<ComplexTestConfigBuilder, ComplexTestConfig> {
 
-	SimpleTestConfigBuilder builder = new SimpleTestConfigBuilder();
+	ComplexTestConfigBuilder builder = new ComplexTestConfigBuilder();
 
-	@Bean(name="simpleConfig")
-	public SimpleTestConfig simpleTestConfig() {
-		SimpleTestConfig config = builder.getOrBuild();
+	@Bean(name="complexConfig")
+	public ComplexTestConfig complexTestConfig() {
+		ComplexTestConfig config = builder.getOrBuild();
 		return config;
 	}
 
-	@Bean(name="simpleConfigData")
-	public String simpleTestConfigData() {
-		SimpleTestConfig config = builder.getOrBuild();
-		return config.simpleData;
+	@Bean(name="complexConfigData")
+	public String complexTestConfigData() {
+		ComplexTestConfig config = builder.getOrBuild();
+		return config.complexData;
 	}
 
-	@Bean(name="simpleConfigBeanB")
-	public SimpleTestConfigBeanB simpleTestConfigBeanB() {
-		SimpleTestConfig config = builder.getOrBuild();
-		return config.simpleBeanB;
+	@Bean(name="complexConfigBeanB")
+	public ComplexTestConfigBeanB complexTestConfigBeanB() {
+		ComplexTestConfig config = builder.getOrBuild();
+		return config.complexBeanB;
 	}
 
 	@Override
-	protected void onConfigurers(List<AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder>> configurers)	throws Exception {
-		for (AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> configurer : configurers) {
-			// configurer.isAssignable(builder)
+	protected void onConfigurers(List<AnnotationConfigurer<ComplexTestConfig, ComplexTestConfigBuilder>> configurers)	throws Exception {
+		for (AnnotationConfigurer<ComplexTestConfig, ComplexTestConfigBuilder> configurer : configurers) {
 			builder.apply(configurer);
 		}
 	}

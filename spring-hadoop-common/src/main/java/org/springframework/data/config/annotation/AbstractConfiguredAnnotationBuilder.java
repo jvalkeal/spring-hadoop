@@ -146,7 +146,6 @@ public abstract class AbstractConfiguredAnnotationBuilder<O,I,B extends Annotati
 	 * @throws Exception if error occurred
 	 */
 	@SuppressWarnings("unchecked")
-//	public <C extends AnnotationConfigurerAdapter<O, B, I>> C apply(C configurer) throws Exception {
 	public <C extends AnnotationConfigurerAdapter<O,I,B>> C apply(C configurer) throws Exception {
 		add(configurer);
 		configurer.addObjectPostProcessor(objectPostProcessor);
