@@ -54,8 +54,9 @@ public class SimpleTestConfiguration extends AbstractAnnotationConfiguration<Sim
 	@Override
 	protected void onConfigurers(List<AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder>> configurers)	throws Exception {
 		for (AnnotationConfigurer<SimpleTestConfig, SimpleTestConfigBuilder> configurer : configurers) {
-			// configurer.isAssignable(builder)
-			builder.apply(configurer);
+			if (configurer.isAssignable(builder)) {
+				builder.apply(configurer);
+			}
 		}
 	}
 

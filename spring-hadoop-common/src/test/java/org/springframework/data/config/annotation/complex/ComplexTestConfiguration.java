@@ -54,7 +54,9 @@ public class ComplexTestConfiguration extends AbstractAnnotationConfiguration<Co
 	@Override
 	protected void onConfigurers(List<AnnotationConfigurer<ComplexTestConfig, ComplexTestConfigBuilder>> configurers)	throws Exception {
 		for (AnnotationConfigurer<ComplexTestConfig, ComplexTestConfigBuilder> configurer : configurers) {
-			builder.apply(configurer);
+			if (configurer.isAssignable(builder)) {
+				builder.apply(configurer);
+			}
 		}
 	}
 

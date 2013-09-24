@@ -126,4 +126,9 @@ public abstract class AnnotationConfigurerAdapter<O,I,B extends AnnotationBuilde
 
 	}
 
+	@Override
+	public boolean isAssignable(AnnotationBuilder<O> builder) {
+		return true;
+	}
+
 }

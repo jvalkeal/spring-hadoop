@@ -53,4 +53,6 @@ public interface AnnotationConfigurer<O, B extends AnnotationBuilder<O>> {
 	 */
 	void configure(B builder) throws Exception;
 
+	boolean isAssignable(AnnotationBuilder<O> builder);
+
 }

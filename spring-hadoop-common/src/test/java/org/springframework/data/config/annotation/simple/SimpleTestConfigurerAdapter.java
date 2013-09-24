@@ -15,6 +15,9 @@
  */
 package org.springframework.data.config.annotation.simple;
 
+import org.springframework.data.config.annotation.AnnotationBuilder;
+import org.springframework.data.config.annotation.complex.ComplexTestConfigBuilder;
+
 /**
  * Generic adapter example which user would extend
  * in @{@link org.springframework.context.annotation.Configuration}
@@ -62,6 +65,11 @@ public class SimpleTestConfigurerAdapter implements SimpleTestConfigurer {
 		beanABuilder = new SimpleTestConfigBeanABuilder();
 		configure(beanABuilder);
 		return beanABuilder;
+	}
+
+	@Override
+	public boolean isAssignable(AnnotationBuilder<SimpleTestConfig> builder) {
+		return builder instanceof SimpleTestConfigBuilder;
 	}
 
 }
