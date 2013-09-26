@@ -16,7 +16,6 @@
 package org.springframework.data.config.annotation.simple;
 
 import org.springframework.data.config.annotation.AnnotationBuilder;
-import org.springframework.data.config.annotation.complex.ComplexTestConfigBuilder;
 
 /**
  * Generic adapter example which user would extend

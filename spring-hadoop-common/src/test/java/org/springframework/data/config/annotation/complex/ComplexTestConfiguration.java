@@ -17,10 +17,13 @@ package org.springframework.data.config.annotation.complex;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.config.annotation.AbstractAnnotationConfiguration;
 import org.springframework.data.config.annotation.AnnotationConfigurer;
+import org.springframework.data.config.annotation.simple.SimpleTestConfig;
 
 /**
  * @{@link Configuration} which is imported from @{@ EnableSimpleTest}.
@@ -33,9 +36,14 @@ public class ComplexTestConfiguration extends AbstractAnnotationConfiguration<Co
 
 	ComplexTestConfigBuilder builder = new ComplexTestConfigBuilder();
 
+	@Autowired(required=false)
+	@Qualifier("simpleConfig")
+	SimpleTestConfig simpleTestConfig;
+
 	@Bean(name="complexConfig")
 	public ComplexTestConfig complexTestConfig() {
 		ComplexTestConfig config = builder.getOrBuild();
+		config.simpleTestConfig = simpleTestConfig;
 		return config;
 	}
 

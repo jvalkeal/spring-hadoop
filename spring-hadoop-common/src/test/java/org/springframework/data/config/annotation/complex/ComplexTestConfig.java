@@ -17,6 +17,8 @@ package org.springframework.data.config.annotation.complex;
 
 import java.util.Properties;
 
+import org.springframework.data.config.annotation.simple.SimpleTestConfig;
+
 /**
  * Main pojo used to collect together configs.
  *
@@ -29,6 +31,7 @@ public class ComplexTestConfig {
 	public Properties complexProperties;
 	public ComplexTestConfigBeanA complexBeanA;
 	public ComplexTestConfigBeanB complexBeanB;
+	public SimpleTestConfig simpleTestConfig;
 
 	public ComplexTestConfig(String config, Properties properties) {
 		complexData = config;

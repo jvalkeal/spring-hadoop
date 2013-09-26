@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.config.annotation.AnnotationBuilder;
 import org.springframework.data.config.annotation.ObjectPostProcessor;
 import org.springframework.yarn.config.annotation.EnableYarn.Enable;
 import org.springframework.yarn.config.annotation.builders.SpringYarnConfigBuilder;
@@ -175,6 +176,11 @@ public class SpringYarnConfigurerAdapter implements SpringYarnConfigurer {
 		yarnContainerBuilder = new YarnContainerBuilder();
 		configure(yarnContainerBuilder);
 		return yarnContainerBuilder;
+	}
+
+	@Override
+	public boolean isAssignable(AnnotationBuilder<SpringYarnConfigs> builder) {
+		return true;
 	}
 
 }
