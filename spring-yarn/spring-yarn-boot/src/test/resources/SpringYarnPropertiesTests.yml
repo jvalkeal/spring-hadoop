@@ -1,0 +1,13 @@
+spring:
+    yarn:
+        appName: appNameFoo
+        appType: appTypeFoo
+        applicationDir: applicationDirFoo
+        applicationsBaseDir: applicationsBaseDirFoo
+        security:
+            authMethod: kerberos
+            userPrincipal: userPrincipalFoo
+            userKeytab: userKeytabFoo
+        fsUri: fsUriFoo
+        rmAddress: rmAddressFoo
+        schedulerAddress: schedulerAddressFoo

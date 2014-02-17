@@ -68,7 +68,11 @@ public class YarnClientAutoConfiguration {
 			config
 				.fileSystemUri(syp.getFsUri())
 				.schedulerAddress(syp.getSchedulerAddress())
-				.resourceManagerAddress(syp.getRmAddress());
+				.resourceManagerAddress(syp.getRmAddress())
+				.withSecurity()
+					.authMethod(syp.getSecurity() != null ? syp.getSecurity().getAuthMethod() : null)
+					.userPrincipal(syp.getSecurity() != null ? syp.getSecurity().getUserPrincipal() : null)
+					.userKeytab(syp.getSecurity() != null ? syp.getSecurity().getUserKeytab() : null);
 		}
 
 		@Override

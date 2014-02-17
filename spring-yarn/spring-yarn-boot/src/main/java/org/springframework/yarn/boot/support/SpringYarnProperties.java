@@ -19,6 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.hadoop.security.SecurityAuthMethod;
+import org.springframework.util.StringUtils;
 
 /**
  * Spring Boot {@link ConfigurationProperties} for <code>spring.yarn</code>.
@@ -38,6 +40,7 @@ public class SpringYarnProperties {
 	private String schedulerAddress;
 	private String appName;
 	private String appType;
+	private SpringYarnSecurityProperties security;
 
 	@Autowired
 	private SpringYarnEnvProperties syep;
@@ -104,6 +107,47 @@ public class SpringYarnProperties {
 
 	public void setAppType(String appType) {
 		this.appType = appType;
+	}
+
+	public SpringYarnSecurityProperties getSecurity() {
+		return security;
+	}
+
+	public void setSecurity(SpringYarnSecurityProperties security) {
+		this.security = security;
+	}
+
+	public static class SpringYarnSecurityProperties {
+		private SecurityAuthMethod authMethod;
+		private String userPrincipal;
+		private String userKeytab;
+
+		public SecurityAuthMethod getAuthMethod() {
+			return authMethod;
+		}
+
+		public void setAuthMethod(String authMethod) {
+			if (StringUtils.hasText(authMethod)) {
+				this.authMethod = SecurityAuthMethod.valueOf(authMethod.toUpperCase());
+			}
+		}
+
+		public String getUserPrincipal() {
+			return userPrincipal;
+		}
+
+		public void setUserPrincipal(String userPrincipal) {
+			this.userPrincipal = userPrincipal;
+		}
+
+		public String getUserKeytab() {
+			return userKeytab;
+		}
+
+		public void setUserKeytab(String userKeytab) {
+			this.userKeytab = userKeytab;
+		}
+
 	}
 
 }

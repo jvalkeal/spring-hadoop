@@ -108,7 +108,11 @@ public class YarnContainerAutoConfiguration {
 		@Override
 		public void configure(YarnConfigConfigurer config) throws Exception {
 			config
-				.fileSystemUri(syp.getFsUri());
+				.fileSystemUri(syp.getFsUri())
+				.withSecurity()
+					.authMethod(syp.getSecurity() != null ? syp.getSecurity().getAuthMethod() : null)
+					.userPrincipal(syp.getSecurity() != null ? syp.getSecurity().getUserPrincipal() : null)
+					.userKeytab(syp.getSecurity() != null ? syp.getSecurity().getUserKeytab() : null);
 		}
 
 		@Override

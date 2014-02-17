@@ -150,7 +150,11 @@ public class YarnAppmasterAutoConfiguration {
 			config
 				.fileSystemUri(syp.getFsUri())
 				.resourceManagerAddress(syp.getRmAddress())
-				.schedulerAddress(syap.getRmSchedulerAddress());
+				.schedulerAddress(syap.getRmSchedulerAddress())
+				.withSecurity()
+					.authMethod(syp.getSecurity() != null ? syp.getSecurity().getAuthMethod() : null);
+//					.userPrincipal(syp.getSecurity() != null ? syp.getSecurity().getUserPrincipal() : null)
+//					.userKeytab(syp.getSecurity() != null ? syp.getSecurity().getUserKeytab() : null);
 		}
 
 		@Override
