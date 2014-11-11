@@ -370,4 +370,8 @@ public abstract class AbstractPartitionDataStoreWriter<T, K> extends LifecycleOb
 	 */
 	protected abstract DataStoreWriter<T> createWriter(Configuration configuration, Path basePath, CodecInfo codec);
 
+	protected void cleanWriter(Path path) {
+		writers.remove(path);
+	}
+
 }
