@@ -18,20 +18,23 @@ package org.springframework.yarn.container;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.BeansException;
+import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.OrderComparator;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.yarn.listener.ContainerStateListener.ContainerState;
 
 /**
@@ -44,52 +47,25 @@ public class DefaultYarnContainer extends AbstractYarnContainer implements BeanF
 
 	private final static Log log = LogFactory.getLog(DefaultYarnContainer.class);
 
-	private ListableBeanFactory beanFactory;
+	private final ResultsProcessor resultsProcessor = new ResultsProcessor(this);
+
+	private final AtomicBoolean endNotified = new AtomicBoolean();
 
 	@Override
 	protected void runInternal() {
-		log.info("runInternal");
-		Exception runtimeException = null;
-		List<Object> results = new ArrayList<Object>();
-
 		try {
-			Map<String, ContainerHandler> handlers = beanFactory.getBeansOfType(ContainerHandler.class);
-			List<ContainerHandler> orderHandlers = orderHandlers(handlers);
-			for (ContainerHandler handler : orderHandlers) {
-				results.add(handler.handle(this));
-			}
+			handleResults(getContainerHandlerResults(getContainerHandlers()));
 		} catch (Exception e) {
-			runtimeException = e;
-			log.error("Error handling container", e);
-		}
-
-		try {
-			results = waitFutures(results);
-		} catch (Exception e) {
-			runtimeException = e;
-			log.error("Error handling futures", e);
-		}
-
-		log.info("Container state based on method results=[" + StringUtils.arrayToCommaDelimitedString(results.toArray())
-				+ "] runtimeException=[" + runtimeException + "]");
-
-		if (runtimeException != null) {
-			notifyContainerState(ContainerState.FAILED, runtimeException);
-		} else if (!isEmptyValues(results)) {
-			if (results.size() == 1) {
-				notifyContainerState(ContainerState.COMPLETED, results.get(0));
-			} else {
-				notifyContainerState(ContainerState.COMPLETED, results);
-			}
-		} else {
-			notifyCompleted();
+			resultsProcessor.runtimeException = e;
+			resultsProcessor.mayNotifyEndState();
 		}
 	}
 
 	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		Assert.isInstanceOf(ListableBeanFactory.class, beanFactory, "Beanfactory must be of type ListableBeanFactory");
-		this.beanFactory = (ListableBeanFactory) beanFactory;
+	protected void doStop() {
+		log.info("Stopping DefaultYarnContainer and cancelling Futures");
+		// need to cancel pending futures
+		resultsProcessor.cancelIfFutures();
 	}
 
 	@Override
@@ -99,46 +75,16 @@ public class DefaultYarnContainer extends AbstractYarnContainer implements BeanF
 		return true;
 	}
 
-	/**
-	 * Returns ordered list of {@link ContainerHandler}s.
-	 *
-	 * @param handlers the handlers
-	 * @return the list ordered list
-	 */
-	private List<ContainerHandler> orderHandlers(Map<String, ContainerHandler> handlers) {
+	private List<ContainerHandler> getContainerHandlers() {
+		BeanFactory bf = getBeanFactory();
+		Assert.state(bf instanceof ListableBeanFactory, "Bean factory must be instance of ListableBeanFactory");
+		Map<String, ContainerHandler> handlers = ((ListableBeanFactory)bf).getBeansOfType(ContainerHandler.class);
 		List<ContainerHandler> handlersList = new ArrayList<ContainerHandler>(handlers.values());
 		OrderComparator comparator = new OrderComparator();
 		Collections.sort(handlersList, comparator);
 		return handlersList;
 	}
 
-	/**
-	 * Iterates list and replaces Future values with
-	 * a real ones.
-	 *
-	 * @param results the results to iterate
-	 * @return the modified list
-     * @throws ExecutionException if the computation threw an exception
-     * @throws InterruptedException if the current thread was interrupted while waiting
-	 */
-	private List<Object> waitFutures(List<Object> results) throws InterruptedException, ExecutionException {
-		ListIterator<Object> iterator = results.listIterator();
-		while (iterator.hasNext()) {
-			Object result = (Object) iterator.next();
-			if (result instanceof Future<?>) {
-				iterator.set(((Future<?>) result).get());
-			}
-		}
-		return results;
-	}
-
-	/**
-	 * Checks if list contains just null objects or
-	 * empty strings.
-	 *
-	 * @param results the results
-	 * @return true, if is empty values
-	 */
 	private boolean isEmptyValues(List<Object> results) {
 		for (Object o : results) {
 			if (o != null) {
@@ -152,6 +98,184 @@ public class DefaultYarnContainer extends AbstractYarnContainer implements BeanF
 			}
 		}
 		return true;
+	}
+
+	private void notifyEndState(List<Object> results, Exception runtimeException) {
+		if (endNotified.getAndSet(true)) {
+			log.warn("We already notified end state, discarding this");
+			return;
+		}
+		log.info("Container state based on method results=[" + StringUtils.arrayToCommaDelimitedString(results.toArray())
+				+ "] runtimeException=[" + runtimeException + "]");
+		if (runtimeException != null) {
+			notifyContainerState(ContainerState.FAILED, runtimeException);
+		} else if (!isEmptyValues(results)) {
+			if (results.size() == 1) {
+				notifyContainerState(ContainerState.COMPLETED, results.get(0));
+			} else {
+				notifyContainerState(ContainerState.COMPLETED, results);
+			}
+		} else {
+			notifyCompleted();
+		}
+	}
+
+	private void handleResults(List<Object> resultsx) {
+		resultsProcessor.addResults(resultsx);
+		if (!resultsProcessor.hasActiveListenables()) {
+			notifyEndState(resultsProcessor.getResults(), resultsProcessor.runtimeException);
+		}
+	}
+
+	private List<Object> getContainerHandlerResults(List<ContainerHandler> containerHandlers) {
+		List<Object> results = new ArrayList<Object>();
+		for (ContainerHandler handler : containerHandlers) {
+			results.add(handler.handle(this));
+		}
+		return results;
+	}
+
+	/**
+	 * Helper class processing results and installing callbacks
+	 * if result is an instance of {@link ListenableFuture}.
+	 */
+	private static class ResultsProcessor {
+
+		final DefaultYarnContainer container;
+		List<Result> wrappedResults = new ArrayList<Result>();
+		AtomicInteger activeListenables = new AtomicInteger();
+		Exception runtimeException = null;
+
+		public ResultsProcessor(DefaultYarnContainer container) {
+			this.container = container;
+		}
+
+		boolean hasActiveListenables() {
+			return activeListenables.get() > 0;
+		}
+
+		void mayNotifyEndState() {
+			if (!hasActiveListenables()) {
+				container.notifyEndState(getResults(), runtimeException);
+			}
+		}
+
+		void addResults(List<Object> results) {
+			// first, wrap results without registering callback
+			for (Object result : results) {
+				wrappedResults.add(new Result(result));
+				if (result instanceof ListenableFuture<?>) {
+					activeListenables.incrementAndGet();
+				}
+			}
+
+			// second, register callbacks
+			for (final Result wrappedResult : wrappedResults) {
+				if (wrappedResult.result instanceof ListenableFuture<?>) {
+					((ListenableFuture<?>) wrappedResult.result).addCallback(new ListenableFutureCallback<Object>() {
+
+						@Override
+						public void onSuccess(Object result) {
+							if (log.isDebugEnabled()) {
+								log.info("onSuccess for " + wrappedResult + " with result=[" + result + "]");
+							}
+							wrappedResult.setResult(result);
+							activeListenables.decrementAndGet();
+							mayNotifyEndState();
+						}
+
+						@Override
+						public void onFailure(Throwable t) {
+							if (log.isDebugEnabled()) {
+								log.info("onFailure for " + wrappedResult + " with throwable=[" + t + "]");
+							}
+							runtimeException = new YarnRuntimeException(t);
+							activeListenables.decrementAndGet();
+							mayNotifyEndState();
+						}
+
+					});
+
+				}
+			}
+		}
+
+		void cancelIfFutures() {
+			for (final Result wrappedResult : wrappedResults) {
+				try {
+					log.info("Cancelling " + wrappedResult);
+					wrappedResult.cancelIfFuture();
+				} catch (Exception e) {
+					log.error("error in cancel", e);
+				}
+			}
+		}
+
+		List<Object> getResults() {
+			List<Object> res = new ArrayList<Object>();
+			for (Result r : wrappedResults) {
+				try {
+					res.add(r.getResult());
+				} catch (Exception e) {
+					log.debug("Future get() resulted error", e);
+				}
+			}
+			return res;
+		}
+	}
+
+	/**
+	 * Wrapped for result object to make it easier to handle
+	 * result as a {@link Future}.
+	 */
+	private static class Result {
+
+		Object result;
+
+		Result(Object result) {
+			this.result = result;
+		}
+
+		/**
+		 * Request a cancel if result is a {@link Future}.
+		 */
+		void cancelIfFuture() {
+			if (result instanceof Future<?>) {
+				((Future<?>)result).cancel(true);
+			}
+		}
+
+		/**
+		 * Gets the result. If result is a future this
+		 * method delegates to {@link Future#get()}.
+		 *
+		 * @return the result
+		 */
+		Object getResult() {
+			if (result instanceof Future<?>) {
+				Future<?> f = (Future<?>)result;
+				try {
+					return f.get();
+				} catch (InterruptedException e) {
+					f.cancel(true);
+				} catch (ExecutionException e) {
+					f.cancel(true);
+				}
+				return null;
+			} else {
+				return result;
+			}
+		}
+
+		/**
+		 * Sets the result.
+		 *
+		 * @param result the new result
+		 */
+		void setResult(Object result) {
+			this.result = result;
+		}
+
 	}
 
 }
