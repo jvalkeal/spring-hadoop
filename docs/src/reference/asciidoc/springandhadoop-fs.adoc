@@ -390,7 +390,7 @@ need to specify the language (as in the case of a inlined declaration)
 since script extension (`py`) already provides that information. Just
 for completeness, the `basic-script.py` looks as follows:
 
-[source,groovy]
+[source,python]
 ----
 from java.util import UUID
 from org.apache.hadoop.fs import Path

@@ -17,7 +17,6 @@ include::springandhadoop-runners.adoc[]
 include::springandhadoop-security.adoc[]
 include::springandhadoop-yarn.adoc[]
 include::springandhadoop-testing.adoc[]
-
-
-
-
+include::devspringhadoopapps.adoc[]
+include::otherresources.adoc[]
+include::appendix.adoc[]
