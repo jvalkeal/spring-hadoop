@@ -1,0 +1,23 @@
+= Spring for Apache Hadoop - Reference Documentation
+
+
+include::preface.adoc[]
+include::introduction.adoc[]
+
+[[springandhadoop]]
+= Spring and Hadoop
+
+include::springandhadoop-config.adoc[]
+include::springandhadoop-fs.adoc[]
+include::springandhadoop-store.adoc[]
+include::springandhadoop-hbase.adoc[]
+include::springandhadoop-hive.adoc[]
+include::springandhadoop-pig.adoc[]
+include::springandhadoop-runners.adoc[]
+include::springandhadoop-security.adoc[]
+include::springandhadoop-yarn.adoc[]
+include::springandhadoop-testing.adoc[]
+
+
+
+
