@@ -8,33 +8,10 @@ this section.
 == Useful Links
 
 * Spring for Apache Hadoop
-+
--
-+
-Home Page
-* Spring Data
-+
--
-+
-Home Page
-* Spring Data Book
-+
--
-+
-Home Page
-* Spring
-+
--
-+
-Blog
-* Apache Hadoop
-+
--
-+
-Home Page
-* Pivotal HD
-+
--
-+
-Home Page
+  http://www.springframework.org/spring-data/hadoop[Home Page]
+* Spring Data http://projects.spring.io/spring-data[Home Page]
+* Spring Data Book http://shop.oreilly.com/product/0636920024767.do[Home Page]
+* Spring http://blog.spring.io/[Blog]
+* Apache Hadoop http://hadoop.apache.org[Home Page]
+* Pivotal HD http://www.pivotal.io/big-data/pivotal-hd[Home Page]
 

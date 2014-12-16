@@ -1729,9 +1729,11 @@ this exploded archive.
 * User defines a main class to be run and everything this class will
 need is already setup.
 
-More detailed functionality can be found from a below sections; ?, ? and
-?.
+More detailed functionality can be found from a below sections;
+<<applicationclasspath>>, <<containerrunners>> and
+<<configurationproperties>>.
 
+[[applicationclasspath]]
 ==== Application Classpath
 
 Let's go through as an examples how a classpath is configured on
@@ -1794,6 +1796,7 @@ spring:
 In above example you needed to use custom classpath entries from an
 exploded zip archive.
 
+[[containerrunners]]
 ==== Container Runners
 
 Using a propertys `spring.yarn.client.launchcontext.archiveFile` and
@@ -2026,6 +2029,7 @@ public void publicVoidParameterArgsMethod(@YarnParameter("key") String value) {
 }
 ----
 
+[[configurationproperties]]
 ==== Configuration Properties
 
 Configuration properties can be defined using various methods. See a
