@@ -411,32 +411,42 @@ To ease the interaction of the script with its enclosing context, SHDP
 binds by default the so-called _implicit_ variables. These are:
 
 .Implicit variables
-[width="100%",cols="18%,16%,66%",options="header",]
+[width="100%",cols="15%,30%,55%",options="header",]
 |=======================================================================
 |Name |Type |Description
-|cfg |`org.apache.hadoop.conf.Configuration` |Hadoop Configuration
-(relies on _hadoopConfiguration_ bean or singleton type match)
 
-|cl |`java.lang.ClassLoader` |ClassLoader used for executing the script
+|cfg
+|{hadoop-Configuration}[Configuration]
+|Hadoop Configuration (relies on _hadoopConfiguration_ bean or singleton type match)
 
-|ctx |`org.springframework.context.ApplicationContext` |Enclosing
-application context
+|cl
+|{java-ClassLoader}[ClassLoader]
+|ClassLoader used for executing the script
 
-|ctxRL |`org.springframework.io.support.ResourcePatternResolver`
+|ctx
+|{core-ApplicationContext}[ApplicationContext]
+|Enclosing application context
+
+|ctxRL
+|{core-ResourcePatternResolver}[ResourcePatternResolver]
 |Enclosing application context ResourceLoader
 
-|distcp |`org.springframework.data.hadoop.fs.DistributedCopyUtil`
+|distcp
+|{shdp-DistCp}[DistCp]
 |Programmatic access to DistCp
 
-|fs |`org.apache.hadoop.fs.FileSystem` |Hadoop File System (relies on
-'hadoop-fs' bean or singleton type match, falls back to creating one
-based on 'cfg')
+|fs
+|{hadoop-FileSystem}[FileSystem]
+|Hadoop File System (relies on 'hadoop-fs' bean or singleton type match,
+falls back to creating one based on 'cfg')
 
-|fsh |`org.springframework.data.hadoop.fs.FsShell` |File System shell,
-exposing hadoop 'fs' commands as an API
+|fsh
+|{shdp-FsShell}[FsShell]
+|File System shell, exposing hadoop 'fs' commands as an API
 
-|hdfsRL |`org.springframework.data.hadoop.io.HdfsResourceLoader` |Hdfs
-resource loader (relies on 'hadoop-resource-loader' or singleton type
+|hdfsRL
+|{shdp-HdfsResourceLoader}[HdfsResourceLoader]
+|Hdfs resource loader (relies on 'hadoop-resource-loader' or singleton type
 match, falls back to creating one automatically based on 'cfg')
 |=======================================================================
 

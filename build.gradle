@@ -69,6 +69,8 @@ def List hadoopTestArtifacts = []
 def hadoopDefault = "hadoop25"
 def hadoopDistro = project.hasProperty("distro") ? project.getProperty("distro") : hadoopDefault
 def hadoopVersion = "default"
+// hadoopVanillaVersion for used in docs
+def hadoopVanillaVersion = hd25Version
 
 // Common Hadoop libraries
 def hiveVersion = defaultHiveVersion
@@ -689,6 +691,7 @@ configure(rootProject) {
 				numbered: '',
 				'spring-hadoop-version' : project.version,
 				'spring-version' : springVersion,
+				'hadoop-version' : hadoopVanillaVersion,
 				revnumber : project.version
 			]
 		]
