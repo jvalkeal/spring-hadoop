@@ -34,6 +34,7 @@ import org.kitesdk.data.RefinableView;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.hadoop.store.DataStoreWriter;
 import org.springframework.data.hadoop.store.StoreException;
 import org.springframework.util.Assert;
 
@@ -260,7 +261,7 @@ public class DatasetTemplate implements InitializingBean, DatasetOperations {
 		@SuppressWarnings("unchecked")
 		Class<T> pojoClass = (Class<T>) records.iterator().next().getClass();
 		DatasetDefinition datasetDefinition = getDatasetDefinitionToUseFor(pojoClass);
-		AbstractDatasetStoreWriter<T> writer;
+		DataStoreWriter<T> writer;
 		if (Formats.PARQUET.getName().equals(datasetDefinition.getFormat().getName())) {
 			writer = new ParquetDatasetStoreWriter<T>(pojoClass, dsFactory, datasetDefinition);
 		} else {
