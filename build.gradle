@@ -927,6 +927,7 @@ project('spring-data-hadoop-boot') {
 	dependencies {
 		compile project(":spring-data-hadoop")
 		compile "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
+		optional "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
 		runtime "org.yaml:snakeyaml:$snakeYamlVersion"
 		testCompile "org.springframework:spring-test:$springVersion"
 		testCompile "org.hamcrest:hamcrest-core:$hamcrestVersion"
@@ -1204,6 +1205,7 @@ project('spring-yarn:spring-yarn-boot') {
 		provided "org.springframework:spring-webmvc:$springVersion"
 		compile "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
 		compile "org.springframework.boot:spring-boot-actuator:$springBootVersion"
+		optional "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
 		compile "org.apache.httpcomponents:httpclient:$httpclientVersion"
 		runtime "org.yaml:snakeyaml:$snakeYamlVersion"
 		testRuntime "org.apache.tomcat.embed:tomcat-embed-jasper:$tomcatEmbedVersion"
