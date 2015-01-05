@@ -7,6 +7,7 @@
 :shdp-FsShell: http://docs.spring.io/spring-hadoop/docs/{spring-hadoop-version}/api/org/springframework/data/hadoop/fs/FsShell.html
 :shdp-DistCp: http://docs.spring.io/spring-hadoop/docs/{spring-hadoop-version}/api/org/springframework/data/hadoop/fs/DistCp.html
 :shdp-HdfsResourceLoader: http://docs.spring.io/spring-hadoop/docs/{spring-hadoop-version}/api/org/springframework/data/hadoop/fs/HdfsResourceLoader.html
+:spring-data-hadoop-boot-jar: spring-data-hadoop-boot-{spring-hadoop-version}.jar
 
 = Spring for Apache Hadoop - Reference Documentation
 

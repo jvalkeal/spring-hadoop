@@ -89,6 +89,41 @@ For the remainder of this doc, to improve readability, the XML examples
 may simply refer to the `<hdp>` namespace without the namespace
 declaration, where possible.
 
+=== Using the Spring for Apache Hadoop JavaConfig
+
+Annotation based configuration is designed to work via a
+`SpringHadoopConfigurerAdapter` which is loosely trying to use same
+type of dsl language familiar from xml. Within the adapter you need to
+override `configure` method which is exposing `HadoopConfigConfigurer`
+containing familiar attributes to work with a Hadoop configuration.
+
+[source,java]
+----
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.hadoop.config.annotation.EnableHadoop
+import org.springframework.data.hadoop.config.annotation.SpringHadoopConfigurerAdapter
+import org.springframework.data.hadoop.config.annotation.builders.HadoopConfigConfigurer;
+
+@Configuration
+@EnableHadoop
+static class Config extends SpringHadoopConfigurerAdapter {
+
+  @Override
+  public void configure(HadoopConfigConfigurer config) throws Exception {
+    config
+      .fileSystemUri("hdfs://localhost:8021");
+  }
+
+}
+----
+
+[NOTE]
+====
+`@EnableHadoop` annotation is required to mark Spring `@Configuration`
+class to be a candidate for Spring Hadoop configuration.
+====
+
+
 === Configuring Hadoop
 
 In order to use Hadoop, one needs to first configure it namely by
@@ -319,3 +354,172 @@ to _mapred.job.tracker_ property.
 HadoopV2. Equivalent to _yarn.resourcemanager.address_ property.
 |=======================================================================
 
+[NOTE]
+====
+Configuring security and kerberos refer to chapter <<springandhadoop-security>>.
+====
+
+=== Boot Support
+
+Spring Boot support is enabled automatically if {spring-data-hadoop-boot-jar}
+is found from a classpath. Currently Boot auto-configuration is a
+little limited and only supports configuring of `hadoopConfiguration`
+and `fsShell` beans.
+
+Configuration properties can be defined using various methods. See a
+Spring Boot dodumentation for details.
+
+[source,groovy,subs="attributes"]
+----
+@Grab('org.springframework.data:spring-data-hadoop-boot:{spring-hadoop-version}')
+
+import org.springframework.data.hadoop.fs.FsShell
+
+public class App implements CommandLineRunner {
+
+  @Autowired FsShell shell
+
+  void run(String... args) {
+    shell.lsr("/tmp").each() {println "> ${it.path}"}
+  }
+
+}
+----
+
+Above example which can be run using Spring Boot CLI shows how
+auto-configuration ease use of Spring Hadoop. In this example Hadoop
+configuration and FsShell are configured automatically.
+
+==== `spring.hadoop` configuration properties
+
+Namespace `spring.hadoop` supports following properties; 
+<<spring.hadoop.fsUri,fsUri>>,
+<<spring.hadoop.resourceManagerAddress,resourceManagerAddress>>,
+<<spring.hadoop.resourceManagerSchedulerAddress,resourceManagerSchedulerAddress>>,
+<<spring.hadoop.resourceManagerHost,resourceManagerHost>>,
+<<spring.hadoop.resourceManagerPort,resourceManagerPort>>,
+<<spring.hadoop.resourceManagerSchedulerPort,resourceManagerSchedulerPort>>,
+<<spring.hadoop.resources,resources>> and
+<<spring.hadoop.config,config>>.
+
+[[spring.hadoop.fsUri]]`spring.hadoop.fsUri`::
+  Description:::
+A hdfs file system uri for a namenode.
+  Required:::
+Yes
+  Type:::
+String
+  Default Value:::
+null
+[[spring.hadoop.resourceManagerAddress]]`spring.hadoop.resourceManagerAddress`::
+  Description:::
+Address of a YARN resource manager.
+  Required:::
+No
+  Type:::
+String
+  Default Value:::
+null
+[[spring.hadoop.resourceManagerSchedulerAddress]]`spring.hadoop.resourceManagerSchedulerAddress`::
+  Description:::
+Address of a YARN resource manager scheduler.
+  Required:::
+No
+  Type:::
+String
+  Default Value:::
+null
+[[spring.hadoop.resourceManagerHost]]`spring.hadoop.resourceManagerHost`::
+  Description:::
+Hostname of a YARN resource manager.
+  Required:::
+No
+  Type:::
+String
+  Default Value:::
+null
+[[spring.hadoop.resourceManagerPort]]`spring.hadoop.resourceManagerPort`::
+  Description:::
+Port of a YARN resource manager.
+  Required:::
+No
+  Type:::
+Integer
+  Default Value:::
+8032
+[[spring.hadoop.resourceManagerSchedulerPort]]`spring.hadoop.resourceManagerSchedulerPort`::
+  Description:::
+Port of a YARN resource manager scheduler. This property
+is only needed for an application master.
+  Required:::
+No
+  Type:::
+Integer
+  Default Value:::
+8030
+[[spring.hadoop.resources]]`spring.hadoop.resources`::
+  Description:::
+List of Spring resource locations to be initialized in
+Hadoop configuration. These resources should be in Hadoop's
+own site xml format and location format can be anything Spring
+supports. For example, _classpath:/myentry.xml_ from a
+classpath or _file:/myentry.xml_ from a file system.
+  Required:::
+No
+  Type:::
+List
+  Default Value:::
+null
+[[spring.hadoop.config]]`spring.hadoop.config`::
+  Description:::
+Map of generic hadoop configuration properties.
++
+This yml example shows howto set filesystem uri using `config`
+property instead of `fsUri`.
++
+.application.yml
+----
+spring:
+  hadoop:
+    config:
+      fs.defaultFS: hdfs://localhost:8020
+----
++
+Or:
++
+.application.yml
+----
+spring:
+  hadoop:
+    config:
+      fs:
+        defaultFS: hdfs://localhost:8020
+----
++
+This example shows howto set same using properties format:
++
+.application.properties
+----
+spring.hadoop.config.fs.defaultFS=hdfs://localhost:8020
+----
+  Required:::
+No
+  Type:::
+Map
+  Default Value:::
+null
+
+==== `spring.hadoop.fsshell` configuration properties
+
+Namespace `spring.hadoop.fsshell` supports following properties; 
+<<spring.hadoop.fsshell.enabled,enabled>>
+
+[[spring.hadoop.fsshell.enabled]]`spring.hadoop.fsshell.enabled`::
+  Description:::
+Defines if `FsShell` should be created automatically.
+  Required:::
+No
+  Type:::
+Boolean
+  Default Value:::
+true
