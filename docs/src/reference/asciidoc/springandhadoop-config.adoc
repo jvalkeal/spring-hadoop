@@ -359,6 +359,7 @@ HadoopV2. Equivalent to _yarn.resourcemanager.address_ property.
 Configuring security and kerberos refer to chapter <<springandhadoop-security>>.
 ====
 
+[[springandhadoop-config-bootsupport]]
 === Boot Support
 
 Spring Boot support is enabled automatically if {spring-data-hadoop-boot-jar}

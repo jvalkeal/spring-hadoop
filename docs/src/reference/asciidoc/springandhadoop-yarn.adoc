@@ -2034,7 +2034,9 @@ public void publicVoidParameterArgsMethod(@YarnParameter("key") String value) {
 ==== Configuration Properties
 
 Configuration properties can be defined using various methods. See a
-Spring Boot dodumentation for details.
+Spring Boot dodumentation for details. More about configuration
+properties for `spring.hadoop` namespace can be found from
+<<springandhadoop-config-bootsupport>>.
 
 ===== `spring.yarn` configuration properties
 
