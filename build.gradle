@@ -936,6 +936,9 @@ project('spring-data-hadoop-boot') {
 		testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
 		testCompile "junit:junit:$junitVersion"
 	}
+
+	compileJava.dependsOn(processResources)
+
 }
 
 project('spring-data-hadoop-test') {
