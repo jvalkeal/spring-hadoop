@@ -375,6 +375,53 @@ public class SpringYarnAppmasterContainerClusterPropertiesTests {
 		context.close();
 	}
 
+	@Test
+	public void testMapStylePropertiesWithSpelSet5() {
+		SpringApplication app = new SpringApplication(TestConfiguration.class);
+		app.setWebEnvironment(false);
+		ConfigurableApplicationContext context = app
+				.run(new String[] { "--spring.config.name=SpringYarnAppmasterContainerClusterPropertiesTests5",
+						"--bar.anyCount=2", "--jee.projectionData={any: 3, hosts: {host1: 1, host2: 2}, racks: {rack1: 1, rack2: 2}}"});
+		SpringYarnAppmasterProperties properties = context.getBean(SpringYarnAppmasterProperties.class);
+		assertThat(properties, notNullValue());
+
+		assertThat(properties.getContainercluster().getClusters().size(), is(6));
+
+		ContainerClustersProjectionProperties projectionProperties = properties.getContainercluster().getClusters().get("cluster1").getProjection();
+//		assertThat(projectionProperties.getType(), is("default"));
+//		assertThat(projectionProperties.getData().getAny(), is(1));
+//		assertThat(projectionProperties.getData().getHosts(), nullValue());
+//		assertThat(projectionProperties.getData().getRacks(), nullValue());
+		
+//		projectionProperties = properties.getContainercluster().getClusters().get("cluster2").getProjection();
+//		assertThat(projectionProperties.getType(), is("default"));
+//		assertThat(projectionProperties.getData().getAny(), is(2));
+//		assertThat(projectionProperties.getData().getHosts(), nullValue());
+//		assertThat(projectionProperties.getData().getRacks(), nullValue());
+
+//		projectionProperties = properties.getContainercluster().getClusters().get("cluster3").getProjection();
+//		assertThat(projectionProperties.getType(), is("default"));
+//		assertThat(projectionProperties.getData().getAny(), is(3));
+//		assertThat(projectionProperties.getData().getHosts().get("host1"), is(1));
+//		assertThat(projectionProperties.getData().getHosts().get("host2"), is(2));
+//		assertThat(projectionProperties.getData().getRacks().get("rack1"), is(1));
+//		assertThat(projectionProperties.getData().getRacks().get("rack2"), is(2));
+
+		projectionProperties = properties.getContainercluster().getClusters().get("cluster4").getProjection();
+		assertThat(projectionProperties.getType(), is("default"));
+		assertThat(projectionProperties.getData().getAny(), is(1));
+
+		projectionProperties = properties.getContainercluster().getClusters().get("cluster5").getProjection();
+		assertThat(projectionProperties.getType(), is("default"));
+		assertThat(projectionProperties.getData().getAny(), is(2));
+
+		projectionProperties = properties.getContainercluster().getClusters().get("cluster6").getProjection();
+		assertThat(projectionProperties.getType(), is("default"));
+		assertThat(projectionProperties.getData().getAny(), is(4));
+		
+		context.close();
+	}
+	
 	@Configuration
 	@EnableConfigurationProperties({SpringYarnAppmasterProperties.class})
 	protected static class TestConfiguration {

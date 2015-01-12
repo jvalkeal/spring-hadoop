@@ -1,0 +1,32 @@
+spring:
+    yarn:
+        appmaster:
+            containercluster:
+                clusters:
+                    cluster1:
+                        projection:
+                            type: default
+                            data: "${foo.projectionData:{any: ${foo.anyCount:1}}}"
+#                            data: "${foo.projectionData:{any: ${foo.anyCount:1}}}"
+                    cluster2:
+                        projection:
+                            type: default
+                            data: "${bar.projectionData:{any: ${bar.anyCount:1}}}"
+                    cluster3:
+                        projection:
+                            type: default
+                            data: "${jee.projectionData:{any: ${jee.anyCount:1}}}"
+                    cluster4:
+                        projection:
+                            type: default
+                            data:
+                                any: "${jee.anyCount:1}"
+                    cluster5:
+                        projection:
+                            type: default
+                            data:
+                                any: "${bar.anyCount:1}"
+                    cluster6:
+                        projection:
+                            type: default
+                            data: "{any:4}"
