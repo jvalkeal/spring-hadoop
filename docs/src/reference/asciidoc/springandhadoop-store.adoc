@@ -891,3 +891,37 @@ Multiple expressions can be specified by simply chaining them like:
 identity("region", "R", String.class, 10).year("timestamp").month("timestamp")
 ------------------------------------------------------------------------------
 
+=== Using the Spring for Apache JavaConfig
+
+Spring Hadoop doesn't have support for configuring store components
+using xml but have a support using JavaConfig for writer configuration.
+
+JavaConfig is using same concepts found from other parts of a Spring
+Hadoop where the whole configuration logic works around use of an
+adapter.
+
+[source,java]
+----
+@Configuration
+@EnableDataStoreTextWriter
+static class Config extends SpringDataStoreTextWriterConfigurerAdapter {
+
+  @Override
+  public void configure(DataStoreTextWriterConfigurer config) throws Exception {
+    config
+      .basePath("/tmp/foo1");
+  }
+}
+----
+
+In above example we created a normal Spring `@Configuration` class
+extending
+{shdp-SpringDataStoreTextWriterConfigurerAdapter}[SpringDataStoreTextWriterConfigurerAdapter].
+Class needs to be annotated with
+{shdp-EnableDataStoreTextWriter}[EnableDataStoreTextWriter] order to
+enable some needed functionality. Then what is left for a user to do
+is to override some configure methods from an adapter and use exposed
+interface, namely {shdp-DataStoreTextWriterConfigurer}[DataStoreTextWriterConfigurer]
+in this case to do a writer configuration. Bean of type
+{shdp-DataStoreWriter}[DataStoreWriter] is then created automatically.
+
