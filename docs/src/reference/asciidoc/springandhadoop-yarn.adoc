@@ -3543,8 +3543,8 @@ java -jar <jar> push - Push new application version
 
 usage: java -jar <jar> push [options]
 
-Option                     Description                       
-------                     -----------                       
+Option                     Description
+------                     -----------
 -v, --application-version  Application version (default: app)
 ----
 
@@ -3572,8 +3572,9 @@ java -jar <jar> submit - Submit application
 
 usage: java -jar <jar> submit [options]
 
-Option                     Description                       
-------                     -----------                       
+Option                     Description
+------                     -----------
+-n, --application-name     Application name
 -v, --application-version  Application version (default: app)
 ----
 
@@ -3587,8 +3588,8 @@ java -jar <jar> submitted - List submitted applications
 
 usage: java -jar <jar> submitted [options]
 
-Option                   Description                     
-------                   -----------                     
+Option                   Description
+------                   -----------
 -t, --application-type   Application type (default: BOOT)
 -v, --verbose [Boolean]  Verbose output (default: true)  
 ----
@@ -3604,8 +3605,8 @@ java -jar <jar> kill - Kill application
 
 usage: java -jar <jar> kill [options]
 
-Option                Description                
-------                -----------                
+Option                Description
+------                -----------
 -a, --application-id  Specify YARN application id
 ----
 
@@ -3619,8 +3620,8 @@ java -jar <jar> clustersinfo - List clusters
 
 usage: java -jar <jar> clustersinfo [options]
 
-Option                Description                
-------                -----------                
+Option                Description
+------                -----------
 -a, --application-id  Specify YARN application id
 ----
 
@@ -3635,10 +3636,10 @@ java -jar <jar> clusterinfo - List cluster info
 
 usage: java -jar <jar> clusterinfo [options]
 
-Option                   Description                   
-------                   -----------                   
--a, --application-id     Specify YARN application id   
--c, --cluster-id         Specify cluster id            
+Option                   Description
+------                   -----------
+-a, --application-id     Specify YARN application id
+-c, --cluster-id         Specify cluster id
 -v, --verbose [Boolean]  Verbose output (default: true)
 ----
 
@@ -3652,15 +3653,16 @@ java -jar <jar> clustercreate - Create cluster
 
 usage: java -jar <jar> clustercreate [options]
 
-Option                  Description                
-------                  -----------                
+Option                  Description
+------                  -----------
 -a, --application-id    Specify YARN application id
--c, --cluster-id        Specify cluster id         
--h, --projection-hosts  Projection hosts counts    
--i, --cluster-def       Specify cluster def id     
--p, --projection-type   Projection type            
--r, --projection-racks  Projection racks counts    
--w, --projection-any    Projection any count    
+-c, --cluster-id        Specify cluster id
+-h, --projection-hosts  Projection hosts counts
+-i, --cluster-def       Specify cluster def id
+-p, --projection-type   Projection type
+-r, --projection-racks  Projection racks counts
+-w, --projection-any    Projection any count
+-y, --projection-data   Raw projection data
 ----
 
 YarnClusterCreateCommand can be used to create a new cluster.
@@ -3673,10 +3675,10 @@ java -jar <jar> clusterstart - Start cluster
 
 usage: java -jar <jar> clusterstart [options]
 
-Option                Description                
-------                -----------                
+Option                Description
+------                -----------
 -a, --application-id  Specify YARN application id
--c, --cluster-id      Specify cluster id         
+-c, --cluster-id      Specify cluster id
 ----
 
 YarnClusterStartCommand can be used to start an existing cluster.
@@ -3689,10 +3691,10 @@ java -jar <jar> clusterstop - Stop cluster
 
 usage: java -jar <jar> clusterstop [options]
 
-Option                Description                
-------                -----------                
+Option                Description
+------                -----------
 -a, --application-id  Specify YARN application id
--c, --cluster-id      Specify cluster id         
+-c, --cluster-id      Specify cluster id
 ----
 
 YarnClusterStopCommand can be used to stop an existing cluster.
@@ -3705,13 +3707,13 @@ java -jar <jar> clustermodify - Modify cluster
 
 usage: java -jar <jar> clustermodify [options]
 
-Option                  Description                
-------                  -----------                
+Option                  Description
+------                  -----------
 -a, --application-id    Specify YARN application id
--c, --cluster-id        Specify cluster id         
--h, --projection-hosts  Projection hosts counts    
--r, --projection-racks  Projection racks counts    
--w, --projection-any    Projection any count       
+-c, --cluster-id        Specify cluster id
+-h, --projection-hosts  Projection hosts counts
+-r, --projection-racks  Projection racks counts
+-w, --projection-any    Projection any count
 ----
 
 YarnClusterModifyCommand can be used to modify an existing cluster.
@@ -3724,10 +3726,10 @@ java -jar <jar> clusterdestroy - Destroy cluster
 
 usage: java -jar <jar> clusterdestroy [options]
 
-Option                Description                
-------                -----------                
+Option                Description
+------                -----------
 -a, --application-id  Specify YARN application id
--c, --cluster-id      Specify cluster id         
+-c, --cluster-id      Specify cluster id
 ----
 
 YarnClusterDestroyCommand can be used to destroy an existing cluster.
