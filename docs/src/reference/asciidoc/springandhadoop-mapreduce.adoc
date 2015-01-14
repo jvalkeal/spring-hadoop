@@ -63,9 +63,8 @@ see the aforementioned #hadoop:generic-options[section] for more info
 
 ==== Creating a Hadoop Streaming Job
 
-Hadoop
-http://hadoop.apache.org/common/docs/current/streaming.html[Streaming]
-job (or in short streaming), is a popular feature of Hadoop as it allows
+Hadoop {hadoop-Streaming}[Streaming] job (or in short streaming),
+is a popular feature of Hadoop as it allows
 the creation of Map/Reduce jobs with any executable or script (the
 equivalent of using the previous counting words example is to use
 http://en.wikipedia.org/wiki/Cat_%28Unix%29[`cat`] and
@@ -140,36 +139,26 @@ attribute in the order of the execution. The runner will trigger the
 execution during the application start-up (notice the `run-at-startup`
 flag which is by default `false`). Do note that the runner will not run
 unless triggered manually or if `run-at-startup` is set to `true`.
-Additionally the runner (as in fact do all link:#runners[runners] in
+Additionally the runner (as in fact do all
+<<springandhadoop-runners,runners>> in
 SHDP) allows one or multiple `pre` and `post` actions to be specified to
 be executed before and after each run. Typically other runners (such as
 other jobs or scripts) can be specified but any JDK `Callable` can be
 passed in. For more information on runners, see the
-link:#runners[dedicated] chapter.
+<<springandhadoop-runners,dedicated>> chapter.
 
 [NOTE]
 ====
-As the Hadoop job submission and execution (when
-wait-for-completion
-is
-true
-) is blocking,
-JobRunner
-uses a JDK
-Executor
-to start (or stop) a job. The default implementation,
-SyncTaskExecutor
-uses the calling thread to execute the job, mimicking the hadoop command
-line behaviour. However, as the hadoop jobs are time-consuming, in some
-cases this can lead to
-application freeze
-, preventing normal operations or even application shutdown from
-occuring properly. Before going into production, it is recommended to
-double-check whether this strategy is suitable or whether a throttled or
-pooled implementation is better. One can customize the behaviour through
-the
-executor-ref
-parameter.
+As the Hadoop job submission and execution (when wait-for-completion
+is true) is blocking, JobRunner uses a JDK Executor to start (or stop)
+a job. The default implementation, SyncTaskExecutor uses the calling
+thread to execute the job, mimicking the hadoop command line behaviour.
+However, as the hadoop jobs are time-consuming, in some cases this can
+lead to application freeze, preventing normal operations or even
+application shutdown from occuring properly. Before going into production,
+it is recommended to double-check whether this strategy is suitable or
+whether a throttled or pooled implementation is better. One can customize
+the behaviour through the executor-ref parameter.
 ====
 
 The job runner also allows running jobs to be cancelled (or killed) at
@@ -240,7 +229,7 @@ and after each run. Typically other runners (such as other jobs or
 scripts) can be specified but any JDK `Callable` can be passed in. Do
 note that the runner will not run unless triggered manually or if
 `run-at-startup` is set to `true`. For more information on runners, see
-the link:#runners[dedicated] chapter.
+the <<springandhadoop-runners,dedicated>> chapter.
 
 The previous example assumes the `Tool` dependencies (such as its class)
 are available in the classpath. If that is not the case, `tool-runner`
@@ -335,12 +324,12 @@ configuration - each job can have multiple properties loaded or declared
 inlined - not just from the local file system, but also from the
 classpath or any url for that matter. In fact, the whole configuration
 can be externalized and parameterized (through Spring's
-http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/beans.html#beans-factory-placeholderconfigurer[property
-placeholder] and/or
-http://docs.spring.io/spring/docs/3.1.x/spring-framework-reference/html/new-in-3.1.html#d0e1313[Environment
-abstraction]). Moreover, each job can be ran by itself (through the
-JobRunner) or as part of a workflow - either through Spring's
-`depends-on` or the much more powerful Spring Batch and `tool-tasklet`.
+{core-beans-factory-placeholderconfigurer}[property placeholder]
+and/or
+{core-beans-environment}[Environment abstraction]). Moreover, each job
+can be ran by itself (through the JobRunner) or as part of
+a workflow - either through Spring's `depends-on` or the much more powerful
+Spring Batch and `tool-tasklet`.
 
 ==== Using the Hadoop Tool tasklet
 
@@ -358,9 +347,7 @@ not apply for a workflow):
 === Running a Hadoop Jar
 
 SHDP also provides support for executing vanilla Hadoop jars. Thus the
-famous
-http://hadoop.apache.org/docs/r2.5.1/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0[WordCount]
-example:
+famous {hadoop-WordCount}[WordCount] example:
 
 -------------------------------------------------------------------------------
 bin/hadoop jar hadoop-examples.jar wordcount /wordcount/input /wordcount/output
@@ -379,13 +366,9 @@ becomes
 
 [NOTE]
 ====
-Just like the
-hadoop jar
-command, by default the jar support reads the jar's
-Main-Class
-if none is specified. This can be customized through the
-main-class
-attribute.
+Just like the hadoop jar command, by default the jar support reads the jar's
+Main-Class if none is specified. This can be customized through the
+main-class attribute.
 ====
 
 Additionally the runner (just like the job runner) allows one or
@@ -394,7 +377,7 @@ and after each run. Typically other runners (such as other jobs or
 scripts) can be specified but any JDK `Callable` can be passed in. Do
 note that the runner will not run unless triggered manually or if
 `run-at-startup` is set to `true`. For more information on runners, see
-the link:#runners[dedicated] chapter.
+the <<springandhadoop-runners,dedicated>> chapter.
 
 The `jar support` provides a nice and easy migration path from jar
 invocations from the command-line to SHDP (note that Hadoop
@@ -467,7 +450,7 @@ configuration options as #hadoop:jar-runner[jar-runner] except for
 
 === Configuring the Hadoop DistributedCache
 
-http://hadoop.apache.org/common/docs/stable/mapred_tutorial.html#DistributedCache[DistributedCache]
+{hadoop-DistributedCache}[DistributedCache]
 is a Hadoop facility for distributing application-specific, large,
 read-only files (text, archives, jars and so on) efficiently.
 Applications specify the files to be cached via urls (`hdfs://`) using
@@ -496,8 +479,7 @@ nodes:
 
 The definition above registers several resources with the cache (adding
 them to the job cache or classpath) and creates symlinks for them. As
-described in the `DistributedCache`
-http://hadoop.apache.org/common/docs/stable/mapred_tutorial.html#DistributedCache[documentation],
+described in the `DistributedCache` {hadoop-DistributedCache}[documentation]
 the declaration format is (`absolute-path#link-name`). The link name is
 determined by the URI fragment (the text following the # such as
 _#library.jar_ or _#main-archive_ above) - if no name is specified, the
@@ -517,22 +499,13 @@ _hadoopConfiguration_, creating the `FileSystem` automatically.
 
 [WARNING]
 ====
-Clients setting up a
-classpath
-in the
-DistributedCache
-, running on Windows platforms should set the
-System
-path.separator
-property to
-:
-. Otherwise the classpath will be set incorrectly and will be ignored;
-see
-HADOOP-9123
-bug report for more information.
-There are multiple ways to change the `path.separator` `System` property
-- a quick one being a simple `script` in Javascript (that uses the Rhino
-package bundled with the JDK) that runs at start-up:
+Clients setting up a classpath in the DistributedCache, running on Windows
+platforms should set the System `path.separator` property to `:`. Otherwise
+the classpath will be set incorrectly and will be ignored; see HADOOP-9123
+bug report for more information. There are multiple ways to change the
+`path.separator` `System` property - a quick one being a simple `script`
+in Javascript (that uses the Rhino package bundled with the JDK)
+that runs at start-up:
 
 [source,xml]
 ----
@@ -545,9 +518,8 @@ package bundled with the JDK) that runs at start-up:
 
 === Map Reduce Generic Options
  
-The `job`, `streaming` and `tool` all support a subset of
-http://hadoop.apache.org/common/docs/stable/commands_manual.html#Generic+Options[generic
-options], specifically `archives`, `files` and `libs`. `libs` is
+The `job`, `streaming` and `tool` all support a subset of _generic
+options_, specifically `archives`, `files` and `libs`. `libs` is
 probably the most useful as it enriches a job classpath (typically with
 some jars) - however the other two allow resources or archives to be
 copied throughout the cluster for the job to consume. Whenver faced with
@@ -556,5 +528,5 @@ significantly. Note that the `fs`, `jt` or `conf` options are not
 supported - these are designed for command-line usage, for bootstrapping
 the application. This is no longer needed, as the SHDP offers
 first-class support for defining and customizing Hadoop
-#hadoop:config[configuration]s.
+<<springandhadoop-config,configurations>>.
 

@@ -293,7 +293,7 @@ will be inherited and overridden as specified by the child:
     fs.defaultFS=${hd.fs}
     hadoop.tmp.dir=file://${java.io.tmpdir}
 </hdp:configuration>
-     
+
 <hdp:configuration id="custom" configuration-ref="hadoopConfiguration">
     fs.defaultFS=${custom.hd.fs}
 </hdp:configuration>     
@@ -344,6 +344,10 @@ paths
 
 |`resources` |Comma delimited list |List or Spring _Resource_ paths
 
+|`register-url-handler` |Boolean |Registers an HDFS url handler in the
+running VM. Note that this operation can be executed at most once in a
+given JVM hence the default is false. Defaults to false.
+
 |`file-system-uri` |String |The HDFS filesystem address. Equivalent to
 _fs.defaultFS_ propertys.
 
@@ -352,6 +356,16 @@ to _mapred.job.tracker_ property.
 
 |`rm-manager-uri` |String |The Yarn Resource manager address for
 HadoopV2. Equivalent to _yarn.resourcemanager.address_ property.
+
+|`user-keytab` |String |Security keytab.
+
+|`user-principal` |String |User security principal.
+
+|`namenode-principal` |String |Namenode security principal.
+
+|`rm-manager-principal` |String |Resource manager security principal.
+
+|`security-method` |String |The security method for hadoop.
 |=======================================================================
 
 [NOTE]

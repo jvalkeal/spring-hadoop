@@ -11,8 +11,7 @@ usage) it has on the various SHDP features.
 === HDFS permissions
 
 HDFS layer provides file permissions designed to be similar to those
-present in *nix OS. The official
-http://hadoop.apache.org/common/docs/r1.0.3/hdfs_permissions_guide.html[guide]
+present in *nix OS. The official {hadoop-Security}[guide]
 explains the major components but in short, the access for each file
 (whether it's for reading, writing or in case of directories accessing)
 can be restricted to certain users or groups. Depending on the user
