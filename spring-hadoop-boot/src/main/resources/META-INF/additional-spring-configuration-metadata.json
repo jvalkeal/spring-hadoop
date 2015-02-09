@@ -1,0 +1,28 @@
+{ 
+  "groups": [
+    {
+      "name": "spring.hadoop",
+      "description": "Define Spring Hadoop config properties."
+    },
+    {
+      "name": "spring.hadoop.security",
+      "description": "Hadoop security and kerberos configuration."
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.hadoop.fsshell.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable FsShell.",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.hadoop.resource-manager-address",
+      "description": "YARN resource manager address."
+    },
+    {
+      "name": "spring.hadoop.resource-manager-scheduler-address",
+      "description": "YARN resource manager scheduler address."
+    }
+  ]
+}

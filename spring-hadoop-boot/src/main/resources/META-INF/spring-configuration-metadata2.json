@@ -1,0 +1,117 @@
+{
+  "groups": [
+    {
+      "name": "spring.hadoop",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "description": "Define Spring Hadoop config properties.",
+      "name": "spring.hadoop"
+    },
+    {
+      "name": "spring.hadoop.security",
+      "sourceMethod": "getSecurity()",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties"
+    },
+    {
+      "description": "Hadoop security and kerberos configuration.",
+      "name": "spring.hadoop.security"
+    }
+  ],
+  "properties": [
+    {
+      "description": "Additional Hadoop configuration keys and values.",
+      "name": "spring.hadoop.config",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.util.Map<java.lang.String,java.lang.String>"
+    },
+    {
+      "description": "Hadoop filesystem uri.",
+      "name": "spring.hadoop.fs-uri",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.lang.String"
+    },
+    {
+      "defaultValue": true,
+      "description": "Enable FsShell.",
+      "name": "spring.hadoop.fsshell.enabled",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "spring.hadoop.resource-manager-address",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "YARN resource manager address.",
+      "name": "spring.hadoop.resource-manager-address"
+    },
+    {
+      "description": "YARN resource manager host.",
+      "name": "spring.hadoop.resource-manager-host",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.lang.String"
+    },
+    {
+      "defaultValue": 8032,
+      "description": "YARN resource manager port.",
+      "name": "spring.hadoop.resource-manager-port",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "spring.hadoop.resource-manager-scheduler-address",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "YARN resource manager scheduler address.",
+      "name": "spring.hadoop.resource-manager-scheduler-address"
+    },
+    {
+      "defaultValue": 8030,
+      "description": "YARN resource manager scheduler port.",
+      "name": "spring.hadoop.resource-manager-scheduler-port",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.lang.Integer"
+    },
+    {
+      "description": "Additional Spring properties resources to import.",
+      "name": "spring.hadoop.resources",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "description": "Hadoop security method.",
+      "name": "spring.hadoop.security.auth-method",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties",
+      "type": "org.springframework.data.hadoop.security.SecurityAuthMethod"
+    },
+    {
+      "description": "Hadoop namenode kerberos principal.",
+      "name": "spring.hadoop.security.namenode-principal",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "Hadoop resource manager kerberos principal.",
+      "name": "spring.hadoop.security.rm-manager-principal",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "Path to kerberos user keytab file.",
+      "name": "spring.hadoop.security.user-keytab",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties",
+      "type": "java.lang.String"
+    },
+    {
+      "description": "Kerberos user principal.",
+      "name": "spring.hadoop.security.user-principal",
+      "sourceType": "org.springframework.data.hadoop.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties",
+      "type": "java.lang.String"
+    }
+  ]
+}

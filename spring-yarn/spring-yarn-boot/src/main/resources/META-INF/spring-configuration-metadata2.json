@@ -1,0 +1,553 @@
+{
+  "properties": [
+    {
+      "name": "spring.hadoop.config",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "name": "spring.hadoop.fs-uri",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "name": "spring.hadoop.resource-manager-address",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "name": "spring.hadoop.resource-manager-host",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "name": "spring.hadoop.resource-manager-port",
+      "type": "java.lang.Integer",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties",
+      "defaultValue": 8032
+    },
+    {
+      "name": "spring.hadoop.resource-manager-scheduler-address",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "name": "spring.hadoop.resource-manager-scheduler-port",
+      "type": "java.lang.Integer",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties",
+      "defaultValue": 8030
+    },
+    {
+      "name": "spring.hadoop.resources",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "name": "spring.hadoop.security.auth-method",
+      "type": "org.springframework.data.hadoop.security.SecurityAuthMethod",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties"
+    },
+    {
+      "name": "spring.hadoop.security.namenode-principal",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties"
+    },
+    {
+      "name": "spring.hadoop.security.rm-manager-principal",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties"
+    },
+    {
+      "name": "spring.hadoop.security.user-keytab",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties"
+    },
+    {
+      "name": "spring.hadoop.security.user-principal",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties"
+    },
+    {
+      "name": "spring.yarn.app-name",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.app-type",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.application-base-dir",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.application-dir",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.application-version",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.appmaster-class",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.container-count",
+      "type": "java.lang.Integer",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties",
+      "defaultValue": 1
+    },
+    {
+      "name": "spring.yarn.appmaster.containercluster.clusters",
+      "type": "java.util.Map<java.lang.String,org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties.ContainerClustersProperties>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties$ContainerClusterProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.containercluster.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties$ContainerClusterProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.yarn.appmaster.keep-context-alive",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.archive-file",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.arguments",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.arguments-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.container-app-classpath",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.include-base-directory",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.include-local-system-env",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.locality",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.options",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.path-separator",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.runner-class",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.use-mapreduce-app-classpath",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext.use-yarn-app-classpath",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.localizer.patterns",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.localizer.properties-names",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.localizer.properties-suffixes",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.localizer.zip-pattern",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.resource.memory",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterResourceProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.resource.priority",
+      "type": "java.lang.Integer",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterResourceProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.resource.virtual-cores",
+      "type": "java.lang.Integer",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterResourceProperties"
+    },
+    {
+      "name": "spring.yarn.batch.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnBatchProperties"
+    },
+    {
+      "name": "spring.yarn.batch.jobs",
+      "type": "java.util.List<org.springframework.yarn.batch.support.YarnBatchProperties.JobProperties>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnBatchProperties"
+    },
+    {
+      "name": "spring.yarn.batch.name",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnBatchProperties"
+    },
+    {
+      "name": "spring.yarn.client.client-class",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientProperties"
+    },
+    {
+      "name": "spring.yarn.client.files",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.archive-file",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.arguments",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.arguments-list",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.container-app-classpath",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.include-base-directory",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.include-local-system-env",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.options",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.path-separator",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.runner-class",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.use-mapreduce-app-classpath",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext.use-yarn-app-classpath",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.localizer.patterns",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.client.localizer.properties-names",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.client.localizer.properties-suffixes",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.client.localizer.raw-file-contents",
+      "type": "java.util.Map<java.lang.String,byte[]>",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.client.localizer.zip-pattern",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.client.priority",
+      "type": "java.lang.Integer",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientProperties"
+    },
+    {
+      "name": "spring.yarn.client.queue",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientProperties"
+    },
+    {
+      "name": "spring.yarn.client.resource.memory",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientResourceProperties"
+    },
+    {
+      "name": "spring.yarn.client.resource.virtual-cores",
+      "type": "java.lang.Integer",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientResourceProperties"
+    },
+    {
+      "name": "spring.yarn.client.startup.action",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientProperties$StartupProperties"
+    },
+    {
+      "name": "spring.yarn.container.container-class",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnContainerProperties"
+    },
+    {
+      "name": "spring.yarn.container.keep-context-alive",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnContainerProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.application-id",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.cluster-def",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.cluster-id",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.extra-properties",
+      "type": "java.util.Map<java.lang.String,java.lang.Object>",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.operation",
+      "type": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$Operation",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.projection-data",
+      "type": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$ProjectionDataProperties",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.projection-type",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication.verbose",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.yarn.internal.YarnInfoApplication.headers",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "org.springframework.yarn.boot.app.YarnInfoApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.YarnInfoApplication.operation",
+      "type": "org.springframework.yarn.boot.app.YarnInfoApplication$Operation",
+      "sourceType": "org.springframework.yarn.boot.app.YarnInfoApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.YarnInfoApplication.type",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.app.YarnInfoApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.YarnInfoApplication.verbose",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.springframework.yarn.boot.app.YarnInfoApplication$OperationProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.yarn.internal.YarnKillApplication.application-id",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.app.YarnKillApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.YarnShutdownApplication.application-id",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.app.YarnShutdownApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.site-mapreduce-app-classpath",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.site-yarn-app-classpath",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.staging-dir",
+      "type": "java.lang.String",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    }
+  ],
+  "groups": [
+    {
+      "name": "",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnEnvProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnEnvProperties"
+    },
+    {
+      "name": "spring.hadoop",
+      "type": "org.springframework.yarn.boot.properties.SpringHadoopProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties"
+    },
+    {
+      "name": "spring.hadoop.security",
+      "type": "org.springframework.yarn.boot.properties.SpringHadoopProperties$SpringHadoopSecurityProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringHadoopProperties",
+      "sourceMethod": "getSecurity()"
+    },
+    {
+      "name": "spring.yarn",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.containercluster",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties$ContainerClusterProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterProperties",
+      "sourceMethod": "getContainercluster()"
+    },
+    {
+      "name": "spring.yarn.appmaster.launchcontext",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.localizer",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLocalizerProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.appmaster.resource",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnAppmasterResourceProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnAppmasterResourceProperties"
+    },
+    {
+      "name": "spring.yarn.batch",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnBatchProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnBatchProperties"
+    },
+    {
+      "name": "spring.yarn.client",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnClientProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientProperties"
+    },
+    {
+      "name": "spring.yarn.client.launchcontext",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLaunchContextProperties"
+    },
+    {
+      "name": "spring.yarn.client.localizer",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnClientLocalizerProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientLocalizerProperties"
+    },
+    {
+      "name": "spring.yarn.client.resource",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnClientResourceProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientResourceProperties"
+    },
+    {
+      "name": "spring.yarn.client.startup",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnClientProperties$StartupProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnClientProperties",
+      "sourceMethod": "getStartup()"
+    },
+    {
+      "name": "spring.yarn.container",
+      "type": "org.springframework.yarn.boot.properties.SpringYarnContainerProperties",
+      "sourceType": "org.springframework.yarn.boot.properties.SpringYarnContainerProperties"
+    },
+    {
+      "name": "spring.yarn.internal.ContainerClusterApplication",
+      "type": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties",
+      "sourceType": "org.springframework.yarn.boot.app.YarnContainerClusterApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.YarnInfoApplication",
+      "type": "org.springframework.yarn.boot.app.YarnInfoApplication$OperationProperties",
+      "sourceType": "org.springframework.yarn.boot.app.YarnInfoApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.YarnKillApplication",
+      "type": "org.springframework.yarn.boot.app.YarnKillApplication$OperationProperties",
+      "sourceType": "org.springframework.yarn.boot.app.YarnKillApplication$OperationProperties"
+    },
+    {
+      "name": "spring.yarn.internal.YarnShutdownApplication",
+      "type": "org.springframework.yarn.boot.app.YarnShutdownApplication$OperationProperties",
+      "sourceType": "org.springframework.yarn.boot.app.YarnShutdownApplication$OperationProperties"
+    }
+  ]
+}

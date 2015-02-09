@@ -1,0 +1,28 @@
+{ 
+  "groups": [
+    {
+      "name": "spring.yarn",
+      "description": "Define Spring YARN config properties."
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.yarn.batch.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable YARN batch processing.",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.yarn.appmaster.containercluster.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable container cluster.",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.yarn.endpoints.containerregister.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable container registrar.",
+      "defaultValue": false
+    }
+  ]
+}
