@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.RawComparator;
@@ -61,6 +63,8 @@ import org.springframework.util.StringUtils;
 // TODO: extract input/output format configs
 public class JobFactoryBean extends JobGenericOptions implements InitializingBean, FactoryBean<Job>, BeanNameAware,
 		BeanClassLoaderAware {
+
+	private final Log log = LogFactory.getLog(JobFactoryBean.class);
 
 	private Job job;
 	private Configuration configuration;
@@ -121,6 +125,9 @@ public class JobFactoryBean extends JobGenericOptions implements InitializingBea
 		final Configuration cfg = JobConfUtils.createFrom(configuration, properties);
 
 		buildGenericOptions(cfg);
+
+		log.info("XXXXXXX1 " + cfg.get("hadoop.security.authorization"));
+		log.info("XXXXXXX2 " + cfg.get("hadoop.security.authentication"));
 
 		if (StringUtils.hasText(user)) {
 			UserGroupInformation ugi = UserGroupInformation.createProxyUser(user, UserGroupInformation.getLoginUser());

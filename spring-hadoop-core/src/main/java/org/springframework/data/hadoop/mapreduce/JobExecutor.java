@@ -1,12 +1,12 @@
 /*
  * Copyright 2011-2013 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Common class shared for executing Hadoop {@link Job}s.
- * 
+ *
  * @author Costin Leau
  * @author Thomas Risberg
  */
@@ -71,6 +71,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 	protected Log log = LogFactory.getLog(getClass());
 
 	public void afterPropertiesSet() throws Exception {
+		log.info("XXXXXXXXXXXXXXXX jobExecutor");
 		Assert.isTrue(jobs != null | jobNames != null, "A Hadoop job or its name is required");
 
 		if (jobNames != null) {
@@ -97,7 +98,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 
 	/**
 	 * Stops running job.
-	 * 
+	 *
 	 * @return list of stopped jobs.
 	 */
 	protected Collection<Job> stopJobs() {
@@ -261,7 +262,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 
 	/**
 	 * Sets the job to execute.
-	 * 
+	 *
 	 * @param job The job to execute.
 	 */
 	public void setJob(Job job) {
@@ -270,7 +271,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 
 	/**
 	 * Sets the jobs to execute.
-	 * 
+	 *
 	 * @param jobs The job to execute.
 	 */
 	public void setJobs(Collection<Job> jobs) {
@@ -281,7 +282,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 	 * Sets the jobs to execute by (bean) name. This is the default
 	 * method used by the hdp name space to allow lazy initialization and potential scoping
 	 * to kick in.
-	 * 
+	 *
 	 * @param jobName The job to execute.
 	 */
 	public void setJobNames(String... jobName) {
@@ -290,7 +291,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 
 	/**
 	 * Indicates whether the 'runner' should wait for the job to complete (default).
-	 * 
+	 *
 	 * @return whether to wait for the job to complete or not.
 	 */
 	public boolean isWaitForCompletion() {
@@ -300,7 +301,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 	/**
 	 * Indicates whether the 'runner' should wait for the job to complete (default)
 	 * after submission or not.
-	 * 
+	 *
 	 * @param waitForJob whether to wait for the job to complete or not.
 	 */
 	public void setWaitForCompletion(boolean waitForJob) {
@@ -309,7 +310,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 
 	/**
 	 * Indicates whether the job execution is verbose (the default) or not.
-	 * 
+	 *
 	 * @return whether the job execution is verbose or not.
 	 */
 	public boolean isVerbose() {
@@ -318,7 +319,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 
 	/**
 	 * Indicates whether the job execution is verbose (the default) or not.
-	 * 
+	 *
 	 * @param verbose whether the job execution is verbose or not.
 	 */
 	public void setVerbose(boolean verbose) {
@@ -333,9 +334,9 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 	/**
 	 * Sets the TaskExecutor used for executing the Hadoop job.
 	 * By default, {@link SyncTaskExecutor} is used, meaning the calling thread is used.
-	 * While this replicates the Hadoop behavior, it prevents running jobs from being killed if the application shuts down. 
-	 * For a fine-tuned control, a dedicated {@link Executor} is recommended. 
-	 * 
+	 * While this replicates the Hadoop behavior, it prevents running jobs from being killed if the application shuts down.
+	 * For a fine-tuned control, a dedicated {@link Executor} is recommended.
+	 *
 	 * @param executor the task executor to use execute the Hadoop job.
 	 */
 	public void setExecutor(Executor executor) {
@@ -346,7 +347,7 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 	/**
 	 * Indicates whether the configured jobs should be 'killed' when the application
 	 * shuts down or not.
-	 * 
+	 *
 	 * @return whether or not to kill the configured jobs at shutdown
 	 */
 	public boolean isKillJobsAtShutdown() {
@@ -357,10 +358,10 @@ public abstract class JobExecutor implements InitializingBean, DisposableBean, B
 	 * Indicates whether the configured jobs should be 'killed' when the application
 	 * shuts down (default) or not. For long-running or fire-and-forget jobs that live beyond
 	 * the starting application, set this to false.
-	 * 
+	 *
 	 * Note that if {@link #setWaitForCompletion(boolean)} is true, this flag is considered to be true as otherwise
 	 * the application cannot shut down (since it has to keep waiting for the job).
-	 * 
+	 *
 	 * @param killJobsAtShutdown whether or not to kill configured jobs when the application shuts down
 	 */
 	public void setKillJobAtShutdown(boolean killJobsAtShutdown) {
